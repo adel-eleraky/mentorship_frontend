@@ -22,6 +22,10 @@ function Chat() {
     }
   };
 
+  const joinRoom = (room) => {
+    setSelectedRoom(room);
+    socket.emit('join_room', room._id);
+  }
   useEffect(() => {
 
     fetchRooms();
@@ -29,6 +33,11 @@ function Chat() {
     socket.on('receive_message', (data) => {
       setMessages((prevMessages) => [...prevMessages, data]); // Update chat history
     });
+
+    socket.on("send_room_messages" , (data) => {
+      console.log(data)
+      setMessages(data)
+    })
 
     return () => {
       socket.off('receive_message');
@@ -38,7 +47,8 @@ function Chat() {
   const sendMessage = () => {
     if (selectedRoom && message) {
       const msgData = {
-        sender_id: '67bdbc12abcca0e18a724d5e',
+        sender: '67c2924c2fb827c27cc35b40',
+        sender_role: "Mentor",
         room: selectedRoom._id,
         content: message,
       };
@@ -61,7 +71,7 @@ function Chat() {
               rooms.map((room) => (
                 <li key={room._id} className="list-group-item d-flex justify-content-between align-items-center">
                   {room.name}
-                  <button className="btn btn-primary btn-sm" onClick={() => setSelectedRoom(room)}>
+                  <button className="btn btn-primary btn-sm" onClick={() => joinRoom(room)}>
                     Join
                   </button>
                 </li>
@@ -80,8 +90,8 @@ function Chat() {
               <div className="chat-box border rounded p-3" style={{ height: '300px', overflowY: 'auto' }}>
                 {messages.length > 0 ? (
                   messages.map((msg, index) => (
-                    <div key={index} className={`alert ${msg.sender_id === '67bdbc12abcca0e18a724d5e' ? 'alert-success' : 'alert-secondary'}`}>
-                      <strong>{msg.sender_id === '67bdbc12abcca0e18a724d5e' ? 'You' : 'User'}</strong>: {msg.content}
+                    <div key={index} >
+                      <strong>{msg.sender_role}</strong>: {msg.content}
                     </div>
                   ))
                 ) : (
