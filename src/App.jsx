@@ -7,6 +7,8 @@ import CreateButton from "./components/CreateButton";
 import Meeting from "./pages/Meeting";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import NavBar from "./components/NavBar/NavBar";
+import { Provider } from "react-redux";
+import Store from "./rtk/Store";
 // import Chat from "./components/Chat/Chat";
 
 const socket = io("http://localhost:3000");
@@ -14,15 +16,17 @@ const socket = io("http://localhost:3000");
 function App() {
   return (
     <>
+      <Provider store={Store}>
         <BrowserRouter>
-        <NavBar />
+          <NavBar />
 
-        <Routes>
-          <Route path="/" element={<CreateButton />} />
-          <Route path="meeting/:id" element={<Meeting />} />
-          <Route path="chat" element={<Chat />} />
-        </Routes>
-      </BrowserRouter>
+          <Routes>
+            <Route path="/" element={<CreateButton />} />
+            <Route path="meeting/:id" element={<Meeting />} />
+            <Route path="chat" element={<Chat />} />
+          </Routes>
+        </BrowserRouter>
+      </Provider>
     </>
   );
 }
