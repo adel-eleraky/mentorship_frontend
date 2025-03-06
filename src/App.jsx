@@ -9,6 +9,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import NavBar from "./components/NavBar/NavBar";
 import Home from "./pages/Home";
 import Footer from "./components/Footer/Footer";
+import { Provider } from "react-redux";
+import Store from "./rtk/Store";
 // import Chat from "./components/Chat/Chat";
 
 const socket = io("http://localhost:3000");
@@ -16,8 +18,9 @@ const socket = io("http://localhost:3000");
 function App() {
   return (
     <>
+      <Provider store={Store}>
         <BrowserRouter>
-        <NavBar />
+          <NavBar />
 
         <Routes>
           <Route path="/" element={<CreateButton />} />
@@ -28,6 +31,7 @@ function App() {
 
         <Footer/>
       </BrowserRouter>
+      </Provider>
     </>
   );
 }
