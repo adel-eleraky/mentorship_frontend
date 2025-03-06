@@ -7,6 +7,8 @@ import CreateButton from "./components/CreateButton";
 import Meeting from "./pages/Meeting";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import NavBar from "./components/NavBar/NavBar";
+import Home from "./pages/Home";
+import Footer from "./components/Footer/Footer";
 // import Chat from "./components/Chat/Chat";
 
 const socket = io("http://localhost:3000");
@@ -19,9 +21,12 @@ function App() {
 
         <Routes>
           <Route path="/" element={<CreateButton />} />
+          <Route path="home" element={<Home />} />
           <Route path="meeting/:id" element={<Meeting />} />
           <Route path="chat" element={<Chat />} />
         </Routes>
+
+        <Footer/>
       </BrowserRouter>
     </>
   );
