@@ -7,6 +7,8 @@ import CreateButton from "./components/CreateButton";
 import Meeting from "./pages/Meeting";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import NavBar from "./components/NavBar/NavBar";
+import Home from "./pages/Home";
+import Footer from "./components/Footer/Footer";
 import { Provider } from "react-redux";
 import Store from "./rtk/Store";
 // import Chat from "./components/Chat/Chat";
@@ -20,12 +22,15 @@ function App() {
         <BrowserRouter>
           <NavBar />
 
-          <Routes>
-            <Route path="/" element={<CreateButton />} />
-            <Route path="meeting/:id" element={<Meeting />} />
-            <Route path="chat" element={<Chat />} />
-          </Routes>
-        </BrowserRouter>
+        <Routes>
+          <Route path="/" element={<CreateButton />} />
+          <Route path="home" element={<Home />} />
+          <Route path="meeting/:id" element={<Meeting />} />
+          <Route path="chat" element={<Chat />} />
+        </Routes>
+
+        <Footer/>
+      </BrowserRouter>
       </Provider>
     </>
   );
