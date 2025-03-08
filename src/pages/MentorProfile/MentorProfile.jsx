@@ -1,5 +1,5 @@
 import React from "react";
-import "./MentorProfile.css";
+// import "./MentorProfile.css";
 import { useState } from "react";
 function MentorProfile() {
 
