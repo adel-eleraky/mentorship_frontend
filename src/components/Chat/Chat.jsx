@@ -3,16 +3,24 @@ import React, { useEffect, useState, useRef } from 'react';
 import io from 'socket.io-client';
 import axios from 'axios';
 import './Chat.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { addMessage, getRoomMessages } from '../../rtk/features/RoomSlice';
+const socket = io('http://localhost:3000', {
+  transports: ["websocket"], // Try forcing WebSocket transport
+  withCredentials: true,
+});
 
 function Chat() {
-  const socket = io('http://localhost:3000');
   const [message, setMessage] = useState('');
   const [rooms, setRooms] = useState([]);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [messages, setMessages] = useState([]);
   const [activeTab, setActiveTab] = useState('all');
   const messagesEndRef = useRef(null);
+  const dispatch = useDispatch()
+  const { roomMessages } = useSelector(state => state.room)
 
+  console.log(roomMessages)
   const fetchRooms = async () => {
     try {
       const { data } = await axios.get('http://localhost:3000/api/v1/rooms');
@@ -22,8 +30,9 @@ function Chat() {
     }
   };
 
-  const joinRoom = (room) => {
+  const joinRoom = async (room) => {
     setSelectedRoom(room);
+    dispatch(getRoomMessages(room._id))
     socket.emit('join_room', room._id);
   };
 
@@ -35,8 +44,10 @@ function Chat() {
   useEffect(() => {
     fetchRooms();
 
-    socket.on('receive_message', (data) => {
-      setMessages((prevMessages) => [...prevMessages, data]);
+    socket.on('receive_room_msg', (data) => {
+      console.log(data)
+      dispatch(addMessage(data))
+      // setMessages((prevMessages) => [...prevMessages, data]);
     });
 
     socket.on("send_room_messages", (data) => {
@@ -44,10 +55,10 @@ function Chat() {
     });
 
     return () => {
-      socket.off('receive_message');
+      socket.off('receive_room_msg');
       socket.off('send_room_messages');
     };
-  }, []);
+  }, [socket]);
 
   // Auto-scroll when messages change
   useEffect(() => {
@@ -57,13 +68,13 @@ function Chat() {
   const sendMessage = () => {
     if (selectedRoom && message.trim()) {
       const msgData = {
-        sender: '67c2924c2fb827c27cc35b40',
-        sender_role: "Mentor",
+        sender: '67c847e03afd3576700a6b0d',
+        sender_role: "User",
         room: selectedRoom._id,
         content: message,
-        timestamp: new Date().toISOString()
+        // timestamp: new Date().toISOString()
       };
-      socket.emit('send_message', msgData);
+      socket.emit('send_room_msg', msgData);
       setMessages((prevMessages) => [...prevMessages, msgData]);
       setMessage('');
     }
@@ -142,9 +153,9 @@ function Chat() {
               </div>
               
               <div className="chat-box" style={{ height: '62vh', overflowY: 'auto' }}>
-                {messages.length > 0 ? (
+                {roomMessages.length > 0 ? (
                   <div className="messages-container">
-                    {messages.map((msg, index) => (
+                    {roomMessages.map((msg, index) => (
                       <div 
                         key={index} 
                         className={`message ${msg.sender_role === "Mentor" ? 'outgoing' : 'incoming'}`}
@@ -152,7 +163,7 @@ function Chat() {
                         <div className="message-header">
                           <strong>{msg.sender_role}</strong>
                           <span className="message-time">
-                            {msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}
+                            {msg.createdAt ? new Date(msg.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}
                           </span>
                         </div>
                         <div className="message-content">{msg.content}</div>
