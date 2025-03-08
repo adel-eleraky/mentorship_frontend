@@ -17,9 +17,9 @@ function NavBar() {
               <li className="nav-item">
                 <NavLink className="nav-link active" to={'/chat'} >chats</NavLink>
               </li>
-              {/* <li className="nav-item">
-                <NavLink className="nav-link active" to={'/'} >  </NavLink>
-              </li>                  */}
+              <li className="nav-item">
+                <NavLink className="nav-link active" to={'/mentorprofile'} >Mentor Profile </NavLink>
+              </li>                 
               <li className="nav-item">
               <NavLink className="nav-link"  to={'/home'}>Loge Out</NavLink>
               </li>

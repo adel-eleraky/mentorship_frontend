@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 import io from 'socket.io-client';
 import axios from 'axios';
 import './Chat.css';
