@@ -24,7 +24,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "@fortawesome/fontawesome-free";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
-import MentorProfile from "./pages/MentorProfile";
+import MentorDashboard from "./pages/MentorDashboard";
 // import Chat from "./components/Chat/Chat";
 
 const socket = io("http://localhost:3000");
@@ -60,7 +60,7 @@ function App() {
             />
             <Route path="user" element={<UserProfile />}></Route>
             {/* routes for Login & Register */}
-            <Route path="mentor" element={<MentorProfile />}></Route>
+            <Route path="mentor" element={<MentorDashboard />}></Route>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
           </Routes>

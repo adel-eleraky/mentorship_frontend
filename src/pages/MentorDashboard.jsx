@@ -13,7 +13,7 @@ import {
   fetchScheduledMeetings,
 } from "../services/mentorService";
 
-export default function MentorProfile() {
+export default function MentorDashboard() {
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState("personal");
   const [mentorData, setMentorData] = useState({
