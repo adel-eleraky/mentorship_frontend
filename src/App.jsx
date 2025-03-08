@@ -13,6 +13,23 @@ import Footer from "./components/Footer/Footer";
 import { Provider } from "react-redux";
 import Store from "./rtk/Store";
 import UserProfile from "./pages/UserProfile";
+
+import Login from "./components/Login/Login";
+import Register from "./components/Register/Register";
+import ProtectedRoutes from "./ProtectedRoutes/ProtectedRoutes";
+
+import MentorProfile from "./pages/MentorProfile/MentorProfile";
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '@fortawesome/fontawesome-free';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+
+
+
+
+
+
+
 import MentorProfile from "./pages/MentorProfile";
 // import Chat from "./components/Chat/Chat";
 
@@ -22,18 +39,39 @@ function App() {
   return (
     <>
       <Provider store={Store}>
-        <BrowserRouter>
-          <NavBar />
+        <NavBar />
 
           <Routes>
 
+          <Route path="mentorprofile" element={<MentorProfile />} />
+
             <Route path="home" element={<Home />} />
-            <Route path="meeting/:id" element={<Meeting />} />
-            <Route path="user" element={<UserProfile />}></Route>
+
+          {/* protected Routes */}
+            <Route
+            path="/meeting/:id"
+            element={
+              <ProtectedRoutes>
+                <Meeting />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path="/chat"
+            element={
+              <ProtectedRoutes>
+                <Chat />
+              </ProtectedRoutes>
+            }
+          />
+          <Route path="user" element={<UserProfile />}></Route>
+          {/* routes for Login & Register */}
             <Route path="mentor" element={<MentorProfile />}></Route>
-            <Route path="chat" element={<Chat />} />
+            <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           </Routes>
 
+        <Footer />
           <Footer />
         </BrowserRouter>
       </Provider>

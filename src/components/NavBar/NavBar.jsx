@@ -2,6 +2,8 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 
 function NavBar() {
+  const { token, logout } = useAuthentication();
+
   return (
     <>
       <nav className="navbar navbar-expand-lg">
@@ -20,6 +22,7 @@ function NavBar() {
           >
             <span className="navbar-toggler-icon"></span>
           </button>
+
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <form className="d-flex mb-2 mb-lg-0 ms-auto" role="search">
               <div style={{ position: "relative", width: "350px" }}>
@@ -43,6 +46,7 @@ function NavBar() {
                 ></i>
               </div>
             </form>
+
             <ul className="navbar-nav mb-2 mb-lg-0 ms-auto">
               <li className="nav-item dropdown">
                 <a
@@ -77,6 +81,7 @@ function NavBar() {
                   </li>
                 </ul>
               </li>
+
               <li className="nav-item ms-4">
                 <button className="btn btn-success">Browse all mentors</button>
               </li>
@@ -90,11 +95,6 @@ function NavBar() {
                 <NavLink className="nav-link" to={'/register'}>Register</NavLink>
               </li> */}
               <li className="nav-item ms-4">
-                <NavLink className="nav-link" to={"/mentor"}>
-                  Profile
-                </NavLink>
-              </li>
-              <li className="nav-item ms-4">
                 <NavLink className="nav-link" to={"/login"}>
                   Login
                 </NavLink>
@@ -103,6 +103,7 @@ function NavBar() {
           </div>
         </div>
       </nav>
+
       <div className="container-fluid px-5 py-2 shadow-sm border-bottom">
         <nav className="d-flex justify-content-between">
           <a href="#" className="nav-link">
