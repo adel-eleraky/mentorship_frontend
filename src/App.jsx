@@ -12,6 +12,11 @@ import Footer from "./components/Footer/Footer";
 import { Provider } from "react-redux";
 import Store from "./rtk/Store";
 import UserProfile from "./pages/UserProfile";
+
+import Login from "./components/Login/Login";
+import Register from "./components/Register/Register";
+import ProtectedRoutes from "./ProtectedRoutes/ProtectedRoutes";
+
 // import Chat from "./components/Chat/Chat";
 
 const socket = io("http://localhost:3000");
@@ -20,19 +25,36 @@ function App() {
   return (
     <>
       <Provider store={Store}>
-        <BrowserRouter>
-          <NavBar />
+        <NavBar />
 
         <Routes>
           <Route path="/" element={<CreateButton />} />
           <Route path="home" element={<Home />} />
-          <Route path="meeting/:id" element={<Meeting />} />
-            <Route path="user" element={<UserProfile />}></Route>
-          <Route path="chat" element={<Chat />} />
+
+          {/* protected Routes */}
+          <Route
+            path="/meeting/:id"
+            element={
+              <ProtectedRoutes>
+                <Meeting />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path="/chat"
+            element={
+              <ProtectedRoutes>
+                <Chat />
+              </ProtectedRoutes>
+            }
+          />
+          <Route path="user" element={<UserProfile />}></Route>
+          {/* routes for Login & Register */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
 
-        <Footer/>
-      </BrowserRouter>
+        <Footer />
       </Provider>
     </>
   );
