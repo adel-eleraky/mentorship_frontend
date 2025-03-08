@@ -19,16 +19,10 @@ import Register from "./components/Register/Register";
 import ProtectedRoutes from "./ProtectedRoutes/ProtectedRoutes";
 
 import MentorProfile from "./pages/MentorProfile/MentorProfile";
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import '@fortawesome/fontawesome-free';
-import 'bootstrap-icons/font/bootstrap-icons.css';
-
-
-
-
-
-
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "@fortawesome/fontawesome-free";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 import MentorProfile from "./pages/MentorProfile";
 // import Chat from "./components/Chat/Chat";
@@ -39,39 +33,38 @@ function App() {
   return (
     <>
       <Provider store={Store}>
-        <NavBar />
+        <BrowserRouter>
+          <NavBar />
 
           <Routes>
-
-          <Route path="mentorprofile" element={<MentorProfile />} />
+            <Route path="mentorprofile" element={<MentorProfile />} />
 
             <Route path="home" element={<Home />} />
 
-          {/* protected Routes */}
+            {/* protected Routes */}
             <Route
-            path="/meeting/:id"
-            element={
-              <ProtectedRoutes>
-                <Meeting />
-              </ProtectedRoutes>
-            }
-          />
-          <Route
-            path="/chat"
-            element={
-              <ProtectedRoutes>
-                <Chat />
-              </ProtectedRoutes>
-            }
-          />
-          <Route path="user" element={<UserProfile />}></Route>
-          {/* routes for Login & Register */}
+              path="/meeting/:id"
+              element={
+                <ProtectedRoutes>
+                  <Meeting />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              path="/chat"
+              element={
+                <ProtectedRoutes>
+                  <Chat />
+                </ProtectedRoutes>
+              }
+            />
+            <Route path="user" element={<UserProfile />}></Route>
+            {/* routes for Login & Register */}
             <Route path="mentor" element={<MentorProfile />}></Route>
             <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+            <Route path="/register" element={<Register />} />
           </Routes>
 
-        <Footer />
           <Footer />
         </BrowserRouter>
       </Provider>
