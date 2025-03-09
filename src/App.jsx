@@ -17,6 +17,7 @@ import UserProfile from "./pages/UserProfile";
 import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
 import ProtectedRoutes from "./ProtectedRoutes/ProtectedRoutes";
+import AuthenticationContextProvider from './Context/AuthContext.jsx';
 
 import MentorProfile from "./pages/MentorProfile/MentorProfile";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
@@ -35,40 +36,42 @@ function App() {
     <>
       <Provider store={Store}>
         <BrowserRouter>
-          <NavBar />
+          <AuthenticationContextProvider>
+            <NavBar />
 
-          <Routes>
-            <Route path="mentorprofile" element={<MentorProfile />} />
+            <Routes>
+              <Route path="mentorprofile" element={<MentorProfile />} />
 
-            <Route path="home" element={<Home />} />
+              <Route path="/" element={<Home />} />
 
-            <Route path="allMentors" element={<BrowseMentors />} />
+              <Route path="mentors" element={<BrowseMentors />} />
 
-            {/* protected Routes */}
-            <Route
-              path="/meeting/:id"
-              element={
-                <ProtectedRoutes>
-                  <Meeting />
-                </ProtectedRoutes>
-              }
-            />
-            <Route
-              path="/chat"
-              element={
-                <ProtectedRoutes>
-                  <Chat />
-                </ProtectedRoutes>
-              }
-            />
-            <Route path="user" element={<UserProfile />}></Route>
-            {/* routes for Login & Register */}
-            <Route path="mentor" element={<MentorDashboard />}></Route>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-          </Routes>
+              {/* protected Routes */}
+              <Route
+                path="/meeting/:id"
+                element={
+                  <ProtectedRoutes>
+                    <Meeting />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route
+                path="/chat"
+                element={
+                  <ProtectedRoutes>
+                    <Chat />
+                  </ProtectedRoutes>
+                }
+              />
+              <Route path="user" element={<ProtectedRoutes> <UserProfile /> </ProtectedRoutes>}></Route>
+              {/* routes for Login & Register */}
+              <Route path="mentor" element={<ProtectedRoutes> <MentorDashboard /> </ProtectedRoutes>}></Route>
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+            </Routes>
 
-          <Footer />
+            <Footer />
+          </AuthenticationContextProvider>
         </BrowserRouter>
       </Provider>
     </>
