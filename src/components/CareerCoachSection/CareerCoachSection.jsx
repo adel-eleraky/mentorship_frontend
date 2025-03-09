@@ -1,5 +1,6 @@
 import React from 'react';
 import profileImg from '../../assets/profile-img.webp';
+import { Link } from 'react-router';
 
 export default function CareerCoachSection() {
     return (
@@ -81,9 +82,9 @@ export default function CareerCoachSection() {
                         </div>
                     </div>
 
-                    <button className="btn btn-success mt-4">
+                    <Link className="btn btn-success mt-4" to={'/allMentors'}>
                         <span className="fw-semibold">Find a mentor</span> <i class="fa-solid fa-arrow-right"></i>
-                    </button>
+                    </Link>
                 </div>
             </div>
         </div>

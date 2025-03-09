@@ -25,6 +25,7 @@ import "@fortawesome/fontawesome-free";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
 import MentorDashboard from "./pages/MentorDashboard";
+import BrowseMentors from "./pages/BrowseMentors";
 // import Chat from "./components/Chat/Chat";
 
 const socket = io("http://localhost:3000");
@@ -40,6 +41,8 @@ function App() {
             <Route path="mentorprofile" element={<MentorProfile />} />
 
             <Route path="home" element={<Home />} />
+
+            <Route path="allMentors" element={<BrowseMentors />} />
 
             {/* protected Routes */}
             <Route
