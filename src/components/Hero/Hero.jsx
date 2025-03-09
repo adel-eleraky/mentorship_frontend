@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from './Hero.module.css';
+import { Link } from 'react-router';
 
 export default function Hero() {
     const [text, setText] = useState('');
@@ -54,7 +55,7 @@ export default function Hero() {
                 <div style={{ position: 'relative', width: '65%', border: '1px solid gray', borderRadius: '10px', padding: '3px' }}>
                     <input
                         type="text"
-                        placeholder="Search by company, skills, or role"
+                        placeholder="Search by title, skills, or experience"
                         className="form-control w-100 pe-5"
                         style={{
                             paddingRight: '120px',
@@ -62,17 +63,18 @@ export default function Hero() {
                             height: '50px',
                         }}
                     />
-                    <button
-                        className="btn btn-success"
+                    <Link
+                        className="btn btn-success pt-2"
                         style={{
                             position: 'absolute',
                             right: '5px',
-                            top: '5px',
-                            height: '80%',
+                            top: '7px',
+                            height: '75%',
                         }}
+                        to={'/allMentors'}
                     >
                         Find mentors
-                    </button>
+                    </Link>
                 </div>
             </div>
             <div className="w-75 d-flex flex-wrap gap-2 mt-3">
