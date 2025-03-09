@@ -12,7 +12,7 @@ export default function MentorCardScroller({ mentor }) {
                         style={{ width: "60px", height: "60px" }}
                     />
                     <div>
-                        <h5 className="fw-bold mb-1">{mentor.name} <i className='fa fa-star fs-6 ms-3 text-success'></i> <span className="text-success fs-6">{mentor.rating}</span></h5>
+                        <h5 className="fw-bold mb-1">{mentor.name} <i className='fa-solid fa-star fs-6 ms-3 text-success'></i> <span className="text-success fs-6">{mentor.rating}</span></h5>
                         <p className="text-muted">{mentor.title}</p>
                     </div>
                 </div>

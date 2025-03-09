@@ -1,8 +1,9 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 
 function NavBar() {
-  const { token, logout } = useAuthentication();
+  // const { token, logout } = useAuthentication();
+  const location = useLocation();
 
   return (
     <>
@@ -24,28 +25,30 @@ function NavBar() {
           </button>
 
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
-            <form className="d-flex mb-2 mb-lg-0 ms-auto" role="search">
-              <div style={{ position: "relative", width: "350px" }}>
-                <input
-                  className="form-control w-100"
-                  type="search"
-                  placeholder="Search"
-                  aria-label="Search"
-                  style={{ paddingLeft: "40px" }}
-                />
-                <i
-                  className="fas fa-search"
-                  style={{
-                    position: "absolute",
-                    left: "10px",
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    color: "#cbcbcb",
-                    pointerEvents: "none",
-                  }}
-                ></i>
-              </div>
-            </form>
+          {location.pathname !== "/allMentors" && (
+              <form className="d-flex mb-2 mb-lg-0 ms-auto" role="search">
+                <div style={{ position: "relative", width: "350px" }}>
+                  <input
+                    className="form-control w-100 border border-light-subtle"
+                    type="text"
+                    placeholder="Search"
+                    aria-label="Search"
+                    style={{ paddingLeft: "40px" }}
+                  />
+                  <i
+                    className="fas fa-search"
+                    style={{
+                      position: "absolute",
+                      left: "10px",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      color: "#cbcbcb",
+                      pointerEvents: "none",
+                    }}
+                  ></i>
+                </div>
+              </form>
+            )}
 
             <ul className="navbar-nav mb-2 mb-lg-0 ms-auto">
               <li className="nav-item dropdown">
@@ -83,7 +86,7 @@ function NavBar() {
               </li>
 
               <li className="nav-item ms-4">
-                <button className="btn btn-success">Browse all mentors</button>
+                <NavLink className="btn btn-success" to={'/allMentors'}>Browse all mentors</NavLink>
               </li>
               {/* <li className="nav-item">
                 <NavLink className="nav-link" to={'/chat'}>Chats</NavLink>

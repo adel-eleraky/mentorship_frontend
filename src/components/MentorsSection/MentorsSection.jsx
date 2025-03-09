@@ -1,6 +1,7 @@
 import React from 'react'
 import profileImg from '../../assets/profile-img.webp';
-import MentorCard from "../MentorCard/MentorCard";
+import MentorCard from "../MentorCardSmall/MentorCardSmall";
+import { Link } from 'react-router';
 
 const mentors = [
     {
@@ -76,7 +77,7 @@ export default function MentorsSection() {
                         }}
                     ></i>
                 </div>
-                <button className="btn btn-success">View all mentors</button>
+                <Link className="btn btn-success" to={'/allMentors'}>View all mentors</Link>
             </div>
 
             <div className="row g-4">
@@ -88,7 +89,7 @@ export default function MentorsSection() {
             </div>
 
             <div className="d-flex justify-content-center mt-5">
-                <button className="btn btn-outline-success px-4 py-2 fw-bold">Explore all mentors</button>
+                <Link className="btn btn-outline-success px-4 py-2 fw-bold" to={'/allMentors'}>Explore all mentors</Link>
             </div>
         </div>
     );

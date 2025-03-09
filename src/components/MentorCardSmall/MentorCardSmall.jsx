@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function MentorCard({ mentor }) {
+export default function MentorCardSmall({ mentor }) {
     return (
         <div className="card border-0 p-3">
             <img
