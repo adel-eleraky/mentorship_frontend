@@ -1,6 +1,6 @@
 import React from 'react';
 import profileImg from '../../assets/profile-img.webp';
-import { Link } from 'react-router-dom'; 
+import { Link } from 'react-router-dom';
 
 export default function MentorCardLarge({ mentor }) {
     return (
@@ -11,7 +11,7 @@ export default function MentorCardLarge({ mentor }) {
                         src={profileImg}
                         alt="Mentor"
                         className="rounded"
-                        style={{ width: "100px", height: "100px", objectFit: "cover" }} 
+                        style={{ width: "100px", height: "100px", objectFit: "cover" }}
                     />
                 </div>
 
@@ -36,7 +36,7 @@ export default function MentorCardLarge({ mentor }) {
                     </p>
 
                     <p className="small text-muted mb-3">
-                        👋 Hello, my name is {mentor.name}. I am a {mentor.title} based in Switzerland, with more than ten years of experience in {mentor.title}...
+                        👋 Hello, my name is {mentor.name}. I am a {mentor.title} , with more than ten years of experience in {mentor.title}...
                     </p>
 
                     <div className="mb-3">
@@ -47,7 +47,10 @@ export default function MentorCardLarge({ mentor }) {
                         ))}
                     </div>
 
-                    <div className="d-flex justify-content-end align-items-center">
+                    <div className="d-flex justify-content-between align-items-center">
+                        <p className="mb-0">
+                            <span className="fw-bold fs-5">${mentor.price}</span> <small className='fw-bold'>/ session</small>
+                        </p>
                         <Link className="btn btn-success px-4" to={'mentorprofile'}>View Profile</Link>
                     </div>
                 </div>
