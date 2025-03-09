@@ -174,7 +174,7 @@ export default function FilterSidebar({
                         />
                     </div>
                     <div>
-                        <span className="fw-bold">${priceRange} / month</span>
+                        <span className="fw-bold">${priceRange} / session</span>
                     </div>
                 </div>
             </div>
