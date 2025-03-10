@@ -17,7 +17,8 @@ import {
   IconButton,
   Checkbox,
   FormControlLabel,
-  CircularProgress
+  CircularProgress,
+  Radio
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useAuthentication } from "../../Context/AuthContext";
@@ -38,28 +39,6 @@ const validationSchema = Yup.object().shape({
 });
 
 function Login() {
-  const socket = io("http://localhost:3000")
-  const [message, setMessage] = useState("");
-  const sendMessage = () => {
-    socket.emit("send_message",
-      {
-        sender_id: "67bdbc12abcca0e18a724d5e",
-        room: "67bdae230ce91c62982afd99",
-        content: message
-      });
-    setMessage("");
-  };
-
-
-  useEffect(() => {
-    const { data } = axios.get(`http://localhost:3000/api/v1/rooms`)
-    console.log(data);
-
-    socket.on("receive_message", (data) => {
-      console.log(data)
-    })
-  }, [socket])
-
 
   // ========================= VE ==============================
 
@@ -79,6 +58,7 @@ function Login() {
     defaultValues: {
       email: "",
       password: "",
+      role: ""
     },
   });
 
@@ -88,9 +68,12 @@ function Login() {
       setIsLoading(true);
       setApiError(null);
 
+      console.log(values)
+      
       const response = await axios.post("http://localhost:3000/api/v1/auth/login", values);
 
       if (response.status === 200) {
+        console.log(response)
         console.log("Login successful:", response.data);
         localStorage.setItem(tokenKey, response.data.token);
         setToken(response.data.token);
@@ -168,6 +151,17 @@ function Login() {
                 />
               </Grid>
 
+              {/* Login as User or Mentor */}
+              <Grid item xs={12}>
+                <FormControlLabel
+                  control={<Radio {...register("role")} value="user" />}
+                  label="User"
+                />
+                <FormControlLabel
+                  control={<Radio {...register("role")} value="mentor" />}
+                  label="Mentor"
+                />
+              </Grid>
               {/* Remember Me */}
               <Grid item xs={12}>
                 <FormControlLabel
@@ -199,16 +193,6 @@ function Login() {
           </form>
         </Box>
       </Container>
-
-      <div>
-        <input
-          type="text"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Type your message here"
-        />
-        <button onClick={sendMessage}>Send</button>
-      </div>
 
     </>
   );
