@@ -24,6 +24,8 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useAuthentication } from "../../Context/AuthContext";
 
 import io from "socket.io-client"
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "../../rtk/features/authSlice";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -44,9 +46,16 @@ function Login() {
 
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const [apiError, setApiError] = useState(null);
-  const { setToken, tokenKey } = useAuthentication();
-  const [isLoading, setIsLoading] = useState(false);
+  // const [apiError, setApiError] = useState(null);
+  // const { setToken, tokenKey, setUser } = useAuthentication();
+  // const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch()
+
+  const { user, loading } = useSelector(state => state.auth)
+  if (user) {
+    if (user.role === "mentor") return navigate("/mentor")
+    if(user.role === "user") return navigate("/user")
+  }
 
   const {
     register,
@@ -64,34 +73,36 @@ function Login() {
 
   // Called when user submits the form
   async function onSubmit(values) {
-    try {
-      setIsLoading(true);
-      setApiError(null);
+    // try {
+    //   setIsLoading(true);
+    //   setApiError(null);
 
-      console.log(values)
-      
-      const response = await axios.post("http://localhost:3000/api/v1/auth/login", values);
+    //   console.log(values)
 
-      if (response.status === 200) {
-        console.log(response)
-        console.log("Login successful:", response.data);
-        localStorage.setItem(tokenKey, response.data.token);
-        setToken(response.data.token);
+    //   const response = await axios.post("http://localhost:3000/api/v1/auth/login", values);
 
-        toast.success("Login successful!", { autoClose: 500 });
+    //   if (response.status === 200) {
+    //     console.log(response)
+    //     console.log("Login successful:", response.data);
+    //     localStorage.setItem(tokenKey, response.data.token);
+    //     setToken(response.data.token);
 
-        setTimeout(() => {
-          navigate("/");
-        }, 1000);
-      } else {
-        console.log("Unexpected response:", response);
-      }
-    } catch (error) {
-      console.error("Error response data:", error.response?.data);
-      setApiError(error.response?.data?.message || "Login failed");
-    } finally {
-      setIsLoading(false);
-    }
+    //     // setUser(response.data.data)
+    //     toast.success("Login successful!", { autoClose: 500 });
+
+    //     setTimeout(() => {
+    //       navigate("/");
+    //     }, 1000);
+    //   } else {
+    //     console.log("Unexpected response:", response);
+    //   }
+    // } catch (error) {
+    //   console.error("Error response data:", error.response?.data);
+    //   setApiError(error.response?.data?.message || "Login failed");
+    // } finally {
+    //   setIsLoading(false);
+    // }
+    dispatch(loginUser(values))
   }
 
 
@@ -171,11 +182,11 @@ function Login() {
               </Grid>
 
               {/* Error from API */}
-              {apiError && (
+              {/* {apiError && (
                 <Grid item xs={12}>
                   <Typography color="error">{apiError}</Typography>
                 </Grid>
-              )}
+              )} */}
 
               {/* Submit Button */}
               <Grid item xs={12}>
@@ -184,9 +195,9 @@ function Login() {
                   fullWidth
                   variant="contained"
                   color="primary"
-                  disabled={isLoading}
+                  disabled={loading}
                 >
-                  {isLoading ? <CircularProgress size={24} color="inherit" /> : "Login"}
+                  {loading ? <CircularProgress size={24} color="inherit" /> : "Login"}
                 </Button>
               </Grid>
             </Grid>

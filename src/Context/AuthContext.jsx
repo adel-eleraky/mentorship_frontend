@@ -15,6 +15,7 @@ const AuthenticationContextProvider = ({ children }) => {
   const [userName, setUserName] = useState(localStorage.getItem(userNameKey) || '');
   const [authError, setAuthError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [user , setUser] = useState(localStorage.getItem("user") || "")
 
   // For redirecting after logout (or login), you can use react-router’s navigate:
   const navigate = useNavigate();
@@ -51,6 +52,8 @@ const AuthenticationContextProvider = ({ children }) => {
     setToken,
     userName,
     setUserName,
+    user,
+    setUser,
     authError,
     setAuthError,
     isLoading,

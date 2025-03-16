@@ -1,9 +1,10 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 import { useAuthentication } from "../Context/AuthContext";
+import { useSelector } from "react-redux";
 
 export default function ProtectedRoutes({ children }) {
-  const { token } = useAuthentication();
+  const { token } = useSelector(state => state.auth);
   
   if (token) {
     return children;
