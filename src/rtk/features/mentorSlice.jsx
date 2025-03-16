@@ -53,7 +53,7 @@ const mentorSlice = createSlice({
         state.message = action.payload.message;
         state.mentor = action.payload.mentor;
       })
-      .addCase(updateMentorProfile.fulfilled, (state, action) => {
+      .addCase(updateMentorProfile.rejected, (state, action) => {
         state.status = action.payload.status;
         state.message = action.payload.message;
         state.errors = action.payload.errors;

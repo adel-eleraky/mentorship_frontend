@@ -172,7 +172,7 @@ export default function MentorDashboard() {
       const meetingId = `meeting-${Date.now()}`; // Temporary ID generation
 
       // Navigate to meeting room
-      navigate(`/meeting/${meetingId}`);
+      window.open(`/meeting/${meetingId}`, "_blank");
     } catch (error) {
       console.error("Error creating instant meeting:", error);
       setError("Failed to create instant meeting. Please try again.");
