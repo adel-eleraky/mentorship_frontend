@@ -6,7 +6,12 @@ import Chat from "./components/Chat/Chat";
 // import { BrowserRouter, Route, Routes } from "react-router";
 
 import Meeting from "./pages/Meeting";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
 import NavBar from "./components/NavBar/NavBar";
 import Home from "./pages/Home";
 import Footer from "./components/Footer/Footer";
@@ -17,7 +22,7 @@ import UserProfile from "./pages/UserProfile";
 import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
 import ProtectedRoutes from "./ProtectedRoutes/ProtectedRoutes";
-import AuthenticationContextProvider from './Context/AuthContext.jsx';
+import AuthenticationContextProvider from "./Context/AuthContext.jsx";
 
 import MentorProfile from "./pages/MentorProfile/MentorProfile";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
@@ -32,49 +37,64 @@ import BrowseMentors from "./pages/BrowseMentors";
 const socket = io("http://localhost:3000");
 
 function App() {
+  const location = useLocation();
+  const hideNavFooter = location.pathname.startsWith("/meeting/");
+
   return (
-    <>
-      <Provider store={Store}>
-        <BrowserRouter>
-          <AuthenticationContextProvider>
-            <NavBar />
+    <Provider store={Store}>
+      {/* <Router> */}
+      <AuthenticationContextProvider>
+        {!hideNavFooter && <NavBar />}
 
-            <Routes>
-              <Route path="mentorprofile" element={<MentorProfile />} />
+        <Routes>
+          <Route path="mentorprofile" element={<MentorProfile />} />
 
-              <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home />} />
 
-              <Route path="mentors" element={<BrowseMentors />} />
+          <Route path="mentors" element={<BrowseMentors />} />
 
-              {/* protected Routes */}
-              <Route
-                path="/meeting/:id"
-                element={
-                  <ProtectedRoutes>
-                    <Meeting />
-                  </ProtectedRoutes>
-                }
-              />
-              <Route
-                path="/chat"
-                element={
-                  <ProtectedRoutes>
-                    <Chat />
-                  </ProtectedRoutes>
-                }
-              />
-              <Route path="user" element={<ProtectedRoutes> <UserProfile /> </ProtectedRoutes>}></Route>
-              {/* routes for Login & Register */}
-              <Route path="mentor" element={<ProtectedRoutes> <MentorDashboard /> </ProtectedRoutes>}></Route>
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-            </Routes>
+          {/* protected Routes */}
+          <Route
+            path="/meeting/:id"
+            element={
+              <ProtectedRoutes>
+                <Meeting />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path="/chat"
+            element={
+              <ProtectedRoutes>
+                <Chat />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path="user"
+            element={
+              <ProtectedRoutes>
+                <UserProfile />
+              </ProtectedRoutes>
+            }
+          ></Route>
+          {/* routes for Login & Register */}
+          <Route
+            path="mentor"
+            element={
+              <ProtectedRoutes>
+                <MentorDashboard />
+              </ProtectedRoutes>
+            }
+          ></Route>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+        </Routes>
 
-            <Footer />
-          </AuthenticationContextProvider>
-        </BrowserRouter>
-      </Provider>
-    </>
+        {!hideNavFooter && <Footer />}
+      </AuthenticationContextProvider>
+      {/* </Router> */}
+    </Provider>
   );
 }
 
