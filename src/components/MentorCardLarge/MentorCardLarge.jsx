@@ -23,7 +23,8 @@ export default function MentorCardLarge({ mentor }) {
                         {mentor.title}
                     </p>
                     <p className="text-success mb-2" style={{ fontSize: "14px", cursor: "pointer" }}>
-                        Supercharge your tech career with personalized guidance from a trusted mentor
+                        {/* Supercharge your tech career with personalized guidance from a trusted mentor */}
+                        {mentor.experience}
                     </p>
 
                     <p className="mb-2">
@@ -32,25 +33,26 @@ export default function MentorCardLarge({ mentor }) {
                         <i className='fa-solid fa-star text-warning'></i>
                         <i className='fa-solid fa-star text-warning'></i>
                         <i className='fa-solid fa-star text-warning'></i>{' '}
-                        <span className="fw-bold">5.0</span> <span className="text-muted">(40 reviews)</span>
+                        {/* <span className="fw-bold">5.0</span> <span className="text-muted">(40 reviews)</span> */}
                     </p>
 
                     <p className="small text-muted mb-3">
-                        👋 Hello, my name is {mentor.name}. I am a {mentor.title} , with more than ten years of experience in {mentor.title}...
+                        {/* 👋 Hello, my name is {mentor.name}. I am a {mentor.title} , with more than ten years of experience in {mentor.title}... */}
+                        {mentor.bio}
                     </p>
 
-                    <div className="mb-3">
+                    {/* <div className="mb-3">
                         {mentor.skills.map((skill, index) => (
                             <span key={index} className="badge bg-light text-secondary me-2 p-2">
                                 {skill}
                             </span>
                         ))}
-                    </div>
+                    </div> */}
 
                     <div className="d-flex justify-content-between align-items-center">
-                        <p className="mb-0">
+                        {/* <p className="mb-0">
                             <span className="fw-bold fs-5">${mentor.price}</span> <small className='fw-bold'>/ session</small>
-                        </p>
+                        </p> */}
                         <Link className="btn btn-success px-4" to={'/mentorprofile'}>View Profile</Link>
                     </div>
                 </div>

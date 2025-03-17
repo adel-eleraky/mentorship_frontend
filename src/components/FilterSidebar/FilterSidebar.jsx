@@ -1,19 +1,19 @@
 import React, { useMemo, useState } from 'react';
 
-const skillsData = [
-    "JavaScript",
-    "React",
-    "NodeJs",
-    "Python",
-    "Data Science",
-    "UI/UX Design",
-    "Leadership",
-    "Product Management",
-    "Frontend",
-    "Product Strategy",
-    "Startup",
-    "Career",
-];
+// const skillsData = [
+//     "JavaScript",
+//     "React",
+//     "NodeJs",
+//     "Python",
+//     "Data Science",
+//     "UI/UX Design",
+//     "Leadership",
+//     "Product Management",
+//     "Frontend",
+//     "Product Strategy",
+//     "Startup",
+//     "Career",
+// ];
 
 const jobTitles = [
     "Frontend Developer",
@@ -28,21 +28,15 @@ const jobTitles = [
     "Technical Writer",
 ];
 
-const experienceLevels = ["Junior", "Senior", "Expert"];
-
 export default function FilterSidebar({
     search,
     setSearch,
-    selectedSkills,
-    setSelectedSkills,
     selectedJobTitles,
     setSelectedJobTitles,
     selectedExperience,
     setSelectedExperience,
-    priceRange,
-    setPriceRange,
 }) {
-    const [showAllSkills, setShowAllSkills] = useState(false);
+    // const [showAllSkills, setShowAllSkills] = useState(false);
     const [showAllJobTitles, setShowAllJobTitles] = useState(false);
 
     const handleCheckboxChange = (list, setList, value) => {
@@ -55,21 +49,25 @@ export default function FilterSidebar({
         setSearch(e.target.value);
     };
 
-    const handlePriceRangeChange = (e) => {
-        setPriceRange(e.target.value);
+    const handleExperienceChange = (e) => {
+        setSelectedExperience(e.target.value);
     };
 
-    const filteredSkills = useMemo(() => 
-        skillsData.filter((skill) =>
-            skill.toLowerCase().includes(search.toLowerCase())
-        ), [search]);
+    // const handlePriceRangeChange = (e) => {
+    //     setPriceRange(e.target.value);
+    // };
+
+    // const filteredSkills = useMemo(() => 
+    //     skillsData.filter((skill) =>
+    //         skill.toLowerCase().includes(search.toLowerCase())
+    //     ), [search]);
 
     const filteredJobTitles = useMemo(() => 
         jobTitles.filter((title) =>
             title.toLowerCase().includes(search.toLowerCase())
         ), [search]);
 
-    const visibleSkills = showAllSkills ? filteredSkills : filteredSkills.slice(0, 6);
+    // const visibleSkills = showAllSkills ? filteredSkills : filteredSkills.slice(0, 6);
     const visibleJobTitles = showAllJobTitles ? filteredJobTitles : filteredJobTitles.slice(0, 6);
 
     return (
@@ -84,7 +82,7 @@ export default function FilterSidebar({
                 />
             </div>
 
-            <div className="mb-4">
+            {/* <div className="mb-4">
                 <h5 className="mb-3">Skills</h5>
                 <ul className="list-unstyled">
                     {visibleSkills.map((skill, index) => (
@@ -112,7 +110,7 @@ export default function FilterSidebar({
                         {showAllSkills ? "See Less" : "See More"}
                     </button>
                 )}
-            </div>
+            </div> */}
 
             <div className="mb-4">
                 <h5 className="mb-3">Job Titles</h5>
@@ -142,24 +140,25 @@ export default function FilterSidebar({
 
             <div className="mb-4">
                 <h5 className="mb-3">Experience Level</h5>
-                {experienceLevels.map((level, index) => (
-                    <div key={index} className="form-check mb-2">
+                <div className="d-flex align-items-center">
+                    <div className="flex-grow-1 me-3">
                         <input
-                            type="radio"
-                            className="form-check-input"
-                            id={`experience-${level}`}
-                            name="experience"
-                            checked={selectedExperience === level}
-                            onChange={() => setSelectedExperience(level)}
+                            type="range"
+                            className="form-range"
+                            min={0}
+                            max={30}
+                            step={1}
+                            value={selectedExperience}
+                            onChange={handleExperienceChange}
                         />
-                        <label className="form-check-label" htmlFor={`experience-${level}`}>
-                            {level}
-                        </label>
                     </div>
-                ))}
+                    <div>
+                        <span className="fw-bold">{selectedExperience} years</span>
+                    </div>
+                </div>
             </div>
 
-            <div className="mb-4">
+            {/* <div className="mb-4">
                 <h5 className="mb-3">Price Range</h5>
                 <div className="d-flex align-items-center">
                     <div className="flex-grow-1 me-3">
@@ -177,7 +176,7 @@ export default function FilterSidebar({
                         <span className="fw-bold">${priceRange} / session</span>
                     </div>
                 </div>
-            </div>
+            </div> */}
         </div>
     );
 }

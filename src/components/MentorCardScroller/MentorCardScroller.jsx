@@ -1,4 +1,5 @@
 import React from 'react';
+import profileImg from '../../assets/profile-img.webp';
 
 export default function MentorCardScroller({ mentor }) {
     return (
@@ -6,23 +7,25 @@ export default function MentorCardScroller({ mentor }) {
             <div className="card-body">
                 <div className="d-flex">
                     <img
-                        src={mentor.image}
+                        src={profileImg}
                         alt={mentor.name}
                         className="rounded-circle me-3"
                         style={{ width: "60px", height: "60px" }}
                     />
                     <div>
-                        <h5 className="fw-bold mb-1">{mentor.name} <i className='fa-solid fa-star fs-6 ms-3 text-success'></i> <span className="text-success fs-6">{mentor.rating}</span></h5>
+                        <h5 className="fw-bold mb-1">{mentor.name} <i className='fa-solid fa-star fs-6 ms-3 text-success'></i>
+                        {/* <span className="text-success fs-6">{mentor.rating}</span> */}
+                        </h5>
                         <p className="text-muted">{mentor.title}</p>
                     </div>
                 </div>
-                <div className="mt-2">
+                {/* <div className="mt-2">
                     {mentor.skills.map((skill, index) => (
                         <span key={index} className="badge bg-light text-secondary me-1">
                             {skill}
                         </span>
                     ))}
-                </div>
+                </div> */}
             </div>
         </div>
     );

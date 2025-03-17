@@ -1,84 +1,77 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchMentors } from '../../rtk/features/mentorSlice';
 import profileImg from '../../assets/profile-img.webp';
 import MentorCard from "../MentorCardScroller/MentorCardScroller";
 
-const mentors = [
-    {
-        name: "Takuya Kitazawa",
-        title: "Freelance Software Developer at ex-Amazon",
-        rating: "5.0",
-        skills: ["Machine Learning", "Product Management", "Data Science"],
-        image: profileImg,
-    },
-    {
-        name: "Nicholas Busman",
-        title: "Lead UX Designer",
-        rating: "5.0",
-        skills: ["UX Design", "UI Design", "Prototyping"],
-        image: profileImg,
-    },
-    {
-        name: "Juliette Weiss",
-        title: "Product Design Leader at Moderna, ex-Microsoft",
-        rating: "5.0",
-        skills: ["Product Design", "UX Research"],
-        image: profileImg,
-    },
-    {
-        name: "Juliette Weiss",
-        title: "Product Design Leader at Moderna, ex-Microsoft",
-        rating: "5.0",
-        skills: ["Product Design", "UX Research"],
-        image: profileImg,
-    },
-    {
-        name: "Juliette Weiss",
-        title: "Product Design Leader at Moderna, ex-Microsoft",
-        rating: "5.0",
-        skills: ["Product Design", "UX Research"],
-        image: profileImg,
-    },
-];
-
 export default function MentorListScroller() {
+    const dispatch = useDispatch();
+    const { mentors, loading, error } = useSelector(state => state.mentor);
     const containerRef = useRef(null);
-    const scrollIntervalRef = useRef(null); 
+    const scrollIntervalRef = useRef(null);
+    const [isScrolling, setIsScrolling] = useState(true);
 
     useEffect(() => {
-        const container = containerRef.current;
+        dispatch(fetchMentors());
+    }, [dispatch]);
 
-        const startScrolling = () => {
-            scrollIntervalRef.current = setInterval(() => {
-                if (container) {
-                    container.scrollBy({ top: 1, behavior: 'auto' });
+    const startScrolling = () => {
+        if (!isScrolling) return;
 
-                    if (container.scrollTop + container.clientHeight >= container.scrollHeight - 10) {
-                        container.scrollTo({ top: 0, behavior: 'auto' });
-                    }
+        scrollIntervalRef.current = setInterval(() => {
+            if (containerRef.current) {
+                const container = containerRef.current;
+                container.scrollBy({ top: 1, behavior: 'auto' });
+
+                if (container.scrollTop + container.clientHeight >= container.scrollHeight - 10) {
+                    container.scrollTo({ top: 0, behavior: 'auto' });
                 }
-            }, 20); 
-        };
-
-        const pauseScrolling = () => {
-            if (scrollIntervalRef.current) {
-                clearInterval(scrollIntervalRef.current);
-                scrollIntervalRef.current = null;
             }
-        };
+        }, 20);
+    };
 
+    const pauseScrolling = () => {
+        if (scrollIntervalRef.current) {
+            clearInterval(scrollIntervalRef.current);
+            scrollIntervalRef.current = null;
+        }
+    };
+
+    const handleMouseEnter = () => {
+        setIsScrolling(false);
+        pauseScrolling();
+    };
+
+    const handleMouseLeave = () => {
+        setIsScrolling(true);
+        startScrolling();
+    };
+
+    useEffect(() => {
         startScrolling();
 
-        container.addEventListener('mouseenter', pauseScrolling);
-        container.addEventListener('mouseleave', startScrolling);
+        const container = containerRef.current;
+        if (container) {
+            container.addEventListener('mouseenter', handleMouseEnter);
+            container.addEventListener('mouseleave', handleMouseLeave);
+        }
 
         return () => {
-            if (scrollIntervalRef.current) {
-                clearInterval(scrollIntervalRef.current);
+            pauseScrolling();
+            if (container) {
+                container.removeEventListener('mouseenter', handleMouseEnter);
+                container.removeEventListener('mouseleave', handleMouseLeave);
             }
-            container.removeEventListener('mouseenter', pauseScrolling);
-            container.removeEventListener('mouseleave', startScrolling);
         };
-    }, []);
+    }, [isScrolling]); 
+
+    if (loading) {
+        return <div className="text-center py-5">Loading...</div>;
+    }
+
+    if (error) {
+        return <div className="text-center py-5 text-danger">Error: {error.message}</div>;
+    }
 
     return (
         <div className="container">
@@ -94,13 +87,8 @@ export default function MentorListScroller() {
                         }}
                         className="hide-scrollbar"
                     >
-                        {mentors.map((mentor, index) => (
-                            <div key={index} className="mb-3">
-                                <MentorCard mentor={mentor} />
-                            </div>
-                        ))}
-                        {mentors.map((mentor, index) => (
-                            <div key={`duplicate-${index}`} className="mb-3">
+                        {mentors.map((mentor) => (
+                            <div key={mentor._id} className="mb-3">
                                 <MentorCard mentor={mentor} />
                             </div>
                         ))}

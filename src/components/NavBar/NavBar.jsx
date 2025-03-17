@@ -9,7 +9,7 @@ function NavBar() {
     <>
       <nav className="navbar navbar-expand-lg">
         <div className="container mt-2 border-bottom border-light-subtle">
-          <NavLink className="navbar-brand fs-4 bold mb-2" to={"/home"}>
+          <NavLink className="navbar-brand fs-4 bold mb-2" to={"/"}>
             <span className="fw-bold">Mentor</span>Ship
           </NavLink>
           <button
@@ -25,7 +25,7 @@ function NavBar() {
           </button>
 
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
-          {location.pathname !== "/allMentors" && (
+          {location.pathname !== "/mentors" && (
               <form className="d-flex mb-2 mb-lg-0 ms-auto" role="search">
                 <div style={{ position: "relative", width: "350px" }}>
                   <input
@@ -92,7 +92,7 @@ function NavBar() {
                 <NavLink className="nav-link" to={'/chat'}>Chats</NavLink>
               </li> */}
               {/* <li className="nav-item ms-4">
-                <NavLink className="nav-link" to={'/home'}>Log Out</NavLink>
+                <NavLink className="nav-link" to={'/'}>Log Out</NavLink>
               </li> */}
               {/* <li className="nav-item ms-4">
                 <NavLink className="nav-link" to={'/register'}>Register</NavLink>
