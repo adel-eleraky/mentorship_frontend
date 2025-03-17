@@ -4,13 +4,17 @@ const PersonalInfoSection = ({
   mentorData,
   handleInputChange,
   handleExpertiseChange,
+  handleSubmit,
+  loading,
   removeExpertise,
+  message,
 }) => {
+  console.log(message);
   return (
     <div className="card">
       <div className="card-body">
         <h2 className="card-title">Personal Information</h2>
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label htmlFor="name" className="form-label">
               Full Name
@@ -65,7 +69,7 @@ const PersonalInfoSection = ({
               onKeyDown={handleExpertiseChange}
             />
             <div className="mt-2">
-              {mentorData.expertise.map((item, index) => (
+              {/* {mentorData.expertise.map((item, index) => (
                 <span key={index} className="badge bg-primary me-2 mb-2">
                   {item}
                   <button
@@ -76,7 +80,7 @@ const PersonalInfoSection = ({
                     style={{ fontSize: "0.5rem" }}
                   ></button>
                 </span>
-              ))}
+              ))} */}
             </div>
           </div>
 
@@ -87,9 +91,9 @@ const PersonalInfoSection = ({
             <input
               type="email"
               className="form-control"
-              id="contactEmail"
-              name="contactEmail"
-              value={mentorData.contactEmail}
+              id="email"
+              name="email"
+              value={mentorData.email}
               onChange={handleInputChange}
             />
           </div>
@@ -108,8 +112,8 @@ const PersonalInfoSection = ({
             />
           </div>
 
-          <button type="button" className="btn btn-primary">
-            Save Changes
+          <button className="btn btn-primary" type="submit" disabled={loading}>
+            {loading ? "Updating..." : "Save Changes"}
           </button>
         </form>
       </div>
