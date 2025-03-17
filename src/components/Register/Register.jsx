@@ -30,19 +30,28 @@ const validationSchema = Yup.object().shape({
   email: Yup.string()
     .email("Invalid email address")
     .required("Email is required"),
+
   password: Yup.string()
+    .required("Password is required")
     .min(8, "Password should be at least 8 characters long")
-    .matches(
-      /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-      "Invalid password"
-    )
-    .required("Password is required"),
+    .max(29, "Password should be at most 29 characters long")
+    .matches(/[a-z]/, "Password must contain at least one lowercase letter")
+    .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .matches(/\d/, "Password must contain at least one number")
+    .matches(/[@$!%*?&]/, "Password must contain at least one special character"),
+
   confirmedPassword: Yup.string()
     .oneOf([Yup.ref("password"), null], "Passwords must match")
+    .min(8, "Password should be at least 8 characters long")
+    .max(29, "Password should be at most 29 characters long")
+    .matches(/[a-z]/, "Password must contain at least one lowercase letter")
+    .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .matches(/\d/, "Password must contain at least one number")
+    .matches(/[@$!%*?&]/, "Password must contain at least one special character")
     .required("Confirm password is required"),
   phone: Yup.string()
-    .matches(/^\d{10,15}$/, "Phone number must be 10-15 digits")
-    .required("Phone number is required"),
+  .matches(/^01[0-9]{9}$/, "Phone number must be a valid Egyptian number (01xxxxxxxxx)")
+  .required("Phone number is required"),
 });
 
 export default function Register() {
