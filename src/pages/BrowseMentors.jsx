@@ -1,61 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchMentors } from '../rtk/features/mentorSlice';
 import MentorCard from '../components/MentorCardLarge/MentorCardLarge';
 import FilterSidebar from '../components/FilterSidebar/FilterSidebar';
 
-const mentors = [
-    {
-        name: "Mladen Ruzicic",
-        title: "Senior Frontend Developer",
-        skills: ["Frontend", "JavaScript", "React"],
-        level: "Senior",
-        price: 150,
-        rating: 5.0,
-        reviews: 40,
-    },
-    {
-        name: "John Doe",
-        title: "Product Manager",
-        skills: ["Product Management", "Startup"],
-        level: "Senior",
-        price: 200,
-        rating: 4.8,
-        reviews: 35,
-    },
-    {
-        name: "Jane Smith",
-        title: "Backend Developer",
-        skills: ["Backend", "NodeJS", "Express"],
-        level: "Expert",
-        price: 180,
-        rating: 4.9,
-        reviews: 50,
-    },
-]
-
 export default function BrowseMentors() {
+    const dispatch = useDispatch();
+    const { mentors, loading, error } = useSelector(state => state.mentor);
     const [search, setSearch] = useState("");
     const [selectedSkills, setSelectedSkills] = useState([]);
     const [selectedJobTitles, setSelectedJobTitles] = useState([]);
-    const [selectedExperience, setSelectedExperience] = useState("");
+    const [selectedExperience, setSelectedExperience] = useState(3);
     const [priceRange, setPriceRange] = useState(250);
+    
+    useEffect(() => {
+        dispatch(fetchMentors());
+    }, [dispatch]);
+
+    const parseExperience = (experience) => {
+        if (!experience) return 0;
+        const match = experience.match(/(\d+)\+?/);
+        return match ? parseInt(match[1], 10) : 0;
+    };
 
     const filteredMentors = mentors.filter((mentor) => {
         const matchesSearch = mentor.name.toLowerCase().includes(search.toLowerCase()) ||
-                                mentor.title.toLowerCase().includes(search.toLowerCase()) ||
-                                mentor.skills.some((skill) => skill.toLowerCase().includes(search.toLowerCase()));
+                              mentor.title.toLowerCase().includes(search.toLowerCase()) ||
+                              mentor.bio.toLowerCase().includes(search.toLowerCase());
 
-        const matchesSkills = selectedSkills.length === 0 ||
-                                selectedSkills.every((skill) => mentor.skills.includes(skill));
+        // const matchesSkills = selectedSkills.length === 0 ||
+        //                       selectedSkills.every((skill) => mentor.bio.toLowerCase().includes(skill.toLowerCase()));
 
         const matchesJobTitles = selectedJobTitles.length === 0 ||
-                                    selectedJobTitles.includes(mentor.title);
+                                 selectedJobTitles.includes(mentor.title);
 
-        const matchesExperience = selectedExperience === "" || selectedExperience === mentor.level;
+        const mentorExperience = parseExperience(mentor.experience);
+        const matchesExperience = mentorExperience ? mentorExperience <= selectedExperience : true;
 
-        const matchesPrice = mentor.price <= priceRange;
+        const matchesPrice = mentor.price ? mentor.price <= priceRange : true;
 
-        return matchesSearch && matchesSkills && matchesJobTitles && matchesExperience && matchesPrice;
+        return matchesSearch && matchesJobTitles && matchesExperience && matchesPrice;
     });
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
 
     return (
         <div className="container my-4">
@@ -64,8 +57,6 @@ export default function BrowseMentors() {
                     <FilterSidebar
                         search={search}
                         setSearch={setSearch}
-                        selectedSkills={selectedSkills}
-                        setSelectedSkills={setSelectedSkills}
                         selectedJobTitles={selectedJobTitles}
                         setSelectedJobTitles={setSelectedJobTitles}
                         selectedExperience={selectedExperience}
@@ -77,12 +68,12 @@ export default function BrowseMentors() {
 
                 <div className="col-md-8">
                     <div className="d-flex flex-wrap gap-3">
-                        {filteredMentors.map((mentor, index) => (
-                            <MentorCard key={index} mentor={mentor} />
+                        {filteredMentors.map((mentor) => (
+                            <MentorCard key={mentor._id} mentor={mentor} />
                         ))}
                     </div>
                 </div>
             </div>
         </div>
-    )
+    );
 }

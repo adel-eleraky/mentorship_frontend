@@ -3,8 +3,11 @@ import styles from './Hero.module.css';
 import { Link } from 'react-router';
 
 export default function Hero() {
+    const [oneOnOneText, setOneOnOneText] = useState('');
+    const [oneOnOneIndex, setOneOnOneIndex] = useState(0);
     const [text, setText] = useState('');
     const [index, setIndex] = useState(0);
+    const oneOnOneFullText = ["One-on-One", "One-on-Many"];
     const fullText = ["Web Dev", "JavaScript", "React", "SEO", "Agile", "Interviewing", "Marketing", "UX Design", "AWS", "DevOps", "ML & AI", "Data Science", "Sales", "Python", "Resumé"];
     const typingSpeed = 150;
     const pauseBetweenWords = 1000;
@@ -18,6 +21,29 @@ export default function Hero() {
         "Data Scientists",
         "Startup Founders",
     ];
+
+    useEffect(() => {
+        if (oneOnOneIndex < oneOnOneFullText.length) {
+            const currentWord = oneOnOneFullText[oneOnOneIndex];
+
+            if (oneOnOneText.length < currentWord.length) {
+                const timeout = setTimeout(() => {
+                    setOneOnOneText(currentWord.slice(0, oneOnOneText.length + 1));
+                }, typingSpeed);
+
+                return () => clearTimeout(timeout);
+            } else {
+                const timeout = setTimeout(() => {
+                    setOneOnOneText('');
+                    setOneOnOneIndex((prevIndex) => prevIndex + 1);
+                }, pauseBetweenWords);
+
+                return () => clearTimeout(timeout);
+            }
+        } else {
+            setOneOnOneIndex(0);
+        }
+    }, [oneOnOneText, oneOnOneIndex, oneOnOneFullText]);
 
     useEffect(() => {
         if (index < fullText.length) {
@@ -48,8 +74,9 @@ export default function Hero() {
                 Learn a new skill, launch a project, land your dream career.
             </p>
             <h1 className="fw-bold my-4">
-                1-on-1 <span className="text-success">{text}</span>{text.length < fullText[index]?.length && <span className={styles.cursor}></span>}<br />
-                Mentorship
+            <span>{oneOnOneText}</span>{oneOnOneText.length < oneOnOneFullText[oneOnOneIndex]?.length} <br />
+            <span className="text-success">{text}</span>{text.length < fullText[index]?.length && <span className={styles.cursor}></span>}<br />
+            Mentorship
             </h1>
             <div className="d-flex">
                 <div style={{ position: 'relative', width: '65%', border: '1px solid gray', borderRadius: '10px', padding: '3px' }}>

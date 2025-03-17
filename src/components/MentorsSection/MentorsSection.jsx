@@ -1,95 +1,39 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchMentors } from '../../rtk/features/mentorSlice';
 import profileImg from '../../assets/profile-img.webp';
 import MentorCard from "../MentorCardSmall/MentorCardSmall";
 import { Link } from 'react-router';
 
-const mentors = [
-    {
-        name: "Sanjeev Subedi",
-        title: "Staff Software Engineer at eBay",
-        image: profileImg,
-        skills: ["JavaScript", "Typescript", "Angular"],
-    },
-    {
-        name: "Jennifer Nguyen",
-        title: "Principal Data Scientist at Microsoft",
-        image: profileImg,
-        skills: ["Data Science", "Data Analysis", "Machine Learning"],
-    },
-    {
-        name: "Mike Poole",
-        title: "Fullstack Developer at Yachting Limited",
-        image: profileImg,
-        skills: ["HTML", "CSS", "SASS"],
-    },
-    {
-        name: "Praveen Dubey",
-        title: "Senior Software Engineer at Microsoft",
-        image: profileImg,
-        skills: ["JavaScript", "Typescript", "React"],
-    },
-    {
-        name: "Sanjeev Subedi",
-        title: "Staff Software Engineer at eBay",
-        image: profileImg,
-        skills: ["JavaScript", "Typescript", "Angular"],
-    },
-    {
-        name: "Jennifer Nguyen",
-        title: "Principal Data Scientist at Microsoft",
-        image: profileImg,
-        skills: ["Data Science", "Data Analysis", "Machine Learning"],
-    },
-    {
-        name: "Mike Poole",
-        title: "Fullstack Developer at Yachting Limited",
-        image: profileImg,
-        skills: ["HTML", "CSS", "SASS"],
-    },
-    {
-        name: "Praveen Dubey",
-        title: "Senior Software Engineer at Microsoft",
-        image: profileImg,
-        skills: ["JavaScript", "Typescript", "React"],
-    },
-];
-
 export default function MentorsSection() {
+    const dispatch = useDispatch();
+    const { mentors, loading, error } = useSelector(state => state.mentor);
+    const [visibleCount, setVisibleCount] = useState(8);
+    
+    useEffect(() => {
+        dispatch(fetchMentors());
+    }, [dispatch]);
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>Error: {error.message}</div>;
+    }
+
     return (
         <div className="container py-5">
-            <div className="d-flex justify-content-between mb-5">
-                <div style={{ position: 'relative', width: '50%' }}>
-                    <input
-                        className="form-control w-100"
-                        type="search"
-                        placeholder="Search mentors"
-                        style={{ paddingLeft: '40px' }}
-                    />
-                    <i
-                        className="fas fa-search"
-                        style={{
-                            position: 'absolute',
-                            left: '10px',
-                            top: '50%',
-                            transform: 'translateY(-50%)',
-                            color: '#cbcbcb',
-                            pointerEvents: 'none',
-                        }}
-                    ></i>
-                </div>
-                <Link className="btn btn-success" to={'/mentors'}>View all mentors</Link>
-            </div>
-
             <div className="row g-4">
-                {mentors.map((mentor, index) => (
-                    <div key={index} className="col-md-3">
+                {mentors.slice(0, visibleCount).map((mentor) => (
+                    <div key={mentor._id} className="col-md-3">
                         <MentorCard mentor={mentor} />
                     </div>
                 ))}
             </div>
 
             <div className="d-flex justify-content-center mt-5">
-                <Link className="btn btn-outline-success px-4 py-2 fw-bold" to={'/mentors'}>Explore all mentors</Link>
+                <Link className="btn btn-success px-4 py-2 fw-bold" to={'/mentors'}>View all mentors</Link>
             </div>
         </div>
     );
