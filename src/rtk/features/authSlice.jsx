@@ -44,6 +44,18 @@ export const registerUser = createAsyncThunk("auth/register", async (credentials
 // })
 
 
+//Async thunk to get logged-in user
+export const getLoggedInUser = createAsyncThunk("auth/loggedInUser", async (_, { rejectWithValue }) => {
+    try {
+        const response = await axios.get(`${API_URL}/auth/me`, { withCredentials: true });
+
+        return response.data
+    } catch (error) {
+        console.log(error)
+        return rejectWithValue(error.response?.data || "Login failed");
+    }
+})
+
 // Create auth slice
 const authSlice = createSlice({
     name: "auth",
@@ -87,6 +99,22 @@ const authSlice = createSlice({
                 state.token = state.payload.token
             })
             .addCase(registerUser.rejected, (state, action) => {
+                state.loading = false
+                state.status = action.payload.status
+                state.errors = action.payload.errors
+                state.message = action.payload.message
+            })
+            .addCase(getLoggedInUser.pending, (state, action) => {
+                state.loading = true
+                state.errors = null
+            })
+            .addCase(getLoggedInUser.fulfilled, (state, action) => {
+                state.loading = false
+                state.status = action.payload.status
+                state.user = action.payload.data
+                state.token = action.payload.token
+            })
+            .addCase(getLoggedInUser.rejected, (state, action) => {
                 state.loading = false
                 state.status = action.payload.status
                 state.errors = action.payload.errors
