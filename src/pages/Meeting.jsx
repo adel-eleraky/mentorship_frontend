@@ -31,7 +31,7 @@ export const Meeting = () => {
   useEffect(() => {
     const initializeCall = async () => {
       try {
-        const user = { id: userId, name: "Ahmed" };
+        const user = { id: userId, name: "adel" };
         const { data } = await axios.get(
           `http://localhost:3000/api/v1/sessions/getVideoToken?userId=${userId}`
         );

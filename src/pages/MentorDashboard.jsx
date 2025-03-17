@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { getAuthInfo, getAuthHeaders } from "../utils/auth";
 import MeetingsManagement from "../components/MentorProfile/MeetingsManagement";
 import ScheduleModal from "../components/MentorProfile/ScheduleModal";
@@ -10,50 +11,23 @@ import SettingsSection from "../components/MentorProfile/SettingsSection";
 import ProfileNavigation from "../components/MentorProfile/ProfileNavigation";
 import {
   fetchMentorData,
-  fetchScheduledMeetings,
-} from "../services/mentorService";
+  updateMentorProfile,
+} from "../rtk/features/mentorSlice";
 
 export default function MentorDashboard() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { mentor, loading, errors, message, status } = useSelector(
+    (state) => state.mentor
+  );
+  const [mentorData, setMentorData] = useState(mentor?.data || {});
   const [activeSection, setActiveSection] = useState("personal");
-  const [mentorData, setMentorData] = useState({
-    name: "",
-    title: "",
-    bio: "",
-    expertise: [],
-    contactEmail: "",
-    phone: "",
-  });
   const [scheduledMeetings, setScheduledMeetings] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [createMeetingLoading, setCreateMeetingLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const loadMentorData = async () => {
-      try {
-        // For now using mock data
-        setTimeout(() => {
-          setMentorData({
-            name: "ahmed rashad",
-            title: "Senior React Developer",
-            bio: "Experienced developer with 5+ years in React and frontend technologies",
-            expertise: ["React", "JavaScript", "Node.js"],
-            contactEmail: "ahmed@example.com",
-            phone: "01024715090",
-          });
-          setLoading(false);
-        }, 1000);
-
-        // When API is ready:
-        // const data = await fetchMentorData();
-        // setMentorData(data);
-        // setLoading(false);
-      } catch (error) {
-        console.error("Error fetching mentor data:", error);
-        setLoading(false);
-      }
-    };
+    dispatch(fetchMentorData());
 
     const loadScheduledMeetings = async () => {
       try {
@@ -89,42 +63,52 @@ export default function MentorDashboard() {
         setError("Failed to load scheduled meetings");
       }
     };
-
-    loadMentorData();
     loadScheduledMeetings();
-  }, []);
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (mentor) {
+      setMentorData(mentor.data);
+    }
+  }, [mentor]);
 
   // Handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setMentorData({
-      ...mentorData,
+    setMentorData((prevState) => ({
+      ...prevState,
       [name]: value,
-    });
+    }));
+  };
+
+  // Handle form submission
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(updateMentorProfile(mentorData)); // Dispatch API call
   };
 
   // Handle expertise tags
   const handleExpertiseChange = (e) => {
-    if (e.key === "Enter" && e.target.value) {
-      const newExpertise = e.target.value.trim();
-      if (!mentorData.expertise.includes(newExpertise)) {
-        setMentorData({
-          ...mentorData,
-          expertise: [...mentorData.expertise, newExpertise],
-        });
-      }
-      e.target.value = "";
-    }
+    // if (e.key === "Enter" && e.target.value) {
+    //   const newExpertise = e.target.value.trim();
+    //   if (!mentorData.expertise.includes(newExpertise)) {
+    //     setMentorData({
+    //       ...mentorData,
+    //       expertise: [...mentorData.expertise, newExpertise],
+    //     });
+    //   }
+    //   e.target.value = "";
+    // }
   };
 
   // Remove expertise tag
   const removeExpertise = (index) => {
-    const updatedExpertise = [...mentorData.expertise];
-    updatedExpertise.splice(index, 1);
-    setMentorData({
-      ...mentorData,
-      expertise: updatedExpertise,
-    });
+    // const updatedExpertise = [...mentorData.expertise];
+    // updatedExpertise.splice(index, 1);
+    // setMentorData({
+    //   ...mentorData,
+    //   expertise: updatedExpertise,
+    // });
   };
 
   // Handle scheduling a new meeting
@@ -201,6 +185,9 @@ export default function MentorDashboard() {
           handleInputChange={handleInputChange}
           handleExpertiseChange={handleExpertiseChange}
           removeExpertise={removeExpertise}
+          handleSubmit={handleSubmit}
+          loading={loading}
+          message={message}
         />
       )}
 

@@ -15,7 +15,7 @@ import {
 import NavBar from "./components/NavBar/NavBar";
 import Home from "./pages/Home";
 import Footer from "./components/Footer/Footer";
-import { Provider } from "react-redux";
+import { Provider, useDispatch } from "react-redux";
 import Store from "./rtk/Store";
 import UserProfile from "./pages/UserProfile";
 
@@ -32,6 +32,9 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 
 import MentorDashboard from "./pages/MentorDashboard";
 import BrowseMentors from "./pages/BrowseMentors";
+import ProtectRoute from "./components/ProtectRoute.jsx";
+import UnAuthRoute from "./components/UnAuthRoute.jsx";
+import Layout from "./components/Layout.jsx";
 // import Chat from "./components/Chat/Chat";
 
 const socket = io("http://localhost:3000");
@@ -42,11 +45,9 @@ function App() {
 
   return (
     <Provider store={Store}>
-      {/* <Router> */}
-      <AuthenticationContextProvider>
-        {!hideNavFooter && <NavBar />}
 
-        <Routes>
+      <Routes>
+        <Route element={<Layout />} >
           <Route path="mentorprofile" element={<MentorProfile />} />
 
           <Route path="/" element={<Home />} />
@@ -54,46 +55,54 @@ function App() {
           <Route path="mentors" element={<BrowseMentors />} />
 
           {/* protected Routes */}
-          <Route
-            path="/meeting/:id"
-            element={
-              <ProtectedRoutes>
-                <Meeting />
-              </ProtectedRoutes>
-            }
-          />
+
           <Route
             path="/chat"
             element={
-              <ProtectedRoutes>
+              <ProtectRoute>
                 <Chat />
-              </ProtectedRoutes>
+              </ProtectRoute>
             }
           />
           <Route
             path="user"
             element={
-              <ProtectedRoutes>
+              <ProtectRoute>
                 <UserProfile />
-              </ProtectedRoutes>
+              </ProtectRoute>
             }
           ></Route>
           {/* routes for Login & Register */}
           <Route
             path="mentor"
             element={
-              <ProtectedRoutes>
+              <ProtectRoute>
                 <MentorDashboard />
-              </ProtectedRoutes>
+              </ProtectRoute>
             }
           ></Route>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-        </Routes>
+          <Route path="/login" element={
+            <UnAuthRoute>
+              <Login />
+            </UnAuthRoute>
+          } />
+          <Route path="/register" element={
+            <UnAuthRoute>
+              <Register />
+            </UnAuthRoute>
+          } />
+        </Route>
 
-        {!hideNavFooter && <Footer />}
-      </AuthenticationContextProvider>
-      {/* </Router> */}
+        <Route
+          path="/meeting/:id"
+          element={
+            <ProtectRoute>
+              <Meeting />
+            </ProtectRoute>
+          }
+        />
+      </Routes>
+
     </Provider>
   );
 }
