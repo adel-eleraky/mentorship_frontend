@@ -19,7 +19,8 @@ export const updateMentorProfile = createAsyncThunk(
     try {
       const { data } = await axios.put(
         `http://localhost:3000/api/v1/mentors/`,
-        updatedData
+        updatedData,
+        { withCredentials: true }
       );
       return data;
     } catch (error) {

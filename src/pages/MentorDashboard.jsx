@@ -17,10 +17,22 @@ import {
 export default function MentorDashboard() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { mentor, loading, errors, message, status } = useSelector(
-    (state) => state.mentor
-  );
-  const [mentorData, setMentorData] = useState(mentor?.data || {});
+  const {
+    user: mentor,
+    loading,
+    errors,
+    message,
+    status,
+  } = useSelector((state) => state.auth);
+  console.log(mentor);
+  const [mentorData, setMentorData] = useState({
+    name: mentor?.data?.name || "",
+    title: mentor?.data?.title || "",
+    bio: mentor?.data?.bio || "",
+    skills: mentor?.data?.skills || [],
+    email: mentor?.data?.email || "",
+    phone: mentor?.data?.phone || "",
+  });
   const [activeSection, setActiveSection] = useState("personal");
   const [scheduledMeetings, setScheduledMeetings] = useState([]);
   const [createMeetingLoading, setCreateMeetingLoading] = useState(false);
@@ -67,49 +79,53 @@ export default function MentorDashboard() {
   }, [dispatch]);
 
   useEffect(() => {
-    if (mentor) {
-      setMentorData(mentor.data);
+    if (mentor?.data) {
+      setMentorData({
+        name: mentor.data.name,
+        title: mentor.data.title,
+        bio: mentor.data.bio,
+        skills: mentor.data.skills,
+        email: mentor.data.email,
+        phone: mentor.data.phone,
+      });
     }
   }, [mentor]);
 
   // Handle input changes
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setMentorData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
+  // const handleInputChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setMentorData((prevState) => ({
+  //     ...prevState,
+  //     [name]: value,
+  //   }));
+  // };
 
   // Handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    dispatch(updateMentorProfile(mentorData)); // Dispatch API call
-  };
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   dispatch(updateMentorProfile(mentorData));
+  // };
 
   // Handle expertise tags
-  const handleExpertiseChange = (e) => {
-    // if (e.key === "Enter" && e.target.value) {
-    //   const newExpertise = e.target.value.trim();
-    //   if (!mentorData.expertise.includes(newExpertise)) {
-    //     setMentorData({
-    //       ...mentorData,
-    //       expertise: [...mentorData.expertise, newExpertise],
-    //     });
-    //   }
-    //   e.target.value = "";
-    // }
-  };
+  // const handleExpertiseChange = (e) => {
+  //   if (e.key === "Enter" && e.target.value.trim()) {
+  //     setMentorData((prev) => ({
+  //       ...prev,
+  //       expertise: [...new Set([...prev.expertise, e.target.value.trim()])],
+  //     }));
+  //     e.target.value = "";
+  //   }
+  // };
 
   // Remove expertise tag
-  const removeExpertise = (index) => {
-    // const updatedExpertise = [...mentorData.expertise];
-    // updatedExpertise.splice(index, 1);
-    // setMentorData({
-    //   ...mentorData,
-    //   expertise: updatedExpertise,
-    // });
-  };
+  // const removeExpertise = (index) => {
+  //   const updatedExpertise = [...mentorData.expertise];
+  //   updatedExpertise.splice(index, 1);
+  //   setMentorData({
+  //     ...mentorData,
+  //     expertise: updatedExpertise,
+  //   });
+  // };
 
   // Handle scheduling a new meeting
   const handleScheduleMeeting = async (meetingData) => {
@@ -181,11 +197,7 @@ export default function MentorDashboard() {
 
       {activeSection === "personal" && (
         <PersonalInfoSection
-          mentorData={mentorData}
-          handleInputChange={handleInputChange}
-          handleExpertiseChange={handleExpertiseChange}
-          removeExpertise={removeExpertise}
-          handleSubmit={handleSubmit}
+          mentorData={mentor}
           loading={loading}
           message={message}
         />
