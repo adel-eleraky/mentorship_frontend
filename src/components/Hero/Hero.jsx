@@ -71,7 +71,7 @@ export default function Hero() {
                             top: '7px',
                             height: '75%',
                         }}
-                        to={'/allMentors'}
+                        to={'/mentors'}
                     >
                         Find mentors
                     </Link>

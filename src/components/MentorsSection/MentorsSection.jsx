@@ -77,7 +77,7 @@ export default function MentorsSection() {
                         }}
                     ></i>
                 </div>
-                <Link className="btn btn-success" to={'/allMentors'}>View all mentors</Link>
+                <Link className="btn btn-success" to={'/mentors'}>View all mentors</Link>
             </div>
 
             <div className="row g-4">
@@ -89,7 +89,7 @@ export default function MentorsSection() {
             </div>
 
             <div className="d-flex justify-content-center mt-5">
-                <Link className="btn btn-outline-success px-4 py-2 fw-bold" to={'/allMentors'}>Explore all mentors</Link>
+                <Link className="btn btn-outline-success px-4 py-2 fw-bold" to={'/mentors'}>Explore all mentors</Link>
             </div>
         </div>
     );

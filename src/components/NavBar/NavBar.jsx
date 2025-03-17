@@ -86,7 +86,7 @@ function NavBar() {
               </li>
 
               <li className="nav-item ms-4">
-                <NavLink className="btn btn-success" to={'/allMentors'}>Browse all mentors</NavLink>
+                <NavLink className="btn btn-success" to={'/mentors'}>Browse all mentors</NavLink>
               </li>
               {/* <li className="nav-item">
                 <NavLink className="nav-link" to={'/chat'}>Chats</NavLink>

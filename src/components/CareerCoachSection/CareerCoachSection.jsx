@@ -82,7 +82,7 @@ export default function CareerCoachSection() {
                         </div>
                     </div>
 
-                    <Link className="btn btn-success mt-4" to={'/allMentors'}>
+                    <Link className="btn btn-success mt-4" to={'/mentors'}>
                         <span className="fw-semibold">Find a mentor</span> <i class="fa-solid fa-arrow-right"></i>
                     </Link>
                 </div>
