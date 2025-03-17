@@ -4,7 +4,7 @@ import axios from "axios";
 
 export const updateUserProfile = createAsyncThunk("user/updateUser", async (updatedData, { rejectWithValue }) => {
     try {
-        const { data } = await axios.put(`http://localhost:3000/api/v1/users/`, updatedData);
+        const { data } = await axios.put(`http://localhost:3000/api/v1/users`, updatedData , { withCredentials: true });
         return data
     } catch (error) {
         return rejectWithValue(error?.response?.data)
