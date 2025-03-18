@@ -18,7 +18,8 @@ import {
   Checkbox,
   FormControlLabel,
   CircularProgress,
-  Radio
+  Radio,
+  RadioGroup
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useAuthentication } from "../../Context/AuthContext";
@@ -54,7 +55,7 @@ function Login() {
   const { user, loading } = useSelector(state => state.auth)
   if (user) {
     if (user.role === "mentor") return navigate("/mentor")
-    if(user.role === "user") return navigate("/user")
+    if (user.role === "user") return navigate("/user")
   }
 
   const {
@@ -164,14 +165,16 @@ function Login() {
 
               {/* Login as User or Mentor */}
               <Grid item xs={12}>
-                <FormControlLabel
-                  control={<Radio {...register("role")} value="user" />}
-                  label="User"
-                />
-                <FormControlLabel
-                  control={<Radio {...register("role")} value="mentor" />}
-                  label="Mentor"
-                />
+                <RadioGroup>
+                  <FormControlLabel
+                    control={<Radio {...register("role")} value="user" />}
+                    label="User"
+                  />
+                  <FormControlLabel
+                    control={<Radio {...register("role")} value="mentor" />}
+                    label="Mentor"
+                  />
+                </RadioGroup>
               </Grid>
               {/* Remember Me */}
               <Grid item xs={12}>
@@ -181,6 +184,19 @@ function Login() {
                 />
               </Grid>
 
+              {/* Don't have an account? */}
+              <Grid item xs={12}>
+                <Typography align="center" variant="body2">
+                  Don't have an account?{" "}
+                  <Button
+                    variant="text"
+                    color="primary"
+                    onClick={() => navigate("/register")}
+                  >
+                    Sign Up
+                  </Button>
+                </Typography>
+              </Grid>
               {/* Error from API */}
               {/* {apiError && (
                 <Grid item xs={12}>

@@ -15,7 +15,7 @@ export const updateUserProfile = createAsyncThunk("user/updateUser", async (upda
 
 export const getUserSessions = createAsyncThunk("user/getSessions", async (_, { rejectWithValue }) => {
     try {
-        const { data } = await axios.get(`http://localhost:3000/api/v1/users/sessions`);
+        const { data } = await axios.get(`http://localhost:3000/api/v1/users/sessions`, { withCredentials: true});
         return data
     } catch (error) {
         return rejectWithValue(error?.response?.data)

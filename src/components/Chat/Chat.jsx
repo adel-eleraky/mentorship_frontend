@@ -4,7 +4,7 @@ import io from 'socket.io-client';
 import axios from 'axios';
 import './Chat.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { addMessage, getRoomMessages } from '../../rtk/features/RoomSlice';
+import { addMessage, getRoomMessages, getRooms } from '../../rtk/features/RoomSlice';
 const socket = io('http://localhost:3000', {
   transports: ["websocket"], // Try forcing WebSocket transport
   withCredentials: true,
@@ -12,24 +12,17 @@ const socket = io('http://localhost:3000', {
 
 function Chat() {
   const [message, setMessage] = useState('');
-  const [rooms, setRooms] = useState([]);
+  // const [rooms, setRooms] = useState([]);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [messages, setMessages] = useState([]);
   const [activeTab, setActiveTab] = useState('all');
   const messagesEndRef = useRef(null);
   const dispatch = useDispatch()
-  const { roomMessages } = useSelector(state => state.room)
+  const { roomMessages, rooms } = useSelector(state => state.room)
+  const { user } = useSelector(state => state.auth)
+  
 
   console.log(roomMessages)
-  const fetchRooms = async () => {
-    try {
-      const { data } = await axios.get('http://localhost:3000/api/v1/rooms');
-      setRooms(data.data);
-    } catch (error) {
-      console.log('Error fetching rooms:', error);
-    }
-  };
-
   const joinRoom = async (room) => {
     setSelectedRoom(room);
     dispatch(getRoomMessages(room._id))
@@ -42,12 +35,10 @@ function Chat() {
   };
 
   useEffect(() => {
-    fetchRooms();
 
+    dispatch(getRooms())
     socket.on('receive_room_msg', (data) => {
-      console.log(data)
       dispatch(addMessage(data))
-      // setMessages((prevMessages) => [...prevMessages, data]);
     });
 
     socket.on("send_room_messages", (data) => {
@@ -68,14 +59,14 @@ function Chat() {
   const sendMessage = () => {
     if (selectedRoom && message.trim()) {
       const msgData = {
-        sender: '67c847e03afd3576700a6b0d',
-        sender_role: "User",
+        sender: user._id,
+        sender_role: user.role.charAt(0).toUpperCase() + user.role.slice(1),
         room: selectedRoom._id,
         content: message,
-        // timestamp: new Date().toISOString()
+        createdAt: new Date().toISOString()
       };
       socket.emit('send_room_msg', msgData);
-      setMessages((prevMessages) => [...prevMessages, msgData]);
+      // setMessages((prevMessages) => [...prevMessages, msgData]);
       setMessage('');
     }
   };
@@ -160,8 +151,8 @@ function Chat() {
                         key={index} 
                         className={`message ${msg.sender_role === "Mentor" ? 'outgoing' : 'incoming'}`}
                       >
-                        <div className="message-header">
-                          <strong>{msg.sender_role}</strong>
+                        <div className="message-header d-flex justify-content-between">
+                          <strong>{msg.sender.name}</strong>
                           <span className="message-time">
                             {msg.createdAt ? new Date(msg.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}
                           </span>

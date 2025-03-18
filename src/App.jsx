@@ -56,14 +56,7 @@ function App() {
 
           {/* protected Routes */}
 
-          <Route
-            path="/chat"
-            element={
-              <ProtectRoute>
-                <Chat />
-              </ProtectRoute>
-            }
-          />
+
           <Route
             path="user"
             element={
@@ -98,6 +91,14 @@ function App() {
           element={
             <ProtectRoute>
               <Meeting />
+            </ProtectRoute>
+          }
+        />
+        <Route
+          path="/chat"
+          element={
+            <ProtectRoute>
+              <Chat />
             </ProtectRoute>
           }
         />

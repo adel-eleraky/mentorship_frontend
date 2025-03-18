@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 // import MeetingsList from "./MeetingsList";
 import { formatDate } from "../../utils/dateUtils";
+import { useSelector } from "react-redux";
 
 const MeetingsManagement = ({
   scheduledMeetings,
   error,
   onStartInstantMeeting,
 }) => {
+
+
+  const { sessions } = useSelector(state => state.user )
   // what about sorting meeting to show the nearest one the first
 
   const sortedMeetings = scheduledMeetings.sort((a, b) => {
