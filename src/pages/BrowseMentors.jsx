@@ -10,7 +10,7 @@ export default function BrowseMentors() {
     const [search, setSearch] = useState("");
     const [selectedSkills, setSelectedSkills] = useState([]);
     const [selectedJobTitles, setSelectedJobTitles] = useState([]);
-    const [selectedExperience, setSelectedExperience] = useState(3);
+    const [selectedExperience, setSelectedExperience] = useState(25);
     const [priceRange, setPriceRange] = useState(250);
     
     useEffect(() => {
