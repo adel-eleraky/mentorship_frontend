@@ -162,6 +162,11 @@ const PersonalInfoSection = ({
                     </span>
                   ))}
                 </div>
+                <ErrorMessage
+                  name="skills"
+                  component="div"
+                  className="text-danger"
+                />
               </div>
 
               <div className="mb-3">

@@ -5,24 +5,70 @@ import { formatDate } from "../../utils/dateUtils";
 const MeetingsManagement = ({
   scheduledMeetings,
   error,
-  onStartInstantMeeting,
-}) => {
-  // what about sorting meeting to show the nearest one the first
 
+  loading,
+}) => {
+  // Sort meetings to show the nearest one first
   const sortedMeetings = scheduledMeetings.sort((a, b) => {
     const aDate = new Date(a.schedule_time);
     const bDate = new Date(b.schedule_time);
     return aDate - bDate;
   });
+
+  // Handle joining a meeting
+  const handleJoinMeeting = (meeting) => {
+    const meetingTime = new Date(meeting.schedule_time);
+    const currentTime = new Date();
+
+    // Check if meeting time is within 15 minutes of scheduled time (either before or after)
+    const timeDiff = Math.abs(meetingTime - currentTime) / (1000 * 60); // difference in minutes
+
+    if (meeting.status === "active" || timeDiff <= 15) {
+      // If meeting is active or within the time window, join it
+      window.open(`/meeting/${meeting._id || meeting.id}`, "_blank");
+    } else {
+      // Calculate time remaining
+      const timeRemaining = formatTimeRemaining(meetingTime, currentTime);
+
+      // Show alert with time information
+      alert(
+        `This session is scheduled for ${formatDate(
+          meeting.schedule_time
+        )}.\n\n${timeRemaining}\n\nYou can join the meeting 15 minutes before the scheduled time.`
+      );
+    }
+  };
+
+  // Helper function to format time remaining message
+  const formatTimeRemaining = (meetingTime, currentTime) => {
+    if (meetingTime < currentTime) {
+      return "This meeting has already passed.";
+    }
+
+    const diffMs = meetingTime - currentTime;
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const diffHrs = Math.floor(
+      (diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+    );
+    const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+
+    let timeMessage = "Time remaining: ";
+    if (diffDays > 0) {
+      timeMessage += `${diffDays} day${diffDays > 1 ? "s" : ""}, `;
+    }
+    if (diffHrs > 0 || diffDays > 0) {
+      timeMessage += `${diffHrs} hour${diffHrs > 1 ? "s" : ""}, `;
+    }
+    timeMessage += `${diffMins} minute${diffMins > 1 ? "s" : ""}`;
+
+    return timeMessage;
+  };
+
   return (
     <div className="card">
       <div className="card-body">
         <div className="d-flex justify-content-between align-items-center mb-4">
           <h2 className="card-title mb-0">Scheduled Meetings</h2>
-          <button className="btn btn-primary" onClick={onStartInstantMeeting}>
-            <i className="bi bi-camera-video me-2"></i>
-            Start Instant Meeting
-          </button>
         </div>
 
         {error && (
@@ -31,17 +77,17 @@ const MeetingsManagement = ({
           </div>
         )}
 
-        {scheduledMeetings.length === 0 ? (
+        {loading ? (
+          <div className="text-center py-5">
+            <div className="spinner-border text-primary" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
+            <p className="mt-2">Loading your meetings...</p>
+          </div>
+        ) : scheduledMeetings.length === 0 ? (
           <div className="text-center py-5">
             <i className="bi bi-calendar-x fs-1 text-muted mb-3"></i>
             <p className="lead">No scheduled meetings found</p>
-            <button
-              className="btn btn-outline-primary mt-2"
-              data-bs-toggle="modal"
-              data-bs-target="#scheduleModal"
-            >
-              Schedule a Meeting
-            </button>
           </div>
         ) : (
           <div className="table-responsive">
@@ -57,7 +103,7 @@ const MeetingsManagement = ({
               </thead>
               <tbody>
                 {sortedMeetings.map((meeting) => (
-                  <tr key={meeting.id}>
+                  <tr key={meeting.id || meeting._id}>
                     <td>{meeting.title}</td>
                     <td>{formatDate(meeting.schedule_time)}</td>
                     <td>{meeting.duration} min</td>
@@ -77,7 +123,7 @@ const MeetingsManagement = ({
                         <button
                           className="btn btn-outline-primary"
                           title="Join meeting"
-                          disabled={meeting.status !== "active"}
+                          onClick={() => handleJoinMeeting(meeting)}
                         >
                           <i className="bi bi-camera-video"></i>
                         </button>

@@ -1,6 +1,6 @@
 import React from "react";
 
-const ScheduleSection = ({ onStartInstantMeeting }) => {
+const ScheduleSection = ({ onStartInstantMeeting, onShowScheduleModal }) => {
   return (
     <div className="card">
       <div className="card-body">
@@ -31,8 +31,7 @@ const ScheduleSection = ({ onStartInstantMeeting }) => {
             >
               <div
                 className="card-body p-4 text-center"
-                data-bs-toggle="modal"
-                data-bs-target="#scheduleModal"
+                onClick={onShowScheduleModal}
               >
                 <i className="bi bi-calendar-plus fs-1 mb-3"></i>
                 <h3 className="mb-3">Schedule Meeting</h3>
