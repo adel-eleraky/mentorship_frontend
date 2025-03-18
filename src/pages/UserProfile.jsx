@@ -9,9 +9,13 @@ import "./css/UserProfile.css"
 import ProfileNavigation from './../components/UserProfile/ProfileNavigation';
 import PersonalInfoSection from '../components/UserProfile/PersonalInfoSection';
 import MeetingsManagement from './../components/UserProfile/MeetingsManagement';
+import { useSelector } from 'react-redux';
 
 function UserProfile() {
   const navigate = useNavigate();
+  const { user } = useSelector(state => state.auth)
+
+  // console.log(user)
   const [scheduledMeetings, setScheduledMeetings] = useState(
     [
       {
@@ -37,41 +41,43 @@ function UserProfile() {
     ]
   )
   const [activeSection, setActiveSection] = useState("personal");
-  const [userData, setUserData] = useState({
-    name: "",
-    title: "",
-    email: "",
-    about: "",
-    expertise: [],
-    phone: "",
-  });
-  const [loading, setLoading] = useState(true);
+  // const [userData, setUserData] = useState({
+  //   name: "",
+  //   title: "",
+  //   email: "",
+  //   about: "",
+  //   expertise: [],
+  //   phone: "",
+  // });
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+
+
   useEffect(() => {
-    const loadUserData = async () => {
-      try {
-        // For now using mock data
-        setTimeout(() => {
-          setUserData({
-            name: "adel el3raky",
-            title: "Junior web developer",
-            about: "web developer using React and frontend technologies",
-            expertise: ["React", "JavaScript", "Node.js"],
-            phone: "01024715090",
-            email: "adelkamel.developer@gmail.com"
-          });
-          setLoading(false);
-        }, 1000);
+    // const loadUserData = async () => {
+    //   try {
+    //     // For now using mock data
+    //     setTimeout(() => {
+    //       setUserData({
+    //         name: "adel el3raky",
+    //         title: "Junior web developer",
+    //         about: "web developer using React and frontend technologies",
+    //         expertise: ["React", "JavaScript", "Node.js"],
+    //         phone: "01024715090",
+    //         email: "adelkamel.developer@gmail.com"
+    //       });
+    //       setLoading(false);
+    //     }, 1000);
 
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-        setLoading(false);
-      }
-    };
+    //   } catch (error) {
+    //     console.error("Error fetching user data:", error);
+    //     setLoading(false);
+    //   }
+    // };
 
 
-    loadUserData();
+    // loadUserData();
   }, []);
 
   // Handle input changes
@@ -123,7 +129,7 @@ function UserProfile() {
 
       {activeSection === "personal" && (
         <PersonalInfoSection
-          userData={userData}
+          userData={user}
           handleInputChange={handleInputChange}
           handleExpertiseChange={handleExpertiseChange}
           removeExpertise={removeExpertise}
@@ -134,7 +140,7 @@ function UserProfile() {
         <MeetingsManagement
           scheduledMeetings={scheduledMeetings}
           error={error}
-          // onStartInstantMeeting={handleStartInstantMeeting}
+        // onStartInstantMeeting={handleStartInstantMeeting}
         />
       )}
     </div>
