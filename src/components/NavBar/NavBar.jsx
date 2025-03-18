@@ -1,9 +1,11 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { NavLink, useLocation } from "react-router-dom";
 
 function NavBar() {
   // const { token, logout } = useAuthentication();
   const location = useLocation();
+  const { user } = useSelector(state => state.auth)
 
   return (
     <>
@@ -88,20 +90,32 @@ function NavBar() {
               <li className="nav-item ms-4">
                 <NavLink className="btn btn-success" to={'/mentors'}>Browse all mentors</NavLink>
               </li>
-              {/* <li className="nav-item">
-                <NavLink className="nav-link" to={'/chat'}>Chats</NavLink>
-              </li> */}
+              {user ?
+                (
+                  <>
+                    <li className="nav-item">
+                      <NavLink className="nav-link" to={'/chat'}>Chats</NavLink>
+                    </li>
+                    <li className="nav-item">
+                      <NavLink className="nav-link" to={`${user.role == "user" ? "/user" : "/mentor"}`}>Profile</NavLink>
+                    </li>
+                  </>
+                ) :
+                (
+                  <li className="nav-item ms-4">
+                    <NavLink className="nav-link" to={"/login"}>
+                      Login
+                    </NavLink>
+                  </li>
+                )
+              }
               {/* <li className="nav-item ms-4">
                 <NavLink className="nav-link" to={'/'}>Log Out</NavLink>
               </li> */}
               {/* <li className="nav-item ms-4">
                 <NavLink className="nav-link" to={'/register'}>Register</NavLink>
               </li> */}
-              <li className="nav-item ms-4">
-                <NavLink className="nav-link" to={"/login"}>
-                  Login
-                </NavLink>
-              </li>
+
             </ul>
           </div>
         </div>

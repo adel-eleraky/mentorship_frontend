@@ -12,10 +12,22 @@ export const getRoomMessages = createAsyncThunk("room/getMessages", async (room,
 
 })
 
+
+export const getRooms = createAsyncThunk("room/fetchAll", async (_, { rejectWithValue }) => {
+    try {
+        const { data } = await axios.get('http://localhost:3000/api/v1/rooms');
+        return data
+    } catch (error) {
+        return rejectWithValue(error?.response?.data)
+    }
+
+})
+
 const initialState = {
     status: "",
     message: "",
     data: "",
+    rooms: [],
     roomMessages: [],
     errors: ""
 }
@@ -34,6 +46,11 @@ const roomSlice = createSlice({
             state.status = action.payload.status
             state.message = action.payload.message
             state.roomMessages = action.payload.data
+        })
+        .addCase(getRooms.fulfilled , (state, action) => {
+            state.status = action.payload.status
+            state.message = action.payload.message
+            state.rooms = action.payload.data
         })
     }
 })
