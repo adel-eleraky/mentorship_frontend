@@ -65,7 +65,7 @@ function Login() {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    mode: "onBlur", // Validate on blur
+    mode: "onChange", // Validate on blur
     resolver: yupResolver(validationSchema),
     defaultValues: {
       email: "",

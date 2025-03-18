@@ -64,8 +64,7 @@ export default function Register() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { loading, user, errors: serverErrors } = useSelector(state => state.auth)
   const dispatch = useDispatch()
-  console.log("user after register", user)
-  console.log(serverErrors)
+
   // Getting authentication functions and loading state from context
   // const { register: registerUser, authError, isLoading, setAuthError, setIsLoading } = useAuthentication();
 
@@ -75,7 +74,7 @@ export default function Register() {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    mode: "onBlur", // Validate on blur so errors show when user leaves a field
+    mode: "onChange", // Validate on each change so errors show while typing
     resolver: yupResolver(validationSchema),
     defaultValues: {
       name: "",
@@ -87,29 +86,30 @@ export default function Register() {
     },
   });
 
+
   const navigate = useNavigate(); // Use navigate from react-router-dom
 
   // Registration function called on form submit
-  const registerUserData = async (userData) => {
-    setIsLoading(true);
-    setAuthError(null);
-    try {
-      const response = await axios.post("http://localhost:3000/api/v1/auth/register", userData);
-      if (response.status === 200) {
-        console.log("Registration successful:", response.data);
-        navigate("/login");
-      } else {
-        setAuthError(`Unexpected response: ${response.status}`);
-        console.log("Unexpected response:", response);
-      }
-    } catch (error) {
-      console.error("Registration error:", error);
-      setAuthError(error.response?.data?.message || "Registration failed"); // Access the 'message' property
+  // const registerUserData = async (userData) => {
+  //   setIsLoading(true);
+  //   setAuthError(null);
+  //   try {
+  //     const response = await axios.post("http://localhost:3000/api/v1/auth/register", userData);
+  //     if (response.status === 200) {
+  //       console.log("Registration successful:", response.data);
+  //       navigate("/login");
+  //     } else {
+  //       setAuthError(`Unexpected response: ${response.status}`);
+  //       console.log("Unexpected response:", response);
+  //     }
+  //   } catch (error) {
+  //     console.error("Registration error:", error);
+  //     setAuthError(error.response?.data?.message || "Registration failed"); // Access the 'message' property
 
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   // Called when the user submits the form
   const onSubmit = async (data) => {
