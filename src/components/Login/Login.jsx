@@ -18,7 +18,8 @@ import {
   Checkbox,
   FormControlLabel,
   CircularProgress,
-  Radio
+  Radio,
+  RadioGroup
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useAuthentication } from "../../Context/AuthContext";
@@ -31,13 +32,15 @@ const validationSchema = Yup.object().shape({
   email: Yup.string()
     .email("Invalid email address")
     .required("Email is required"),
+
   password: Yup.string()
+    .required("Password is required")
     .min(8, "Password should be at least 8 characters long")
-    .matches(
-      /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-      "Invalid password"
-    )
-    .required("Password is required"),
+    .max(29, "Password should be at most 29 characters long")
+    .matches(/[a-z]/, "Password must contain at least one lowercase letter")
+    .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .matches(/\d/, "Password must contain at least one number")
+    .matches(/[@$!%*?&]/, "Password must contain at least one special character"),
 });
 
 function Login() {
@@ -54,7 +57,7 @@ function Login() {
   const { user, loading } = useSelector(state => state.auth)
   if (user) {
     if (user.role === "mentor") return navigate("/mentor")
-    if(user.role === "user") return navigate("/user")
+    if (user.role === "user") return navigate("/user")
   }
 
   const {
@@ -164,14 +167,16 @@ function Login() {
 
               {/* Login as User or Mentor */}
               <Grid item xs={12}>
-                <FormControlLabel
-                  control={<Radio {...register("role")} value="user" />}
-                  label="User"
-                />
-                <FormControlLabel
-                  control={<Radio {...register("role")} value="mentor" />}
-                  label="Mentor"
-                />
+                <RadioGroup>
+                  <FormControlLabel
+                    control={<Radio {...register("role")} value="user" />}
+                    label="User"
+                  />
+                  <FormControlLabel
+                    control={<Radio {...register("role")} value="mentor" />}
+                    label="Mentor"
+                  />
+                </RadioGroup>
               </Grid>
               {/* Remember Me */}
               <Grid item xs={12}>
@@ -181,6 +186,19 @@ function Login() {
                 />
               </Grid>
 
+              {/* Don't have an account? */}
+              <Grid item xs={12}>
+                <Typography align="center" variant="body2">
+                  Don't have an account?{" "}
+                  <Button
+                    variant="text"
+                    color="primary"
+                    onClick={() => navigate("/register")}
+                  >
+                    Sign Up
+                  </Button>
+                </Typography>
+              </Grid>
               {/* Error from API */}
               {/* {apiError && (
                 <Grid item xs={12}>
