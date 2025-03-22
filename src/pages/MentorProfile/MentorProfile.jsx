@@ -1,10 +1,19 @@
-import React from "react";
-// import "./MentorProfile.css";
-import { useState } from "react";
+import "./MentorProfile.css";
+import React, { useEffect, useState } from "react";
+import { NavLink,useParams} from "react-router-dom";
+import axios from "axios";
+
 function MentorProfile() {
 
   const [skills, setSkills] = useState([]);
   const [skill, setSkill] = useState("");
+  const [mentor, setMentor] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [sessions,setSessions]=useState([])
+  const [reviews,setReviews]=useState([])
+  // let { id } = useParams();
+const id ="67d5eb638678c21491e11a92";
+
 
   const addSkill = (e) => {
     e.preventDefault();
@@ -13,181 +22,110 @@ function MentorProfile() {
       setSkill("");
     }
   }
+
+  const fetchSessions = async () => {
+    try {
+      const response = await axios.get(`http://localhost:3000/api/v1/sessions/mentor/${id}`);
+      setSessions(response.data.data);
+      console.log(response.data.data);
+
+      
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+    }
+  };
+  const fetchReviews = async () => {
+    try {
+      const response = await axios.get(`http://localhost:3000/api/v1/reviews/mentor/${id}`);
+      setReviews(response.data.data);
+      console.log(response.data.data);
+      
+      
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+    }
+  };
+  const  fetchMentor = async () => {
+    try {
+      const response = await axios.get(`http://localhost:3000/api/v1/mentors/${id}`);
+      setMentor(response.data.data);
+      setSkills(response.data.data.skills || []);
+
+      console.log(response.data.data.skills);
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+    }
+  };
+
+
+  useEffect(() => {
+ 
+
+    fetchSessions();
+    fetchMentor();
+    fetchReviews();
+
+  }, []);
+  
   
   return (
     <>
-      <div className="row  ">
-        <div className="comtainer  rounded">
-          <div className="px-5 pb-4  cover mb-5">
-            <div className="media  profile-head comtainer">
-              <div className="profile  mr-3">
-                <img
-                  src="https://cdn.mentorcruise.com/cdn-cgi/image/width=368,format=auto/https://cdn.mentorcruise.com/cache/f88c4f35f7c951fb0710dc0e074c52a0/003d3bdb45c16bb9/220bafd789a1a63dac7ac070f0e6d672.jpg"
-                  alt="..."
-                  width={230}
-                  className="rounded mb-2 img-thumbnail"
-                />
-                <div className="media-body m-3 ">
-                  <h2 className="mt-2 mb-2">Roberta Basili</h2>
-                  <i class="fa-regular fa-user"></i>
-                  <p className=" mentor-title mb-2">
-                    ICF Certified Career Coach | Former Senior Recruiter in Tech
-                    @ Atlassian, Booking com, TomTom, Tony's Chocolonely
-                    <i className="fas fa-map-marker-alt mr-2" />
-                    profile
-                  </p>
-                  <button
-                    href="#"
-                    className="btn edit-send"
-                    data-bs-toggle="modal"
-                    data-bs-target="#exampleModal"
-                  >
-                    Edit profile
-                  </button>
-                </div>
-              </div>
-            </div>
+{      (loading) ? <p>Loading...</p>:
+ <div className="row  ">
+ <div className="comtainer  rounded">
+   <div className="px-5 pb-4  cover mb-5">
+     <div className="media  profile-head comtainer">
+       <div className="profile  mr-3">
+         <img
+           src="https://cdn.mentorcruise.com/cdn-cgi/image/width=368,format=auto/https://cdn.mentorcruise.com/cache/f88c4f35f7c951fb0710dc0e074c52a0/003d3bdb45c16bb9/220bafd789a1a63dac7ac070f0e6d672.jpg"
+           alt="..."
+           width={230}
+           className="rounded mb-2 img-thumbnail"
+         />
+         <div className="media-body m-3 ">
+          <div>
+          <h2 className="mt-2 mb-2">{mentor?.name}</h2>
+           <p className=" mentor-title mb-2">{mentor?.title}</p>
+           <p> Experience :{mentor?.experience}</p>
+           <button
+             href="#"
+             className="btn edit-send"
+             data-bs-toggle="modal"
+             data-bs-target="#exampleModal"
+           >
+             Follow
+           </button>
+
           </div>
-        </div>
-      </div>
+
+           <div>
+              <NavLink className="navbar-brand fs-4 bold mb-2" to={"/mentor"}>
+              <i class="fa-solid fa-gear st-r "></i>
+              </NavLink>
+
+           </div>
+         </div>
+       </div>
+     </div>
+   </div>
+ </div>
+</div>
+
+}     
 
       {/* =========================== About ============================ */}
       <div className="container py-3 mb-4 bg-light rounded shadow-sm mt-5">
         <h3 className="mx-3">About</h3>
+          {(loading) ? <p>Loading...</p>:
         <div className="p-4 rounded  bg-light">
-          <p className="font-italic mb-0">
-            Hi there, my name is Roberta! I'm a Certified Professional Coach,
-            accredited by the International Coaching Federation (ACC). I bring
-            over 15 years of corporate experience. I spent almost a decade
-            working in HR and Talent Acquisition in Switzerland and the
-            Netherlands. I hired hundreds of people across all functions and
-            partnered up globally with Directors and Managers. I worked for
-            companies like Booking com, TomTom, Atlassian and Tony’s
-            Chocolonely.
-          </p>
-          <div>
-            {/* ======================================================= */}
-            <div>
-              <div
-                className="modal fade"
-                id="exampleModal"
-                tabIndex={-1}
-                aria-labelledby="exampleModalLabel"
-                aria-hidden="true"
-              >
-                <div className="modal-dialog modal-xl ">
-                  <div className="modal-content">
-                    <div className="modal-header">
-                      <h1 className="modal-title fs-5" id="exampleModalLabel">
-                        Edit profile
-                      </h1>
-                      <button
-                        type="button"
-                        className="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Close"
-                      />
-                    </div>
-                    <div className="modal-body container">
-                      <form className="row g-3 container">
-                        <div className="col-md-6">
-                          <label htmlFor="title" className="form-label">
-                            Jop Title
-                          </label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            id="title"
-                          />
-                        </div>
-                        <div className="col-md-6">
-                          <label htmlFor="inputlinkedin" className="form-label">
-                            linkedin
-                          </label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            id="inputlinkedin"
-                          />
-                        </div>
-                        <div className="col-12">
-                          <label htmlFor="inputAddress" className="form-label">
-                            Location
-                          </label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            id="inputAddress"
-                            placeholder=" Enter your address"
-                          />
-                        </div>
-                        <div className="mb-3">
-                          <label htmlFor="formFile" className="form-label">
-                            profile photo
-                          </label>
-                          <input
-                            className="form-control"
-                            accept="image/*"
-                            type="file"
-                            id="formFile"
-                          />
-                        </div>
-                        <div class="mb-3">
-                          <label for="bio" class="form-label">
-                            Biography
-                          </label>
-                          <textarea
-                            class="form-control"
-                            id="bio"
-                            rows="6"
-                          ></textarea>
-                        </div>
-                      
-                        <div className="row g-3">
-                      <div className="col-sm-6">
-                      <label htmlFor="skills" className="form-label">
-                            Skills
-                          </label>
-                          <input
-                            type="text"
-                            className="form-control "
-                            id="skills"
-                            placeholder="add your skills"
-                            value={skill}
-                            onChange={(e) => setSkill(e.target.value)}
-                          />
-            
-                      </div>
-                      <div className="col-sm-6 d-flex align-items-end ">
-                      <button onClick={addSkill} className="btn btn-md edit-send ">Add Skill</button>
-                      </div>
-                    </div>
-                        <div className="col-sm-12">
-                                {skills.map((s, index) => (
-                                  <span key={index} className="skill">{s}</span>
-                                ))}
-                          </div>
-                 
-                      </form>
-                    </div>
-                    <div className="modal-footer">
-                      <button
-                        type="button"
-                        className="btn btn-secondary"
-                        data-bs-dismiss="modal"
-                      >
-                        Close
-                      </button>
-                      <button type="button" className="btn edit-send">
-                        Save changes
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+          <p className="font-italic mb-0">{mentor?.bio}</p>
+        </div>}
       </div>
       {/* ============================ Sessions =========================== */}
 
@@ -333,7 +271,7 @@ function MentorProfile() {
                   <div className="card">
                     <div className="card-header d-flex justify-content-between align-items-center py-2">
                       <h4 className="card-title">Web Development</h4>
-                      <span className="badge  price-badge">$99.99</span>
+                      <span className="badges  price-badge">$99.99</span>
                     </div>
                     <div className="card-body">
                       <div className="mb-2">
@@ -365,7 +303,7 @@ function MentorProfile() {
                         </div>
                       </div>
                       <div className="mb-2">
-                        <span className="badge features-badge">
+                        <span className="badges features-badge">
                           <i className="bi bi-chat-dots" /> Chat Room
                         </span>
                       </div>
@@ -375,98 +313,69 @@ function MentorProfile() {
                     </div>
                   </div>
                 </div>
-                <div className="col-md-4">
-                  <div className="card">
-                    <div className="card-header d-flex justify-content-between align-items-center py-2">
-                      <h5 className="card-title">UX Design Basics</h5>
-                      <span className="badge  price-badge">$75.00</span>
+                {sessions.length === 0 ? (
+      <p>No sessions yet</p>
+    ) : (
+      sessions.map((session) => (
+        <div className="col-md-4" key={session.id}>
+          <div className="card">
+            <div className="card-header d-flex justify-content-between align-items-center py-2">
+              <h4 className="card-title">{session.title}</h4>
+              <span className="badges price-badge">${session.price}</span>
+            </div>
+            <div className="card-body">
+              <div className="mb-2">
+                <div className="info-label">Description</div>
+                <div className="description-box">
+                  {session.description}
+                </div>
+              </div>
+              <div className="mb-2">
+                <div className="info-label">Duration</div>
+                <div className="icon-text mt-1">
+                  <i className="bi bi-clock" /> {session.duration} minutes
+                </div>
+              </div>
+              <div className="mb-2">
+                <div className="d-flex justify-content-between">
+                  <div>
+                    <div className="info-label">Date</div>
+                    <div className="icon-text">
+                      <i className="bi bi-calendar3" /> {session.schedule_time}
                     </div>
-                    <div className="card-body">
-                      <div className="mb-2">
-                        <div className="info-label">Description</div>
-                        <div className="description-box">
-                          Learn the fundamentals of user experience design and create intuitive interfaces.
-                        </div>
-                      </div>
-                      <div className="mb-2">
-                        <div className="info-label">Duration</div>
-                        <div className="icon-text mt-1">
-                          <i className="bi bi-clock" /> 60 minutes, 1 hour
-                        </div>
-                      </div>
-                      <div className="mb-2">
-                        <div className="d-flex justify-content-between">
-                          <div>
-                            <div className="info-label">Date</div>
-                            <div className="icon-text">
-                              <i className="bi bi-calendar3" /> March 20, 2025
-                            </div>
-                          </div>
-                          <div>
-                            <div className="info-label">Time</div>
-                            <div className="icon-text">
-                              <i className="bi bi-alarm" /> 2:00 PM
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="mb-2">
-                        <span className="badge features-badge">
-                          <i className="bi bi-chat-dots" /> Chat Room
-                        </span>
-                      </div>
-                      <div className="mt-2">
-                        <button className="btn booking w-100">Register Now</button>
-                      </div>
+                  </div>
+                  <div>
+                    <div className="info-label">Time</div>
+                    <div className="icon-text">
+                      <i className="bi bi-alarm" /> {session.time} 
                     </div>
                   </div>
                 </div>
-                <div className="col-md-4">
-                  <div className="card">
-                    <div className="card-header d-flex justify-content-between align-items-center py-2">
-                      <h5 className="card-title">JavaScript Basics</h5>
-                      <span className="badge price-badge">$120.00</span>
-                    </div>
-                    <div className="card-body">
-                      <div className="mb-2">
-                        <div className="info-label">Description</div>
-                        <div className="description-box">
-                          Introduction to JavaScript programming for web developers. Learn core concepts.
-                        </div>
-                      </div>
-                      <div className="mb-2">
-                        <div className="info-label">Duration</div>
-                        <div className="icon-text mt-1">
-                          <i className="bi bi-clock" /> 120 minutes, 2 hours
-                        </div>
-                      </div>
-                      <div className="mb-2">
-                        <div className="d-flex justify-content-between">
-                          <div>
-                            <div className="info-label">Date</div>
-                            <div className="icon-text">
-                              <i className="bi bi-calendar3" /> March 25, 2025
-                            </div>
-                          </div>
-                          <div>
-                            <div className="info-label">Time</div>
-                            <div className="icon-text">
-                              <i className="bi bi-alarm" /> 11:00 AM
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="mb-2">
-                        <span className="badge features-badge">
-                          <i className="bi bi-chat-dots" /> Chat Room
-                        </span>
-                      </div>
-                      <div className="mt-2">
-                        <button className="btn booking w-100">Register Now</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              </div>
+              <div className="mb-2">
+                {session.features && session.features.map((feature, index) => (
+                  <span key={index} className="badges features-badge me-1">
+                    <i className={`bi bi-${feature.icon}`} /> {feature.name}
+                  </span>
+                ))}
+                {session.has_room ?<span className="badges features-badge">
+                  <i className="bi bi-chat-dots" /> Chat Room
+                </span>:   <span className="badges features-nbadge">
+                  <i className="bi bi-chat-dots" /> Chat Room
+                </span>}
+             
+              </div>
+              <div className="mt-2">
+                <button className="btn booking w-100">Register Now</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))
+    )}
+
+
+
               </div>
             </div>
 
@@ -486,6 +395,47 @@ function MentorProfile() {
          </div>
 
         </div>
+
+
+        <div className="container py-3 mb-4 mt-5">
+  <h3 className="mx-3">Reviews :</h3>
+
+  {/* ============================================ */}
+  <div className="p-4 rounded">
+    {reviews.length === 0 ? (
+      <p>No Reviews yet</p>
+    ) : (
+      reviews.map((review) => (
+        <div key={review.id} className="card mb-4 border-0 border-bottom">
+          <div className="card-body pb-4">
+            <div className="row mb-3">
+              <div className="col-auto">
+                <div className="bg-secondary rounded-circle" style={{ width: 50, height: 50 }}></div>
+              </div>
+              <div className="col">
+                <div className="d-flex justify-content-between align-items-start">
+                  <div>
+                    <h5 className="mb-0">{review.user.name}</h5>
+                    <div className="text-primary mb-1">
+                      {[...Array(review.rating)].map((_, i) => (
+                        <i key={i} className="bi bi-star-fill st-r me-1"></i>
+                      ))}
+                    </div>
+                    <div className="text-muted">
+                      {review.rating} out of 5 stars - {review.date}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p className="card-text">{review.content}</p>
+          </div>
+        </div>
+      ))
+    )}
+  </div>
+</div>
+
     </>
   );
 }
