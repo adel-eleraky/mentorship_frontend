@@ -264,7 +264,7 @@ export default function Register() {
           </form>
         </Box>
       )}
-      {user && !user.confirmEmail && (
+      {user && (
         <Box
           sx={{
             mt: 2,
