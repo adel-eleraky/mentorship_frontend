@@ -46,7 +46,7 @@ export const Meeting = () => {
 
         const callInstance = videoClient.call("default", id);
 
-        await callInstance.join({ create: true });
+        // await callInstance.join({ create: true });
 
         setClient(videoClient);
         setCall(callInstance);
