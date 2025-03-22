@@ -27,7 +27,7 @@ function NavBar() {
           </button>
 
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
-          {location.pathname !== "/mentors" && (
+            {location.pathname !== "/mentors" && (
               <form className="d-flex mb-2 mb-lg-0 ms-auto" role="search">
                 <div style={{ position: "relative", width: "350px" }}>
                   <input
@@ -87,19 +87,48 @@ function NavBar() {
                 </ul>
               </li>
 
-              <li className="nav-item ms-4">
+              <li className="nav-item mx-4">
                 <NavLink className="btn btn-success" to={'/mentors'}>Browse all mentors</NavLink>
               </li>
               {user ?
                 (
                   <>
-                    <li className="nav-item">
-                      <NavLink className="nav-link" to={'/chat'}>Chats</NavLink>
-                    </li>
-                    <li className="nav-item">
-                      <NavLink className="nav-link" to={`${user.role == "user" ? "/user" : "/mentor"}`}>Profile</NavLink>
+                    <li className="nav-item dropdown">
+                      <img
+                        className="nav-link dropdown-toggle img-fluid p-0"
+                        style={{ width: "40px"}}
+                        src={`http://localhost:3000/img/users/${user.image}`}
+                        role="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      />
+                      <ul className="dropdown-menu  end-50 start-50 ">
+                        <li>
+                          <NavLink className="dropdown-item" to="/user">
+                            Profile
+                          </NavLink>
+                        </li>
+                        <li>
+                          <NavLink className="dropdown-item" to="/chat">
+                            Chat
+                          </NavLink>
+                        </li>
+                        <li>
+                          <button className="dropdown-item" onClick={() => console.log('Logout')}>
+                            Logout
+                          </button>
+                        </li>
+                      </ul>
                     </li>
                   </>
+                  // <>
+                  //   <li className="nav-item">
+                  //     <NavLink className="nav-link" to={'/chat'}>Chats</NavLink>
+                  //   </li>
+                  //   <li className="nav-item">
+                  //     <NavLink className="nav-link" to={`${user.role == "user" ? "/user" : "/mentor"}`}>Profile</NavLink>
+                  //   </li>
+                  // </>
                 ) :
                 (
                   <li className="nav-item ms-4">
@@ -119,7 +148,7 @@ function NavBar() {
             </ul>
           </div>
         </div>
-      </nav>
+      </nav >
 
       <div className="container-fluid px-5 py-2 shadow-sm border-bottom">
         <nav className="d-flex justify-content-between">
