@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import MeetingsList from "./MeetingsList";
 import { formatDate } from "../../utils/dateUtils";
+import { deleteMentorSessions } from "../../services/mentorService";
 
 const MeetingsManagement = ({
   scheduledMeetings,
   error,
-
   loading,
+  onRefresh,
 }) => {
   // Sort meetings to show the nearest one first
   const sortedMeetings = scheduledMeetings.sort((a, b) => {
@@ -14,6 +15,18 @@ const MeetingsManagement = ({
     const bDate = new Date(b.schedule_time);
     return aDate - bDate;
   });
+  const handleDeleteMeeting = async (meetingId) => {
+    try {
+      await deleteMentorSessions(meetingId);
+
+      onRefresh();
+
+      alert("Meeting deleted successfully.");
+    } catch (error) {
+      console.error("Error deleting meeting:", error);
+      alert("Failed to delete meeting. Please try again.");
+    }
+  };
 
   // Handle joining a meeting
   const handleJoinMeeting = (meeting) => {
@@ -136,6 +149,9 @@ const MeetingsManagement = ({
                         <button
                           className="btn btn-outline-danger"
                           title="Cancel meeting"
+                          onClick={() =>
+                            handleDeleteMeeting(meeting._id || meeting.id)
+                          }
                         >
                           <i className="bi bi-trash"></i>
                         </button>

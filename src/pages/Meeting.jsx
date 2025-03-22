@@ -25,13 +25,22 @@ export const Meeting = () => {
 
   // Stream credentials
   const apiKey = "5tbes3fua53a";
-  const userId = "67d5eb638678c21491e11a92";
-  // Use a pre-generated token from your backend
+  // Generate a unique user ID for each browser session
+  const userId =
+    localStorage.getItem("streamVideoUserId") ||
+    `user-${Math.random().toString(36).substring(2, 15)}`;
+
+  // Save the user ID to localStorage to keep it consistent
+  useEffect(() => {
+    if (!localStorage.getItem("streamVideoUserId")) {
+      localStorage.setItem("streamVideoUserId", userId);
+    }
+  }, [userId]);
 
   useEffect(() => {
     const initializeCall = async () => {
       try {
-        const user = { id: userId, name: "adel" };
+        const user = { id: userId, name: "ahmed" };
         const { data } = await axios.get(
           `http://localhost:3000/api/v1/sessions/getVideoToken?userId=${userId}`
         );
@@ -46,7 +55,19 @@ export const Meeting = () => {
 
         const callInstance = videoClient.call("default", id);
 
-        await callInstance.join({ create: true });
+        // First check if the call exists before trying to create it
+        try {
+          // Try to get call status first
+          const callState = await callInstance.getOrCreate();
+        } catch (callError) {
+          // If error is because call doesn't exist, create it
+          if (callError.message.includes("not found")) {
+            await callInstance.join({ create: true });
+          } else {
+            // Some other error occurred
+            throw callError;
+          }
+        }
 
         setClient(videoClient);
         setCall(callInstance);
@@ -68,7 +89,7 @@ export const Meeting = () => {
         client.disconnectUser().catch(console.error);
       }
     };
-  }, [id]);
+  }, [id, userId]);
 
   if (loading) return <div className="loading">Loading video call...</div>;
   if (error) return <div className="error-container">{error}</div>;
@@ -79,15 +100,15 @@ export const Meeting = () => {
 
   return (
     <StreamVideo client={client}>
-      <StreamTheme as="main" className="video-call-container">
-        <StreamCall call={call}>
+      <StreamCall call={call}>
+        <StreamTheme as="main" className="video-call-container">
           {!isSetupComplete ? (
             <MeetingSetup setIsSetupComplete={setIsSetupComplete} />
           ) : (
             <MeetingRoom />
           )}
-        </StreamCall>
-      </StreamTheme>
+        </StreamTheme>
+      </StreamCall>
     </StreamVideo>
   );
 };

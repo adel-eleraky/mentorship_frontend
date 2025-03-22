@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
+import { getAuthInfo, getAuthHeaders } from "../utils/auth";
 import MeetingsManagement from "../components/MentorProfile/MeetingsManagement";
 import ScheduleModal from "../components/MentorProfile/ScheduleModal";
 import PersonalInfoSection from "../components/MentorProfile/PersonalInfoSection";
@@ -24,6 +24,7 @@ export default function MentorDashboard() {
     message,
     status,
   } = useSelector((state) => state.auth);
+  console.log(mentor);
 
   const [mentorData, setMentorData] = useState({
     name: mentor?.data?.name || "",
@@ -36,39 +37,48 @@ export default function MentorDashboard() {
   const [activeSection, setActiveSection] = useState("personal");
   const [scheduledMeetings, setScheduledMeetings] = useState([]);
   const [createMeetingLoading, setCreateMeetingLoading] = useState(false);
-  const [sessionsLoading, setSessionsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
 
-  // Fetch mentor data and sessions
   useEffect(() => {
     dispatch(fetchMentorData());
-    fetchMentorSessions();
-  }, [dispatch]);
 
-  // Fetch sessions from the API
-  const fetchMentorSessions = async () => {
-    try {
-      setSessionsLoading(true);
-      setError(null);
+    const loadScheduledMeetings = async () => {
+      try {
+        // Mock data for now
+        setScheduledMeetings([
+          {
+            id: "1",
+            title: "React Hooks Deep Dive",
+            price: 50,
+            description: "A session covering advanced React hooks concepts.",
+            duration: 60,
+            schedule_time: "2025-07-15T10:00:00",
+            status: "pending",
+            has_room: false,
+          },
+          {
+            id: "2",
+            title: "JavaScript Fundamentals",
+            price: 35,
+            description: "Reviewing core JavaScript concepts for beginners.",
+            duration: 45,
+            schedule_time: "2025-07-18T14:30:00",
+            status: "pending",
+            has_room: false,
+          },
+        ]);
 
-      const response = await axios.get(
-        "http://localhost:3000/api/v1/mentors/sessions",
-        { withCredentials: true }
-      );
-
-      if (response.data && response.data.data) {
-        setScheduledMeetings(response.data.data);
+        // When API is ready:
+        // const meetings = await fetchScheduledMeetings();
+        // setScheduledMeetings(meetings);
+      } catch (error) {
+        console.error("Error fetching scheduled meetings:", error);
+        setError("Failed to load scheduled meetings");
       }
-    } catch (error) {
-      console.error("Error fetching mentor sessions:", error);
-      setError(
-        "Failed to load your scheduled sessions. Please try again later."
-      );
-    } finally {
-      setSessionsLoading(false);
-    }
-  };
+    };
+    loadScheduledMeetings();
+  }, [dispatch]);
 
   useEffect(() => {
     if (mentor?.data) {
@@ -84,21 +94,37 @@ export default function MentorDashboard() {
   }, [mentor]);
 
   // Handle scheduling a new meeting
-  const handleScheduleMeeting = async (responseData) => {
-    setCreateMeetingLoading(false);
+  const handleScheduleMeeting = async (meetingData) => {
+    setCreateMeetingLoading(true);
     setError(null);
 
     try {
-      if (responseData && responseData.data) {
-        // Refresh the sessions list instead of manually adding
-        fetchMentorSessions();
-        alert("Meeting scheduled successfully!");
-      } else {
-        throw new Error("No data received from the server");
-      }
+      // Format the date and time for the API
+      const scheduleTime = new Date(`${meetingData.date}T${meetingData.time}`);
+
+      const sessionData = {
+        title: meetingData.title,
+        price: meetingData.price || 0,
+        description: meetingData.description,
+        duration: parseInt(meetingData.duration),
+        schedule_time: scheduleTime.toISOString(),
+        status: "pending",
+        has_room: false,
+      };
+
+      // For now, we'll just add it to the local state
+      const newMeeting = {
+        id: Date.now().toString(),
+        ...sessionData,
+      };
+
+      setScheduledMeetings([...scheduledMeetings, newMeeting]);
+      alert("Meeting scheduled successfully!");
     } catch (error) {
-      console.error("Error processing meeting data:", error);
+      console.error("Error creating meeting:", error);
       setError("Failed to schedule meeting. Please try again.");
+    } finally {
+      setCreateMeetingLoading(false);
     }
   };
 
@@ -106,27 +132,13 @@ export default function MentorDashboard() {
   const handleStartInstantMeeting = async () => {
     try {
       setCreateMeetingLoading(true);
-      setError(null);
-      // Create an instant session via API
-      // const response = await axios.post(
-      //   "http://localhost:3000/api/v1/sessions/instant",
-      //   {
-      //     title: "Instant Session",
-      //     description: "Instant mentoring session",
-      //     duration: 60, // Default duration in minutes
-      //   },
-      //   { withCredentials: true }
-      // );
-      // if (response.data && response.data.data) {
-      //   const meetingId = response.data.data.id || response.data.data._id;
-      const meetingId = mentor._id;
+
+      // For now, simulate API response with a timeout
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const meetingId = `meeting-${Date.now()}`; // Temporary ID generation
+
       // Navigate to meeting room
       window.open(`/meeting/${meetingId}`, "_blank");
-      // Refresh sessions list
-      fetchMentorSessions();
-      // } else {
-      //   throw new Error("Failed to create instant meeting");
-      // }
     } catch (error) {
       console.error("Error creating instant meeting:", error);
       setError("Failed to create instant meeting. Please try again.");
@@ -160,10 +172,8 @@ export default function MentorDashboard() {
       {activeSection === "meetings" && (
         <MeetingsManagement
           scheduledMeetings={scheduledMeetings}
-          loading={sessionsLoading}
           error={error}
           onStartInstantMeeting={handleStartInstantMeeting}
-          onRefresh={fetchMentorSessions}
         />
       )}
 
@@ -180,7 +190,7 @@ export default function MentorDashboard() {
 
       <ScheduleModal
         show={showScheduleModal}
-        mentorId={mentor?._id}
+        mentorId={mentor._id}
         handleClose={() => setShowScheduleModal(false)}
         onScheduleMeeting={handleScheduleMeeting}
         isLoading={createMeetingLoading}
