@@ -35,6 +35,7 @@ import BrowseMentors from "./pages/BrowseMentors";
 import ProtectRoute from "./components/ProtectRoute.jsx";
 import UnAuthRoute from "./components/UnAuthRoute.jsx";
 import Layout from "./components/Layout.jsx";
+import Verify from "./pages/Verify.jsx";
 // import Chat from "./components/Chat/Chat";
 
 const socket = io("http://localhost:3000");
@@ -72,30 +73,26 @@ function App() {
               </ProtectRoute>
             }
           ></Route>
-          <Route
-            path="/login"
-            element={
-              <UnAuthRoute>
-                <Login />
-              </UnAuthRoute>
-            }
-          />
-          <Route
-            path="/register"
-            element={
-              <UnAuthRoute>
-                <Register />
-              </UnAuthRoute>
-            }
-          />
+          <Route path="/login" element={
+            <UnAuthRoute>
+              <Login />
+            </UnAuthRoute>
+          } />
+          <Route path="/register" element={
+            <UnAuthRoute>
+              <Register />
+            </UnAuthRoute>
+          } />
+          
+          <Route path="confirm-email/:token"  element={<Verify />}/>
         </Route>
 
         <Route
           path="/meeting/:id"
           element={
             // <ProtectRoute>
+              <Meeting />
             // </ProtectRoute>
-            <Meeting />
           }
         />
         <Route

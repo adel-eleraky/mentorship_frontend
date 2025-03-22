@@ -41,13 +41,13 @@ export default function MentorCardLarge({ mentor }) {
                         {mentor.bio}
                     </p>
 
-                    {/* <div className="mb-3">
+                    <div className="mb-3">
                         {mentor.skills.map((skill, index) => (
                             <span key={index} className="badge bg-light text-secondary me-2 p-2">
                                 {skill}
                             </span>
                         ))}
-                    </div> */}
+                    </div>
 
                     <div className="d-flex justify-content-between align-items-center">
                         {/* <p className="mb-0">

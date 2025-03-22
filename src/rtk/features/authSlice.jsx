@@ -33,15 +33,15 @@ export const registerUser = createAsyncThunk("auth/register", async (credentials
     }
 })
 
-// export const verifyUser = createAsyncThunk("auth/verify", async (credentials, { rejectWithValue }) => {
-//     try {
-//         const response = await axios.put(`${API_URL}/users/verify`, credentials, { withCredentials: true });
-//         return response.data;
-//     } catch (err) {
+export const verifyUser = createAsyncThunk("auth/verify", async (token, { rejectWithValue }) => {
+    try {
+        const response = await axios.post(`${API_URL}/auth/confirm-email/${token}`, { withCredentials: true });
+        return response.data;
+    } catch (err) {
 
-//         return rejectWithValue(err.response?.data);
-//     }
-// })
+        return rejectWithValue(err.response?.data);
+    }
+})
 
 
 //Async thunk to get logged-in user
