@@ -1,8 +1,10 @@
 import React from "react";
 import * as Yup from "yup"
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateUserProfile } from "../../rtk/features/userSlice";
+import { CircularProgress } from "@mui/material";
+import { ToastContainer, toast } from 'react-toastify';
 
 const PersonalInfoSection = ({
   userData,
@@ -13,8 +15,35 @@ const PersonalInfoSection = ({
 
 
   const dispatch = useDispatch()
+  const { errors, loading, updateMessage, status } = useSelector(state => state.user)
 
-  console.log(userData)
+
+  if(status == "success" && updateMessage) {
+    toast.success(`${updateMessage}`, {
+      position: "top-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      });
+  }
+
+  if(status == "fail" && errors) {
+    toast.error(`${updateMessage}`, {
+      position: "top-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      });
+  }
+  
   const validationSchema = Yup.object({
     name: Yup.string()
         .min(3, "Username must be at least 3 characters long")
@@ -58,7 +87,6 @@ const PersonalInfoSection = ({
   }
 
   const submitHandler = (values) => {
-    console.log(values)
     dispatch(updateUserProfile(values))
   }
 
@@ -137,6 +165,7 @@ const PersonalInfoSection = ({
                 </label>
                 <Field type="email" className="form-control" id="email" name="email" />
                 <ErrorMessage name="email" component="div" className="text-danger" />
+                {errors?.email && <div className="text-danger"> {errors?.email} </div>}
               </div>
 
               <div className="mb-3">
@@ -145,10 +174,12 @@ const PersonalInfoSection = ({
                 </label>
                 <Field type="tel" className="form-control" id="phone" name="phone" />
                 <ErrorMessage name="phone" component="div" className="text-danger" />
+                {errors?.phone && <div className="text-danger"> {errors?.phone} </div>}
               </div>
 
               <button type="submit" className="btn btn-primary">
-                Save Changes
+                
+                {loading ? <> <CircularProgress size={24} color="inherit" /> Saving.. </> : "Save Changes"}
               </button>
             </Form>
           )}
