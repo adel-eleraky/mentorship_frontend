@@ -34,7 +34,12 @@ const MeetingSetup = ({ setIsSetupComplete }) => {
           />
           Join with mic and camera off
         </label>
-        {call && <DeviceSettings key={call?.id} />}
+        {call && (
+          <DeviceSettings
+            key={call?.id}
+            className="text-white bg-dark p-3 rounded shadow-sm device-settings-custom"
+          />
+        )}
       </div>
       <Button
         className="btn btn-success"

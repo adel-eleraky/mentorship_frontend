@@ -45,9 +45,8 @@ function App() {
 
   return (
     <Provider store={Store}>
-
       <Routes>
-        <Route element={<Layout />} >
+        <Route element={<Layout />}>
           <Route path="mentorprofile" element={<MentorProfile />} />
 
           <Route path="/" element={<Home />} />
@@ -55,7 +54,6 @@ function App() {
           <Route path="mentors" element={<BrowseMentors />} />
 
           {/* protected Routes */}
-
 
           <Route
             path="user"
@@ -74,24 +72,30 @@ function App() {
               </ProtectRoute>
             }
           ></Route>
-          <Route path="/login" element={
-            <UnAuthRoute>
-              <Login />
-            </UnAuthRoute>
-          } />
-          <Route path="/register" element={
-            <UnAuthRoute>
-              <Register />
-            </UnAuthRoute>
-          } />
+          <Route
+            path="/login"
+            element={
+              <UnAuthRoute>
+                <Login />
+              </UnAuthRoute>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <UnAuthRoute>
+                <Register />
+              </UnAuthRoute>
+            }
+          />
         </Route>
 
         <Route
           path="/meeting/:id"
           element={
-            <ProtectRoute>
-              <Meeting />
-            </ProtectRoute>
+            // <ProtectRoute>
+            // </ProtectRoute>
+            <Meeting />
           }
         />
         <Route
@@ -103,7 +107,6 @@ function App() {
           }
         />
       </Routes>
-
     </Provider>
   );
 }

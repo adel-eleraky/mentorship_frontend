@@ -42,16 +42,10 @@ const ScheduleModal = ({
 
   const submitHandler = async (values, { setSubmitting }) => {
     try {
-      // Include auth headers in the request
       const response = await axios.post(
         "http://localhost:3000/api/v1/sessions",
-        {
-          ...values,
-        },
-        { withCredentials: true }
+        values
       );
-
-      // Pass the response data to the parent component
       onScheduleMeeting(response.data);
       handleClose();
     } catch (error) {
