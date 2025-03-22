@@ -44,7 +44,10 @@ const ScheduleModal = ({
     try {
       const response = await axios.post(
         "http://localhost:3000/api/v1/sessions",
-        values
+        {
+          ...values,
+        },
+        { withCredentials: true }
       );
       onScheduleMeeting(response.data);
       handleClose();
