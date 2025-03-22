@@ -54,7 +54,7 @@ function Login() {
   // const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch()
 
-  const { user, loading } = useSelector(state => state.auth)
+  const { user, loading, errors: serverErrors } = useSelector(state => state.auth)
   if (user) {
     if (user.role === "mentor") return navigate("/mentor")
     if (user.role === "user") return navigate("/user")
@@ -136,8 +136,8 @@ function Login() {
                   label="Email Address"
                   type="email"
                   {...register("email")}
-                  error={Boolean(errors.email)}
-                  helperText={errors.email?.message}
+                  error={Boolean(errors.email) || Boolean(serverErrors?.email)}
+                  helperText={errors.email?.message ?? serverErrors?.email}
                 />
               </Grid>
 
@@ -148,8 +148,8 @@ function Login() {
                   label="Password"
                   type={showPassword ? "text" : "password"}
                   {...register("password")}
-                  error={Boolean(errors.password)}
-                  helperText={errors.password?.message}
+                  error={Boolean(errors.password) || Boolean(serverErrors?.password)}
+                  helperText={errors.password?.message ?? serverErrors?.password}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
