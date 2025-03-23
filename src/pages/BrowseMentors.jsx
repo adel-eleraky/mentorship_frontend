@@ -24,12 +24,12 @@ export default function BrowseMentors() {
     };
 
     const filteredMentors = mentors.filter((mentor) => {
-        const matchesSearch = mentor.name.toLowerCase().includes(search.toLowerCase()) ||
-                              mentor.title.toLowerCase().includes(search.toLowerCase()) ||
-                              mentor.bio.toLowerCase().includes(search.toLowerCase());
+        const matchesSearch = mentor.name?.toLowerCase().includes(search?.toLowerCase()) ||
+                              mentor.title?.toLowerCase().includes(search?.toLowerCase()) ||
+                              mentor.bio?.toLowerCase().includes(search?.toLowerCase());
 
-        // const matchesSkills = selectedSkills.length === 0 ||
-        //                       selectedSkills.every((skill) => mentor.bio.toLowerCase().includes(skill.toLowerCase()));
+        const matchesSkills = selectedSkills.length === 0 ||
+                              selectedSkills.every((skill) => mentor.bio?.toLowerCase().includes(skill?.toLowerCase()));
 
         const matchesJobTitles = selectedJobTitles.length === 0 ||
                                  selectedJobTitles.includes(mentor.title);
@@ -39,7 +39,7 @@ export default function BrowseMentors() {
 
         const matchesPrice = mentor.price ? mentor.price <= priceRange : true;
 
-        return matchesSearch && matchesJobTitles && matchesExperience && matchesPrice;
+        return matchesSearch && matchesSkills && matchesJobTitles && matchesExperience && matchesPrice;
     });
 
     if (loading) {
@@ -57,6 +57,8 @@ export default function BrowseMentors() {
                     <FilterSidebar
                         search={search}
                         setSearch={setSearch}
+                        selectedSkills={selectedSkills}
+                        setSelectedSkills={setSelectedSkills}
                         selectedJobTitles={selectedJobTitles}
                         setSelectedJobTitles={setSelectedJobTitles}
                         selectedExperience={selectedExperience}

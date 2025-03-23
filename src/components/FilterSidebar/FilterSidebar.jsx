@@ -1,29 +1,77 @@
 import React, { useMemo, useState } from 'react';
 
-// const skillsData = [
-//     "JavaScript",
-//     "React",
-//     "NodeJs",
-//     "Python",
-//     "Data Science",
-//     "UI/UX Design",
-//     "Leadership",
-//     "Product Management",
-//     "Frontend",
-//     "Product Strategy",
-//     "Startup",
-//     "Career",
-// ];
+const skillsData = [
+    "JavaScript",
+    "React",
+    "Node.js",
+    "Python",
+    "HTML/CSS",
+    "Data Science",
+    "UI/UX Design",
+    "Django",
+    "Product Management",
+    "Frontend",
+    "Product Strategy",
+    "Agile",
+    "Express.js",
+    "REST APIs",
+    "MongoDB",
+    "Agile Methodology",
+    "Scrum",
+    "Product Roadmaps",
+    "JIRA",
+    "User Stories",
+    "Machine Learning",
+    "Pandas",
+    "NumPy",
+    "Scikit-learn",
+    "Figma",
+    "Adobe XD",
+    "User Research",
+    "Wireframing",
+    "Prototyping",
+    "SEO",
+    "Content Marketing",
+    "Social Media Strategy",
+    "Google Analytics",
+    "Email Marketing",
+    "Ethical Hacking",
+    "Network Security",
+    "Penetration Testing",
+    "Firewalls",
+    "Encryption",
+    "AWS",
+    "Azure",
+    "Cloud Infrastructure",
+    "DevOps",
+    "Kubernetes",
+    "Vue.js",
+    "Responsive Design",
+];
 
 const jobTitles = [
     "Frontend Developer",
     "Backend Developer",
     "Product Manager",
+    "Software Engineer",
     "Marketing Specialist",
     "Data Scientist",
     "DevOps Engineer",
-    "UI/UX Designer",
-    "Mobile Developer",
+    "UX/UI Designer",
+    "Software Architect",
+    "Technical Writer",
+    "Digital Marketing Specialist",
+    "Content Strategist",
+    "Cloud Engineer",
+    "Marketing Strategist",
+    "Cybersecurity Specialist",
+    "Full-Stack Developer",
+    "Cloud Architect",
+    "AI Researcher",
+    "Mobile App Developer",
+    "Blockchain Developer",
+    "Game Developer",
+    "Data Engineer",
     "QA Engineer",
     "Technical Writer",
 ];
@@ -31,12 +79,14 @@ const jobTitles = [
 export default function FilterSidebar({
     search,
     setSearch,
+    selectedSkills,
+    setSelectedSkills,
     selectedJobTitles,
     setSelectedJobTitles,
     selectedExperience,
     setSelectedExperience,
 }) {
-    // const [showAllSkills, setShowAllSkills] = useState(false);
+    const [showAllSkills, setShowAllSkills] = useState(false);
     const [showAllJobTitles, setShowAllJobTitles] = useState(false);
 
     const handleCheckboxChange = (list, setList, value) => {
@@ -53,21 +103,21 @@ export default function FilterSidebar({
         setSelectedExperience(e.target.value);
     };
 
-    // const handlePriceRangeChange = (e) => {
-    //     setPriceRange(e.target.value);
-    // };
+    const handlePriceRangeChange = (e) => {
+        setPriceRange(e.target.value);
+    };
 
-    // const filteredSkills = useMemo(() => 
-    //     skillsData.filter((skill) =>
-    //         skill.toLowerCase().includes(search.toLowerCase())
-    //     ), [search]);
+    const filteredSkills = useMemo(() => 
+        skillsData.filter((skill) =>
+            skill.toLowerCase().includes(search.toLowerCase())
+        ), [search]);
 
     const filteredJobTitles = useMemo(() => 
         jobTitles.filter((title) =>
             title.toLowerCase().includes(search.toLowerCase())
         ), [search]);
 
-    // const visibleSkills = showAllSkills ? filteredSkills : filteredSkills.slice(0, 6);
+    const visibleSkills = showAllSkills ? filteredSkills : filteredSkills.slice(0, 6);
     const visibleJobTitles = showAllJobTitles ? filteredJobTitles : filteredJobTitles.slice(0, 6);
 
     return (
@@ -76,13 +126,13 @@ export default function FilterSidebar({
                 <input
                     type="text"
                     className="form-control border"
-                    placeholder="Search for any skill, title or price"
+                    placeholder="Search for any skill or job title"
                     value={search}
                     onChange={handleSearchChange}
                 />
             </div>
 
-            {/* <div className="mb-4">
+            <div className="mb-4">
                 <h5 className="mb-3">Skills</h5>
                 <ul className="list-unstyled">
                     {visibleSkills.map((skill, index) => (
@@ -110,7 +160,7 @@ export default function FilterSidebar({
                         {showAllSkills ? "See Less" : "See More"}
                     </button>
                 )}
-            </div> */}
+            </div>
 
             <div className="mb-4">
                 <h5 className="mb-3">Job Titles</h5>

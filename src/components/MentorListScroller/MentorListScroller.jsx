@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchMentors } from '../../rtk/features/mentorSlice';
-import profileImg from '../../assets/profile-img.webp';
 import MentorCard from "../MentorCardScroller/MentorCardScroller";
+import { Link } from 'react-router';
 
 export default function MentorListScroller() {
     const dispatch = useDispatch();
@@ -89,7 +89,9 @@ export default function MentorListScroller() {
                     >
                         {mentors.map((mentor) => (
                             <div key={mentor._id} className="mb-3">
-                                <MentorCard mentor={mentor} />
+                                <Link style={{textDecoration: 'none'}} to={'/mentorprofile'}>
+                                    <MentorCard mentor={mentor} />
+                                </Link>
                             </div>
                         ))}
                     </div>

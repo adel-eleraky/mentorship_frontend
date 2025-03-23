@@ -1,11 +1,18 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 
 function NavBar() {
   // const { token, logout } = useAuthentication();
   const location = useLocation();
-  const { user } = useSelector(state => state.auth)
+  const { user } = useSelector(state => state.auth);
+  const navigate = useNavigate();
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+        navigate('/mentors');
+    }
+};
 
   return (
     <>
@@ -36,6 +43,7 @@ function NavBar() {
                     placeholder="Search"
                     aria-label="Search"
                     style={{ paddingLeft: "40px" }}
+                    onKeyPress={handleKeyPress}
                   />
                   <i
                     className="fas fa-search"

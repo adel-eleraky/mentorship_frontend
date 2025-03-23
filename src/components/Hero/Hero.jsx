@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from './Hero.module.css';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Hero() {
     const [oneOnOneText, setOneOnOneText] = useState('');
@@ -11,6 +11,7 @@ export default function Hero() {
     const fullText = ["Web Dev", "JavaScript", "React", "SEO", "Agile", "Interviewing", "Marketing", "UX Design", "AWS", "DevOps", "ML & AI", "Data Science", "Sales", "Python", "Resumé"];
     const typingSpeed = 150;
     const pauseBetweenWords = 1000;
+    const navigate = useNavigate();
 
     const categories = [
         "Product Managers",
@@ -68,15 +69,21 @@ export default function Hero() {
         }
     }, [text, index, fullText]);
 
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            navigate('/mentors');
+        }
+    };
+
     return (
         <div className="container my-5" style={{lineHeight: '2'}}>
             <p className="text-muted">
                 Learn a new skill, launch a project, land your dream career.
             </p>
             <h1 className="fw-bold my-4">
-            <span>{oneOnOneText}</span>{oneOnOneText.length < oneOnOneFullText[oneOnOneIndex]?.length} <br />
-            <span className="text-success">{text}</span>{text.length < fullText[index]?.length && <span className={styles.cursor}></span>}<br />
-            Mentorship
+                <span>{oneOnOneText}</span>{oneOnOneText.length < oneOnOneFullText[oneOnOneIndex]?.length} <br />
+                <span className="text-success">{text}</span>{text.length < fullText[index]?.length && <span className={styles.cursor}></span>}<br />
+                Mentorship
             </h1>
             <div className="d-flex">
                 <div style={{ position: 'relative', width: '65%', border: '1px solid gray', borderRadius: '10px', padding: '3px' }}>
@@ -89,6 +96,7 @@ export default function Hero() {
                             borderRadius: '10px',
                             height: '50px',
                         }}
+                        onKeyPress={handleKeyPress}
                     />
                     <Link
                         className="btn btn-success pt-2"
@@ -128,5 +136,5 @@ export default function Hero() {
                 </div>
             </div>
         </div>
-    )
+    );
 }

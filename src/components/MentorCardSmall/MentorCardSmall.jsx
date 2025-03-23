@@ -10,16 +10,16 @@ export default function MentorCardSmall({ mentor }) {
                 className="card-img-top rounded"
                 style={{ height: "200px", objectFit: "cover" }}
             />
-            <div className="card-body">
+            <div className="card-body text-center">
                 <h5 className="card-title fw-bold">{mentor.name}</h5>
                 <p className="card-text text-muted">{mentor.title}</p>
-                {/* <div className="d-flex flex-wrap mt-2">
+                <div className="d-flex flex-wrap justify-content-center mt-2">
                     {mentor.skills.map((skill, index) => (
                         <span key={index} className="badge bg-light text-secondary m-1 ms-0 py-1">
                             {skill}
                         </span>
                     ))}
-                </div> */}
+                </div>
             </div>
         </div>
     )
