@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchMentors } from '../../rtk/features/mentorSlice';
-import profileImg from '../../assets/profile-img.webp';
 import MentorCard from "../MentorCardSmall/MentorCardSmall";
 import { Link } from 'react-router';
 
@@ -27,7 +26,9 @@ export default function MentorsSection() {
             <div className="row g-4">
                 {mentors.slice(0, visibleCount).map((mentor) => (
                     <div key={mentor._id} className="col-md-3">
-                        <MentorCard mentor={mentor} />
+                        <Link style={{textDecoration: 'none'}} to={'/mentorprofile'}>
+                            <MentorCard mentor={mentor} />
+                        </Link>
                     </div>
                 ))}
             </div>
