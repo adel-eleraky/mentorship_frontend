@@ -53,7 +53,7 @@ export default function MentorCardLarge({ mentor }) {
                         {/* <p className="mb-0">
                             <span className="fw-bold fs-5">${mentor.price}</span> <small className='fw-bold'>/ session</small>
                         </p> */}
-                        <Link className="btn btn-success px-4" to={'/mentorprofile'}>View Profile</Link>
+                        <Link className="btn btn-success px-4" to={`/mentorprofile/${mentor._id}`}>View Profile</Link>
                     </div>
                 </div>
             </div>
