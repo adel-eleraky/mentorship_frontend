@@ -169,11 +169,11 @@ function Login() {
               <Grid item xs={12}>
                 <RadioGroup>
                   <FormControlLabel
-                    control={<Radio {...register("role")} value="user" />}
+                    control={<Radio {...register("role")} value="User" />}
                     label="User"
                   />
                   <FormControlLabel
-                    control={<Radio {...register("role")} value="mentor" />}
+                    control={<Radio {...register("role")} value="Mentor" />}
                     label="Mentor"
                   />
                 </RadioGroup>
