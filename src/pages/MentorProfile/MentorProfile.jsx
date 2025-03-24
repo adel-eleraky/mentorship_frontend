@@ -11,8 +11,8 @@ function MentorProfile() {
   const [loading, setLoading] = useState(true);
   const [sessions,setSessions]=useState([])
   const [reviews,setReviews]=useState([])
-  // let { id } = useParams();
-const id ="67d5eb638678c21491e11a92";
+  let { id } = useParams();
+// const id ="67d5eb638678c21491e11a92";
 
 
   const addSkill = (e) => {
@@ -83,8 +83,9 @@ const id ="67d5eb638678c21491e11a92";
      <div className="media  profile-head comtainer">
        <div className="profile  mr-3">
          <img
-           src="https://cdn.mentorcruise.com/cdn-cgi/image/width=368,format=auto/https://cdn.mentorcruise.com/cache/f88c4f35f7c951fb0710dc0e074c52a0/003d3bdb45c16bb9/220bafd789a1a63dac7ac070f0e6d672.jpg"
-           alt="..."
+          //  src="https://cdn.mentorcruise.com/cdn-cgi/image/width=368,format=auto/https://cdn.mentorcruise.com/cache/f88c4f35f7c951fb0710dc0e074c52a0/003d3bdb45c16bb9/220bafd789a1a63dac7ac070f0e6d672.jpg"
+           src={`http://localhost:3000/img/users/${mentor?.image}`}
+          alt="..."
            width={230}
            className="rounded mb-2 img-thumbnail"
          />
@@ -93,21 +94,21 @@ const id ="67d5eb638678c21491e11a92";
           <h2 className="mt-2 mb-2">{mentor?.name}</h2>
            <p className=" mentor-title mb-2">{mentor?.title}</p>
            <p> Experience :{mentor?.experience}</p>
-           <button
+           {/* <button
              href="#"
              className="btn edit-send"
              data-bs-toggle="modal"
              data-bs-target="#exampleModal"
            >
              Follow
-           </button>
+           </button> */}
 
           </div>
 
            <div>
-              <NavLink className="navbar-brand fs-4 bold mb-2" to={"/mentor"}>
+              {/* <NavLink className="navbar-brand fs-4 bold mb-2" to={"/mentor"}>
               <i class="fa-solid fa-gear st-r "></i>
-              </NavLink>
+              </NavLink> */}
 
            </div>
          </div>
@@ -132,14 +133,14 @@ const id ="67d5eb638678c21491e11a92";
       <div className="container py-3 mb-4 bg-light rounded shadow-sm mt-5">
         <div className="d-flex justify-content-between">
           <h3 className="mx-3">Sessions</h3>
-          <button
+          {/* <button
             href="#"
             className="btn edit-send"
             data-bs-toggle="modal"
             data-bs-target="#exampleModa2"
           >
             Add Session
-          </button>
+          </button> */}
         </div>
 
         <div>
@@ -267,7 +268,7 @@ const id ="67d5eb638678c21491e11a92";
           {/* ======================================================= */}
             <div className="container py-4">
               <div className="row g-3">
-                <div className="col-md-4">
+                {/* <div className="col-md-4">
                   <div className="card">
                     <div className="card-header d-flex justify-content-between align-items-center py-2">
                       <h4 className="card-title">Web Development</h4>
@@ -312,7 +313,7 @@ const id ="67d5eb638678c21491e11a92";
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
                 {sessions.length === 0 ? (
       <p>No sessions yet</p>
     ) : (

@@ -48,7 +48,7 @@ function App() {
     <Provider store={Store}>
       <Routes>
         <Route element={<Layout />}>
-          <Route path="mentorprofile" element={<MentorProfile />} />
+          <Route path="mentorprofile/:id" element={<MentorProfile />} />
 
           <Route path="/" element={<Home />} />
 
