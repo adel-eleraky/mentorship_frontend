@@ -1,11 +1,20 @@
+import axios from "axios";
 import React from "react";
-import { useSelector } from "react-redux";
-import { NavLink, useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Navigate, NavLink, useLocation, useNavigate } from "react-router-dom";
 
 function NavBar() {
   // const { token, logout } = useAuthentication();
   const location = useLocation();
   const { user } = useSelector(state => state.auth)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
+  async function logout() {
+    await axios.get("http://localhost:3000/api/v1/auth/logout" , {withCredentials: true})
+    // return navigate("/login")
+    // <Navigate to={"/login" }/>
+  }
 
   return (
     <>
@@ -114,7 +123,7 @@ function NavBar() {
                           </NavLink>
                         </li>
                         <li>
-                          <button className="dropdown-item" onClick={() => console.log('Logout')}>
+                          <button className="dropdown-item" onClick={() => logout()}>
                             Logout
                           </button>
                         </li>
