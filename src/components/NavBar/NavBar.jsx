@@ -14,8 +14,6 @@ function NavBar() {
         navigate('/mentors');
     }
 };
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
 
   async function logout() {
     await axios.get("http://localhost:3000/api/v1/auth/logout" , {withCredentials: true})
