@@ -37,6 +37,7 @@ import UnAuthRoute from "./components/UnAuthRoute.jsx";
 import Layout from "./components/Layout.jsx";
 import Verify from "./pages/Verify.jsx";
 import Community from "./pages/Community.jsx";
+import UserPrpfiles from "./pages/UserPrpfiles/UserPrpfiles.jsx";
 // import Chat from "./components/Chat/Chat";
 
 const socket = io("http://localhost:3000");
@@ -56,6 +57,7 @@ function App() {
           <Route path="mentors" element={<BrowseMentors />} />
 
           <Route path="community" element={<Community />} />
+          <Route path="UserPrpfiles" element={<UserPrpfiles />} />
 
           {/* protected Routes */}
 
