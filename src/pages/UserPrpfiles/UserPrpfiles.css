@@ -1,0 +1,85 @@
+.user-pro {
+    background-color: #f0f2f5;
+}
+.cover-photo {
+    background-color: #19875450;
+    height: 300px;
+    background-image: url('/api/placeholder/1200/350');
+    background-size: cover;
+    background-position: center;
+    /* border-radius: 0 0 8px 8px; */
+    position: relative;
+}
+img{
+    width: 40px;
+    height: 40px;
+}
+.profile-picture {
+    /* background-color: rgb(0, 255, 76); */
+    background-color: white;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    border: 4px solid white;
+    position: absolute;
+    bottom: -50px;
+    left: 20px;
+    margin-left: 25px;
+}
+.profile-info {
+    margin-top: 60px;
+}
+
+.post-card {
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+.post-actions {
+    border-top: 1px solid #e4e6eb;
+    padding: 8px;
+}
+.post-actions button {
+    color: #65676b;
+    background: none;
+    border: none;
+    padding: 8px 0;
+    font-weight: 600;
+    width: 33.33%;
+}
+.post-actions button:hover {
+    background-color: #f2f2f2;
+    border-radius: 6px;
+}
+.user-info{
+    display: flex;
+    align-items: start;
+    justify-content: center;
+    flex-direction: column;
+}
+ .user-follow{
+    background-color: #118577 !important;
+    color: white !important;
+    border: none;
+    box-shadow: 0 3px 10px rgba(17, 133, 119, 0.2);
+    transition: all 0.3s ease;
+
+    min-width: 100px;
+    cursor: pointer;
+    appearance: none;
+    border-radius: .375rem;
+    border-width: 0;
+    border-color: transparent;
+    padding-left: 1.75rem;
+    padding-right: 1.75rem;
+    padding-top: .625rem;
+    padding-bottom: .625rem;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: 600;
+    background-color: #118577;
+    color: white;
+ }
+ .user-icon{
+    color: #118577;
+ }
