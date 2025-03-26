@@ -1,6 +1,26 @@
-import React from 'react'
-import './UserPrpfiles.css'
-function UserPrpfiles() {
+import React, { useEffect, useState } from 'react'
+import './UserProfile.css'
+import { useParams } from 'react-router'
+import axios from 'axios'
+function CommunityUserProfile() {
+
+  const { id } = useParams()
+  const [posts , setPosts] = useState([])
+
+  console.log(posts)
+
+  const fetchUserPosts = async () => {
+    const res = await axios.get(`http://localhost:3000/api/v1/users/${id}/posts`)
+    return res.data
+  }
+
+  useEffect(() => {
+
+    fetchUserPosts().then((data) => {
+      setPosts(data.data)
+    })
+  }, [id])
+
   return (
     <>
  <div className=" user-pro ">
@@ -143,4 +163,4 @@ function UserPrpfiles() {
   )
 }
 
-export default UserPrpfiles
+export default CommunityUserProfile
