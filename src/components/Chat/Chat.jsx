@@ -20,7 +20,8 @@ function Chat() {
   const dispatch = useDispatch()
   const { roomMessages, rooms } = useSelector(state => state.room)
   const { user } = useSelector(state => state.auth)
-  
+
+  console.log("room messages", roomMessages)
 
   console.log(roomMessages)
   const joinRoom = async (room) => {
@@ -79,9 +80,9 @@ function Chat() {
   };
 
   // Filter rooms based on activeTab
-  const filteredRooms = activeTab === 'all' ? rooms : 
-                        activeTab === 'rooms' ? rooms.filter(room => !room.isDirectMessage) : 
-                        rooms.filter(room => room.isDirectMessage);
+  const filteredRooms = activeTab === 'all' ? rooms :
+    activeTab === 'rooms' ? rooms.filter(room => !room.isDirectMessage) :
+      rooms.filter(room => room.isDirectMessage);
 
   return (
     <div className="container mt-2 chat-app">
@@ -90,31 +91,31 @@ function Chat() {
         <div className="col-md-3 room-list" style={{ height: '90vh', overflowY: 'auto' }}>
           <h3>Chats</h3>
           <div className="room-filters">
-            <button 
+            <button
               className={`btn ${activeTab === 'all' ? 'btn-primary' : 'btn-outline-primary'}`}
               onClick={() => setActiveTab('all')}
             >
               All
             </button>
-            <button 
+            <button
               className={`btn ${activeTab === 'rooms' ? 'btn-primary' : 'btn-outline-primary'}`}
               onClick={() => setActiveTab('rooms')}
             >
               Rooms
             </button>
-            <button 
+            <button
               className={`btn ${activeTab === 'users' ? 'btn-success' : 'btn-outline-success'}`}
               onClick={() => setActiveTab('users')}
             >
               Users
             </button>
           </div>
-          
+
           <div className="rooms-container">
             {filteredRooms.length > 0 ? (
               filteredRooms.map((room) => (
-                <button 
-                  key={room._id} 
+                <button
+                  key={room._id}
                   className={`but-room ${selectedRoom && selectedRoom._id === room._id ? 'active' : ''}`}
                   onClick={() => joinRoom(room)}
                 >
@@ -142,22 +143,25 @@ function Chat() {
                   {selectedRoom.name}
                 </h3>
               </div>
-              
+
               <div className="chat-box" style={{ height: '62vh', overflowY: 'auto' }}>
                 {roomMessages.length > 0 ? (
                   <div className="messages-container">
                     {roomMessages.map((msg, index) => (
-                      <div 
-                        key={index} 
-                        className={`message ${msg.sender_role === "Mentor" ? 'outgoing' : 'incoming'}`}
-                      >
-                        <div className="message-header d-flex justify-content-between">
-                          <strong>{msg.sender.name}</strong>
-                          <span className="message-time">
-                            {msg.createdAt ? new Date(msg.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}
-                          </span>
+                      <div className='d-flex mb-3'>
+                        <img src={`http://localhost:3000/img/users/${msg.sender.image}`} style={{ width: "50px"}} className='img-fluid sender_img' alt="" />
+                        <div
+                          key={index}
+                          className={`message ${msg.sender_role === "Mentor" ? 'outgoing' : 'incoming'}`}
+                        >
+                          <div className="message-header d-flex justify-content-between gap-5">
+                            <strong>{msg.sender.name}</strong>
+                            <span className="message-time">
+                              {msg.createdAt ? new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
+                            </span>
+                          </div>
+                          <div className="message-content">{msg.content}</div>
                         </div>
-                        <div className="message-content">{msg.content}</div>
                       </div>
                     ))}
                     <div ref={messagesEndRef} />
@@ -169,7 +173,7 @@ function Chat() {
                   </div>
                 )}
               </div>
-              
+
               <div className="message-input-container">
                 <input
                   type="text"
@@ -178,8 +182,8 @@ function Chat() {
                   onChange={(e) => setMessage(e.target.value)}
                   onKeyPress={handleKeyPress}
                 />
-                <button 
-                  className="but-send" 
+                <button
+                  className="but-send"
                   onClick={sendMessage}
                   disabled={!message.trim()}
                 >
