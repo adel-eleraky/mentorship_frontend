@@ -34,7 +34,7 @@ export default function MentorsSection() {
             </div>
 
             <div className="d-flex justify-content-center mt-5">
-                <Link className="btn btn-success px-4 py-2 fw-bold" to={'/mentors'}>View all mentors</Link>
+                <Link className="btn btn-outline-success px-4 py-2 fw-bold" to={'/mentors'}>View all mentors</Link>
             </div>
         </div>
     );
