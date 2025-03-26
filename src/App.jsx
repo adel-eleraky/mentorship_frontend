@@ -36,6 +36,7 @@ import ProtectRoute from "./components/ProtectRoute.jsx";
 import UnAuthRoute from "./components/UnAuthRoute.jsx";
 import Layout from "./components/Layout.jsx";
 import Verify from "./pages/Verify.jsx";
+import Community from "./pages/Community.jsx";
 // import Chat from "./components/Chat/Chat";
 
 const socket = io("http://localhost:3000");
@@ -53,6 +54,8 @@ function App() {
           <Route path="/" element={<Home />} />
 
           <Route path="mentors" element={<BrowseMentors />} />
+
+          <Route path="community" element={<Community />} />
 
           {/* protected Routes */}
 
@@ -83,15 +86,15 @@ function App() {
               <Register />
             </UnAuthRoute>
           } />
-          
-          <Route path="confirm-email/:token"  element={<Verify />}/>
+
+          <Route path="confirm-email/:token" element={<Verify />} />
         </Route>
 
         <Route
           path="/meeting/:id"
           element={
             // <ProtectRoute>
-              <Meeting />
+            <Meeting />
             // </ProtectRoute>
           }
         />

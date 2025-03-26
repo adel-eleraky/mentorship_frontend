@@ -1,7 +1,7 @@
 import axios from "axios";
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Navigate, NavLink, useLocation, useNavigate, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 
 function NavBar() {
   // const { token, logout } = useAuthentication();

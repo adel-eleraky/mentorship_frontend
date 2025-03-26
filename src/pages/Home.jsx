@@ -3,6 +3,7 @@ import Hero from '../components/Hero/Hero'
 import MentorList from '../components/MentorListScroller/MentorListScroller'
 import CareerCoachSection from '../components/CareerCoachSection/CareerCoachSection'
 import MentorsSection from '../components/MentorsSection/MentorsSection'
+import CommunitySection from '../components/CommunitySection/CommunitySection'
 
 export default function Home() {
     return (
@@ -20,6 +21,9 @@ export default function Home() {
             </div>
             <div className="row  my-5">
                 <MentorsSection/>
+            </div>
+            <div className="row  my-5">
+                <CommunitySection/>
             </div>
         </div>
     )
