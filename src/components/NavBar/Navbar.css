@@ -1,0 +1,15 @@
+.search_result {
+    width: 100%;
+    padding: 10px;
+    background-color: white;
+    border-radius: 0 0 5px 5px;
+    box-shadow: 0px 0px 6px -2px gray;
+    z-index: 1000;
+}
+
+.search_result .title {
+    font-weight: 200;
+}
+.search_result .name {
+    text-decoration: none;
+}

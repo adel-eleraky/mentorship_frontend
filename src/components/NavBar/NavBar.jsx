@@ -1,22 +1,37 @@
 import axios from "axios";
-import React from "react";
+import "./NavBar.css"
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 
 function NavBar() {
   // const { token, logout } = useAuthentication();
   const location = useLocation();
   const { user } = useSelector(state => state.auth);
   const navigate = useNavigate();
+  const [search, setSearch] = useState("")
+  const [searchResult, setSearchResult] = useState([])
 
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-        navigate('/mentors');
-    }
-};
+  console.log(searchResult)
+  // const handleKeyPress = (e) => {
+  //   console.log("search" , e.key)
+  //   // if (e.key === 'Enter') {
+  //   //   navigate('/mentors');
+  //   // }
+  // };
+
+  const fetchSearch = async (value) => {
+    const res = await axios.post(`http://localhost:3000/api/v1/mentors/search`, { name: value })
+    return res.data
+  }
+  const handleSearch = async (e) => {
+    setSearch(e.target.value)
+    const mentors = await fetchSearch(e.target.value)
+    setSearchResult(mentors.data)
+  }
 
   async function logout() {
-    await axios.get("http://localhost:3000/api/v1/auth/logout" , {withCredentials: true})
+    await axios.get("http://localhost:3000/api/v1/auth/logout", { withCredentials: true })
     // return navigate("/login")
     // <Navigate to={"/login" }/>
   }
@@ -50,7 +65,8 @@ function NavBar() {
                     placeholder="Search"
                     aria-label="Search"
                     style={{ paddingLeft: "40px" }}
-                    onKeyPress={handleKeyPress}
+                    // onKeyPress={handleKeyPress}
+                    onChange={handleSearch}
                   />
                   <i
                     className="fas fa-search"
@@ -63,6 +79,20 @@ function NavBar() {
                       pointerEvents: "none",
                     }}
                   ></i>
+                  {searchResult.length != 0 && (
+                    <div className="position-absolute search_result">
+                      {searchResult.map(mentor => {
+                        return (
+                          <Link to={`mentorprofile/${mentor._id}`}>
+                            <div className="mb-3 d-flex ">
+                              <img src={`http://localhost:3000/img/users/${mentor.image}`} style={{ width: "40px", height: "40px" }} className="img-fluid me-3" alt="" />
+                              <h5 className="name"> {mentor.name} <br /> <p className="title"> {mentor.title} </p> </h5>
+                            </div>
+                          </Link>
+                        )
+                      })}
+                    </div>
+                  )}
                 </div>
               </form>
             )}
@@ -111,7 +141,7 @@ function NavBar() {
                     <li className="nav-item dropdown">
                       <img
                         className="nav-link dropdown-toggle img-fluid p-0"
-                        style={{ width: "40px"}}
+                        style={{ width: "40px" }}
                         src={`http://localhost:3000/img/users/${user.image}`}
                         role="button"
                         data-bs-toggle="dropdown"
