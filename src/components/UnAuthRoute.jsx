@@ -5,10 +5,10 @@ import { Navigate } from 'react-router';
 function UnAuthRoute({ children}) {
     const { user } = useSelector((state) => state.auth);
 
+    console.log(user)
     if (user && user.confirmEmail) {
-        console.log(user , "here")
-        if (user.role === "mentor") return <Navigate to="/mentor" />
-        if (user.role === "user") return <Navigate to="/user" />
+        if (user.role === "Mentor") return <Navigate to="/mentor" />
+        if (user.role === "User") return <Navigate to="/user" />
     } else {
         return children;
     }
