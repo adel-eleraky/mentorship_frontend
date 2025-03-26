@@ -138,7 +138,7 @@
   
   /* Message styling */
   .message {
-    margin-bottom: 15px;
+    /* margin-bottom: 15px; */
     padding: 10px 15px;
     border-radius: 8px;
     max-width: 80%;
@@ -152,6 +152,11 @@
     margin-right: auto;
   }
   
+  .sender_img {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+  }
   .message.outgoing {
     background-color: #118577;
     color: white;
