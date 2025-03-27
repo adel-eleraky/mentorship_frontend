@@ -16,13 +16,6 @@ function MentorProfile() {
 // const id ="67d5eb638678c21491e11a92";
 
 
-  const addSkill = (e) => {
-    e.preventDefault();
-    if (skill.trim() !== "") {
-      setSkills([...skills, skill]);
-      setSkill("");
-    }
-  }
 
   const fetchSessions = async () => {
     try {
@@ -90,13 +83,12 @@ function MentorProfile() {
   return (
     <>
 {      (loading) ? <p>Loading...</p>:
- <div className="row  ">
+ <div className="row m-0 ">
  <div className="comtainer  rounded">
    <div className="px-5 pb-4  cover mb-5">
      <div className="media  profile-head comtainer">
        <div className="profile  mr-3">
          <img
-          //  src="https://cdn.mentorcruise.com/cdn-cgi/image/width=368,format=auto/https://cdn.mentorcruise.com/cache/f88c4f35f7c951fb0710dc0e074c52a0/003d3bdb45c16bb9/220bafd789a1a63dac7ac070f0e6d672.jpg"
            src={`http://localhost:3000/img/users/${mentor?.image}`}
           alt="..."
            width={230}
@@ -104,17 +96,17 @@ function MentorProfile() {
          />
          <div className="media-body m-3 ">
           <div>
-          <h2 className="mt-2 mb-2">{mentor?.name}</h2>
-           <p className=" mentor-title mb-2">{mentor?.title}</p>
-           <p> Experience :{mentor?.experience}</p>
-           {/* <button
+          <h2 className="mt-2 mb-2 fw-bold second-color">{mentor?.name}</h2>
+           <p className=" mentor-title fw-medium  mb-2">{mentor?.title}</p>
+           <p> Experience: {mentor?.experience}</p>
+           <button
              href="#"
              className="btn edit-send"
              data-bs-toggle="modal"
              data-bs-target="#exampleModal"
            >
              Follow
-           </button> */}
+           </button>
 
           </div>
 
@@ -134,7 +126,7 @@ function MentorProfile() {
 }     
 
       {/* =========================== About ============================ */}
-      <div className="container py-3 mb-4 bg-light rounded shadow-sm mt-5">
+      <div className="container py-3 mb-4 bg-light rounded shadow-sm mt-4">
         <h3 className="mx-3">About</h3>
           {(loading) ? <p>Loading...</p>:
         <div className="p-4 rounded  bg-light">
@@ -400,7 +392,7 @@ function MentorProfile() {
       {/* ============================ Skills =========================== */}
         <div className="container py-3 mb-4 bg-light rounded shadow-sm mt-5">
           
-        <h3 className="mx-3">Skills: </h3>
+        <h3 className="mx-3 fw-medium ">Skills: </h3>
         <div className="p-4 rounded  bg-light">
           {skills.map((s, index) => (
            <span key={index} className="list-skills">{s}</span>
@@ -412,7 +404,7 @@ function MentorProfile() {
 
 
         <div className="container py-3 mb-4 mt-5">
-  <h3 className="mx-3">Reviews :</h3>
+  <h3 className="mx-3 fw-medium ">Reviews :</h3>
 
   {/* ============================================ */}
   <div className="p-4 rounded">
