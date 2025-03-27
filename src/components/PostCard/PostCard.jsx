@@ -1,32 +1,39 @@
 import React from 'react'
 
-export default function PostCard({post}) {
+export default function PostCard({ post }) {
     return (
-        <div className="post-card p-4 border rounded shadow-sm mb-4 bg-white">
-            <div className="d-flex align-items-center mb-2">
-                <span className="fw-bold text-success">{post.category}</span>
-                <span className="text-muted ms-2"> • {post.author} at {post.date}</span>
-            </div>
-
-            <h5 className="fw-bold">{post.title}</h5>
-            <p className="text-dark">{post.content}</p>
-
-            <div className="mt-3">
-                {post.tags.map((tag, index) => (
-                    <span key={index} className="badge bg-success me-2">{tag}</span>
-                ))}
-            </div>
-
-            <div className="d-flex justify-content-between mt-3 text-muted">
-                <div>
-                    <span className="me-3"><i className="fa-solid fa-thumbs-up"></i> Like</span>
-                    <span className="me-3"><i className="fa-solid fa-comments"></i> Answer</span>
-                    <span><i class="fa-solid fa-share-nodes"></i> Share</span>
+        <>
+            <div className="post-card bg-white ">
+                <div className="p-3">
+                    <div className="d-flex align-items-center mb-3">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png" className="rounded-circle me-2" alt="Profile" />
+                        <div>
+                            <h6 className="mb-0 fw-bold">{post.author}</h6>
+                            <small className="text-muted">{post.date} · <i className="fas fa-globe-americas" /></small>
+                        </div>
+                        <div className="ms-auto">
+                            <button className="btn btn-light btn-sm"><i className="fas fa-ellipsis user-icon" /></button>
+                        </div>
+                    </div>
+                    <p>{post.content}</p>
+                    <img src="/api/placeholder/800/500" className="img-fluid rounded" alt="Post Image" />
+                    <div className="d-flex justify-content-between align-items-center mt-3">
+                        <div>
+                            <span><i className="fas fa-thumbs-up user-icon" /> {post.likes}</span>
+                        </div>
+                        <div>
+                            <span>{post.comments} comments · {post.shares} shares</span>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <span>{post.answers} answers • {post.views} views</span>
+                <div className="post-actions">
+                    <div className="d-flex justify-content-between">
+                        <button><i className="far fa-thumbs-up me-2" /> Like</button>
+                        <button><i className="far fa-comment me-2" /> Comment</button>
+                        <button><i className="fas fa-share me-2" /> Share</button>
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     )
 }

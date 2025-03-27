@@ -2,6 +2,30 @@ import React, { useEffect, useState } from 'react'
 import './UserProfile.css'
 import { useParams } from 'react-router'
 import axios from 'axios'
+import PostsList from '../../../components/PostsList/PostsList'
+import CreatePostSection from '../../../components/CreatePostSection/CreatePostSection'
+
+const postsData = [
+  {
+      id: 1,
+      author: "Mikesanders55",
+      date: "March 11, 2025",
+      content: "I have a mechanical engineering degree and a CS master's but low grades. What certifications should I get?",
+      likes: 3,
+      comments: 159,
+      shares : 12,
+  },
+  {
+      id: 2,
+      author: "Learner Support",
+      date: "March 12, 2025",
+      content: "Tech companies are increasingly hiring remote workers. This trend is expected to continue in the future.",
+      likes: 0,
+      comments: 25,
+      shares : 3,
+  },
+];
+
 function CommunityUserProfile() {
 
   const { id } = useParams()
@@ -106,51 +130,9 @@ function CommunityUserProfile() {
     {/* Right Content - Posts */}
     <div className="col-md-7 col-lg-8">
       {/* Create Post */}
-      <div className="bg-white p-3 rounded mb-3 shadow-sm">
-        <div className="d-flex">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png" className="rounded-circle me-2" alt="Profile" />
-          <div className="input-group">
-            <input type="text" className="form-control rounded-pill bg-light" placeholder="What's on your mind, John?" />
-          </div>
-        </div>
-        <hr />
-        <div className="d-flex justify-content-between">
-          <button className="btn btn-light flex-grow-1 me-1"><i className="fas fa-images user-icon" /> Photo</button>
-          <button className="btn btn-light flex-grow-1"><i className="far fa-smile text-warning" /> Feeling</button>
-        </div>
-      </div>
-      {/* Post 1 */}
-      <div className="post-card bg-white ">
-        <div className="p-3">
-          <div className="d-flex align-items-center mb-3">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png" className="rounded-circle me-2" alt="Profile" />
-            <div>
-              <h6 className="mb-0 fw-bold">John Doe</h6>
-              <small className="text-muted">3 hours ago · <i className="fas fa-globe-americas" /></small>
-            </div>
-            <div className="ms-auto">
-              <button className="btn btn-light btn-sm"><i className="fas fa-ellipsis user-icon" /></button>
-            </div>
-          </div>
-          <p>Just had an amazing weekend getaway! Check out these photos from my trip to the mountains. The views were absolutely breathtaking! 🏔️ #WeekendVibes #Nature #MountainLife</p>
-          <img src="/api/placeholder/800/500" className="img-fluid rounded" alt="Post Image" />
-          <div className="d-flex justify-content-between align-items-center mt-3">
-            <div>
-              <span><i className="fas fa-thumbs-up user-icon" /> 500k</span>
-            </div>
-            <div>
-              <span>45 comments · 12 shares</span>
-            </div>
-          </div>
-        </div>
-        <div className="post-actions">
-          <div className="d-flex justify-content-between">
-            <button><i className="far fa-thumbs-up me-2" /> Like</button>
-            <button><i className="far fa-comment me-2" /> Comment</button>
-            <button><i className="fas fa-share me-2" /> Share</button>
-          </div>
-        </div>
-      </div>
+      <CreatePostSection />
+      {/* Posts */}
+      <PostsList posts={postsData} />
     </div>
   </div>
 </div>

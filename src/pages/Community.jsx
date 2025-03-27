@@ -7,25 +7,21 @@ import PostsList from "../components/PostsList/PostsList";
 const postsData = [
     {
         id: 1,
-        category: "Job Search Resources",
         author: "Mikesanders55",
         date: "March 11, 2025",
-        title: "Can someone guide me on how to get a tech remote job?",
         content: "I have a mechanical engineering degree and a CS master's but low grades. What certifications should I get?",
-        tags: ["Computer Science", "Introduction", "Career Support"],
-        answers: 3,
-        views: 159,
+        likes: 3,
+        comments: 159,
+        shares : 12,
     },
     {
         id: 2,
-        category: "Tech Industry News",
         author: "Learner Support",
         date: "March 12, 2025",
-        title: "Tech companies are hiring more remote workers",
         content: "Tech companies are increasingly hiring remote workers. This trend is expected to continue in the future.",
-        tags: ["Tech News", "Remote Work"],
-        answers: 0,
-        views: 25,
+        likes: 0,
+        comments: 25,
+        shares : 3,
     },
 ];
 
