@@ -11,7 +11,7 @@ export default function MentorCardSmall({ mentor }) {
                 style={{ height: "200px", objectFit: "cover" }}
             />
             <div className="card-body text-center">
-                <h5 className="card-title fw-bold">{mentor.name}</h5>
+                <h5 className="card-title fw-bold second-color">{mentor.name}</h5>
                 <p className="card-text text-muted">{mentor.title}</p>
                 <div className="d-flex flex-wrap justify-content-center mt-2">
                     {mentor.skills.map((skill, index) => (

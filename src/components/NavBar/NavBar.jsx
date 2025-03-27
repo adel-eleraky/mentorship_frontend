@@ -11,6 +11,7 @@ function NavBar() {
   const navigate = useNavigate();
   const [search, setSearch] = useState("")
   const [searchResult, setSearchResult] = useState([])
+  const id ="67d5edf48678c21491e11ab8";
 
   console.log(searchResult)
   // const handleKeyPress = (e) => {
@@ -41,7 +42,8 @@ function NavBar() {
       <nav className="navbar navbar-expand-lg">
         <div className="container mt-2 border-bottom border-light-subtle">
           <NavLink className="navbar-brand fs-4 bold mb-2" to={"/"}>
-            <span className="fw-bold">Mentor</span>Ship
+            <span className="fw-bold second-color">Mentor</span>
+            <span className="fw-medium frist-color">Ship</span>
           </NavLink>
           <button
             className="navbar-toggler"
@@ -133,7 +135,9 @@ function NavBar() {
               </li>
 
               <li className="nav-item mx-4">
-                <NavLink className="btn btn-success" to={'/mentors'}>Browse all mentors</NavLink>
+                <NavLink className="btn btn-success " 
+                style={{ background: "#118577" }}
+                to={'/mentors'}>Browse all mentors</NavLink>
               </li>
               {user ?
                 (
@@ -150,6 +154,11 @@ function NavBar() {
                       <ul className="dropdown-menu  end-50 start-50 ">
                         <li>
                           <NavLink className="dropdown-item" to="/user">
+                            Dashbord
+                          </NavLink>
+                        </li>
+                        <li>
+                          <NavLink className="dropdown-item" to={`/community/user/${id}`}>
                             Profile
                           </NavLink>
                         </li>
@@ -158,13 +167,12 @@ function NavBar() {
                             Chat
                           </NavLink>
                         </li>
-                        <li>
-                          <button className="dropdown-item" onClick={() => logout()}>
-                            Logout
-                          </button>
-                        </li>
+                     
                       </ul>
-                    </li>
+                      </li>
+                      <button className="btn fw-bold second-color" onClick={() => logout()}>
+                        Logout
+                      </button>
                   </>
                   // <>
                   //   <li className="nav-item">

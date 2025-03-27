@@ -81,9 +81,9 @@ export default function Hero() {
                 Learn a new skill, launch a project, land your dream career.
             </p>
             <h1 className="fw-bold my-4">
-                <span>{oneOnOneText}</span>{oneOnOneText.length < oneOnOneFullText[oneOnOneIndex]?.length} <br />
-                <span className="text-success">{text}</span>{text.length < fullText[index]?.length && <span className={styles.cursor}></span>}<br />
-                Mentorship
+                <span className='second-color'>{oneOnOneText}</span>{oneOnOneText.length < oneOnOneFullText[oneOnOneIndex]?.length} <br />
+                <span className=" frist-color">{text}</span>{text.length < fullText[index]?.length && <span className={styles.cursor}></span>}<br />
+                <span className='second-color'>Mentorship</span>
             </h1>
             <div className="d-flex">
                 <div style={{ position: 'relative', width: '65%', border: '1px solid gray', borderRadius: '10px', padding: '3px' }}>
@@ -105,6 +105,7 @@ export default function Hero() {
                             right: '5px',
                             top: '7px',
                             height: '75%',
+                            backgroundColor:'#118577'
                         }}
                         to={'/mentors'}
                     >

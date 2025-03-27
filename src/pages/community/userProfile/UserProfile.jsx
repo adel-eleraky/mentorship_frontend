@@ -26,7 +26,7 @@ function CommunityUserProfile() {
  <div className=" user-pro ">
   <div className="cover-photo">
     <div className='container'>
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png" className="profile-picture" alt="Profile Picture" />
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png" className="user-profile-picture" alt="Profile Picture" />
 
 
     </div>
@@ -36,7 +36,7 @@ function CommunityUserProfile() {
   <div className="profile-info ">
     <div className="d-flex justify-content-between align-items-end">
       <div>
-        <h1 className="fw-bold mb-0">John Doe</h1>
+        <h1 className="fw-bold mb-0 second-color">John Doe</h1>
         <h5>Software Engineer</h5>
         <div>
           <span className="text-muted mb-0">123 Following : </span>
@@ -116,41 +116,50 @@ function CommunityUserProfile() {
         <hr />
         <div className="d-flex justify-content-between">
           <button className="btn btn-light flex-grow-1 me-1"><i className="fas fa-images user-icon" /> Photo</button>
-          <button className="btn btn-light flex-grow-1"><i className="far fa-smile text-warning" /> Feeling</button>
+          <button className="btn btn-light flex-grow-1"><i className="far fa-smile second-color" /> Feeling</button>
         </div>
       </div>
+
+
+
       {/* Post 1 */}
-      <div className="post-card bg-white ">
-        <div className="p-3">
-          <div className="d-flex align-items-center mb-3">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png" className="rounded-circle me-2" alt="Profile" />
-            <div>
-              <h6 className="mb-0 fw-bold">John Doe</h6>
-              <small className="text-muted">3 hours ago · <i className="fas fa-globe-americas" /></small>
+      {posts.map((post)=>( 
+          <div key={post.id} className="post-card bg-white ">
+          <div className="p-3">
+            <div className="d-flex align-items-center mb-3">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png" className="rounded-circle me-2" alt="Profile" />
+              <div>
+                <h6 className="mb-0 fw-bold">John Doe</h6>
+                <small className="text-muted">{post.createdAt} <i className="fas fa-globe-americas" /></small>
+              </div>
+              <div className="ms-auto">
+                <button className="btn btn-light btn-sm"><i className="fas fa-ellipsis user-icon" /></button>
+              </div>
             </div>
-            <div className="ms-auto">
-              <button className="btn btn-light btn-sm"><i className="fas fa-ellipsis user-icon" /></button>
+            <p>{post.content}</p>
+            <div className="d-flex justify-content-between align-items-center mt-3">
+              <div>
+                {/* <span><i className="fas fa-thumbs-up user-icon" />{ post.reactions.likes} 500k</span> */}
+              </div>
+              <div>
+                <span>45 comments · 12 shares</span>
+              </div>
             </div>
           </div>
-          <p>Just had an amazing weekend getaway! Check out these photos from my trip to the mountains. The views were absolutely breathtaking! 🏔️ #WeekendVibes #Nature #MountainLife</p>
-          <img src="/api/placeholder/800/500" className="img-fluid rounded" alt="Post Image" />
-          <div className="d-flex justify-content-between align-items-center mt-3">
-            <div>
-              <span><i className="fas fa-thumbs-up user-icon" /> 500k</span>
-            </div>
-            <div>
-              <span>45 comments · 12 shares</span>
+          <div className="post-actions">
+            <div className="d-flex justify-content-between">
+              <button><i className="far fa-thumbs-up me-2" /> Like</button>
+              <button><i className="far fa-comment me-2" /> Comment</button>
+              <button><i className="fas fa-share me-2" /> Share</button>
             </div>
           </div>
         </div>
-        <div className="post-actions">
-          <div className="d-flex justify-content-between">
-            <button><i className="far fa-thumbs-up me-2" /> Like</button>
-            <button><i className="far fa-comment me-2" /> Comment</button>
-            <button><i className="fas fa-share me-2" /> Share</button>
-          </div>
-        </div>
-      </div>
+
+
+
+
+      ))}
+    
     </div>
   </div>
 </div>

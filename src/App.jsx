@@ -90,6 +90,14 @@ function App() {
           } />
 
           <Route path="confirm-email/:token" element={<Verify />} />
+          <Route
+          path="/chat"
+          element={
+            <ProtectRoute>
+              <Chat />
+            </ProtectRoute>
+          }
+        />
         </Route>
 
         <Route
@@ -100,14 +108,7 @@ function App() {
             // </ProtectRoute>
           }
         />
-        <Route
-          path="/chat"
-          element={
-            <ProtectRoute>
-              <Chat />
-            </ProtectRoute>
-          }
-        />
+     
       </Routes>
     </Provider>
   );
