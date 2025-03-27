@@ -1,12 +1,18 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 export default function PostCard({ post }) {
+    const [imageError, setImageError] = useState(false);
     return (
         <>
             <div className="post-card bg-white ">
                 <div className="p-3">
                     <div className="d-flex align-items-center mb-3">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png" className="rounded-circle me-2" alt="Profile" />
+                        <img
+                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png"
+                            className="rounded-circle me-2"
+                            alt="Profile"
+                            style={{ width: "40px" }}
+                        />
                         <div>
                             <h6 className="mb-0 fw-bold">{post.author}</h6>
                             <small className="text-muted">{post.date} · <i className="fas fa-globe-americas" /></small>
@@ -16,8 +22,15 @@ export default function PostCard({ post }) {
                         </div>
                     </div>
                     <p>{post.content}</p>
-                    <img src="/api/placeholder/800/500" className="img-fluid rounded" alt="Post Image" />
-                    <div className="d-flex justify-content-between align-items-center mt-3">
+                    {!imageError && (
+                        <img
+                            src="/api/placeholder/800/500"
+                            className="img-fluid rounded"
+                            alt="Post Image"
+                            onError={() => setImageError(true)}
+                            style={{ display: imageError ? 'none' : 'block' }}
+                        />
+                    )}                    <div className="d-flex justify-content-between align-items-center mt-3">
                         <div>
                             <span><i className="fas fa-thumbs-up user-icon" /> {post.likes}</span>
                         </div>
