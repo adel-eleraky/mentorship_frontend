@@ -1,25 +1,25 @@
 import React from 'react'
 import { Link } from 'react-router';
-import DiscussionCard from '../DiscussionCard/DiscussionCard';
-import { date } from 'yup';
+import PostCard from '../PostCard/PostCard';
+
+const posts = [
+    { id: 1, content: "I have a mechanical engineering degree and a CS master's but low grades. What certifications should I get?", author: "JohnDoe", likes: 15, comments: 120, shares: 10, date: "2021-09-30T04:53:00" },
+    { id: 2, content: "Tech companies are increasingly hiring remote workers. This trend is expected to continue in the future.", author: "JaneDoe", likes: 8, comments: 85, shares: 5, date: "2021-09-30T04:53:00" },
+    { id: 3, content: "I have a mechanical engineering degree and a CS master's but low grades. What certifications should I get?", author: "AlexSmith", likes: 12, comments: 150, shares: 8, date: "2021-09-30T04:53:00" },
+    { id: 4, content: "Tech companies are increasingly hiring remote workers. This trend is expected to continue in the future.", author: "SophiaTech", likes: 30, comments: 300, shares: 15, date: "2021-09-30T04:53:00" },
+    { id: 5, content: "I have a mechanical engineering degree and a CS master's but low grades. What certifications should I get?", author: "ChrisDev", likes: 10, comments: 95, shares: 7, date: "2021-09-30T04:53:00" },
+    { id: 6, content: "Tech companies are increasingly hiring remote workers. This trend is expected to continue in the future.", author: "SophiaTech", likes: 20, comments: 200, shares: 12, date: "2021-09-30T04:53:00" },
+]
 
 export default function CommunitySection() {
-        const discussions = [
-        { id: 1, title: "How to get started in Frontend?", author: "JohnDoe", replies: 15, views: 120, likes: 10, date: "2021-09-30T04:53:00" },
-        { id: 2, title: "Best practices for React performance", author: "JaneDoe", replies: 8, views: 85, likes: 5, date: "2021-09-30T04:53:00" },
-        { id: 3, title: "How to switch from backend to fullstack?", author: "AlexSmith", replies: 12, views: 150, likes: 8, date: "2021-09-30T04:53:00" },
-        { id: 4, title: "Career path for a junior developer", author: "SophiaTech", replies: 30, views: 300, likes: 15, date: "2021-09-30T04:53:00" },
-        { id: 5, title: "Is TypeScript worth learning?", author: "ChrisDev", replies: 10, views: 95, likes: 7, date: "2021-09-30T04:53:00" },
-        { id: 6, title: "Career path for a junior developer", author: "SophiaTech", replies: 20, views: 200, likes: 12, date: "2021-09-30T04:53:00" },
-    ]
 
     return (
         <div className="community-section p-4 bg-light rounded">
-            <h2 className="mb-3">Community Activity</h2>
+            <h2 className="mb-3">Community Activities</h2>
             <div className="row">
-                {discussions.map((discussion) => (
-                    <div key={discussion.id} className="col-md-4 mb-3">
-                        <DiscussionCard discussion={discussion} />
+                {posts.map((post) => (
+                    <div key={post.id} className="col-md-4 mb-3">
+                        <PostCard post={post} />
                     </div>
                 ))}
             </div>

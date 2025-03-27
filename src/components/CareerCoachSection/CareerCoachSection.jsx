@@ -1,5 +1,5 @@
 import React from 'react';
-import profileImg from '../../assets/profile-img.webp';
+import profileImg from '../../assets/profile-img.png';
 import { Link } from 'react-router';
 
 export default function CareerCoachSection() {
@@ -18,7 +18,7 @@ export default function CareerCoachSection() {
                                 src={profileImg}
                                 alt="Mentor"
                                 className="rounded-circle me-3"
-                                style={{ width: '100px' }}
+                                style={{ width: '70px' }}
                             />
                             <div>
                                 <h6 className="mb-0 fw-bold">Sanjeev Subedi</h6>

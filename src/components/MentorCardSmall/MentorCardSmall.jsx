@@ -1,5 +1,5 @@
 import React from 'react'
-import profileImg from '../../assets/profile-img.webp';
+import profileImg from '../../assets/profile-img.png';
 
 export default function MentorCardSmall({ mentor }) {
     return (
@@ -8,7 +8,7 @@ export default function MentorCardSmall({ mentor }) {
                 src={profileImg}
                 alt={mentor.name}
                 className="card-img-top rounded"
-                style={{ height: "200px", objectFit: "cover" }}
+                style={{ height: "200px", objectFit: "contain" }}
             />
             <div className="card-body text-center">
                 <h5 className="card-title fw-bold">{mentor.name}</h5>

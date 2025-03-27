@@ -1,5 +1,5 @@
 import React from 'react';
-import profileImg from '../../assets/profile-img.webp';
+import profileImg from '../../assets/profile-img.png';
 import { Link } from 'react-router-dom';
 
 export default function MentorCardLarge({ mentor }) {
@@ -11,7 +11,7 @@ export default function MentorCardLarge({ mentor }) {
                         src={profileImg}
                         alt="Mentor"
                         className="rounded"
-                        style={{ width: "100px", height: "100px", objectFit: "cover" }}
+                        style={{ width: "80px", height: "80px", objectFit: "cover" }}
                     />
                 </div>
 

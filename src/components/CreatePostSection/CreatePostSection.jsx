@@ -4,7 +4,12 @@ export default function CreatePostSection() {
     return (
         <div className="bg-white p-3 rounded mb-3 shadow-sm">
             <div className="d-flex">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png" className="rounded-circle me-2" alt="Profile" />
+                <img 
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png" 
+                    className="rounded-circle me-2" 
+                    alt="Profile" 
+                    style={{ width: "45px" }}
+                />
                 <div className="input-group">
                     <input type="text" className="form-control rounded-pill bg-light" placeholder="What's on your mind, John?" />
                 </div>

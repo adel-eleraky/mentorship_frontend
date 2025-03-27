@@ -1,5 +1,5 @@
 import React from 'react';
-import profileImg from '../../assets/profile-img.webp';
+import profileImg from '../../assets/profile-img.png';
 
 export default function MentorCardScroller({ mentor }) {
     return (
@@ -10,7 +10,7 @@ export default function MentorCardScroller({ mentor }) {
                         src={profileImg}
                         alt={mentor.name}
                         className="rounded-circle me-3"
-                        style={{ width: "60px", height: "60px" }}
+                        style={{ width: "57px", height: "57px" }}
                     />
                     <div>
                         <h5 className="fw-bold mb-1">{mentor.name} <i className='fa-solid fa-star fs-6 ms-3 text-success'></i>

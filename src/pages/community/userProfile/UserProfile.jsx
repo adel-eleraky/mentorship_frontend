@@ -8,7 +8,7 @@ import CreatePostSection from '../../../components/CreatePostSection/CreatePostS
 const postsData = [
   {
       id: 1,
-      author: "Mikesanders55",
+      author: "John Doe",
       date: "March 11, 2025",
       content: "I have a mechanical engineering degree and a CS master's but low grades. What certifications should I get?",
       likes: 3,
@@ -17,7 +17,7 @@ const postsData = [
   },
   {
       id: 2,
-      author: "Learner Support",
+      author: "John Doe",
       date: "March 12, 2025",
       content: "Tech companies are increasingly hiring remote workers. This trend is expected to continue in the future.",
       likes: 0,
