@@ -93,8 +93,8 @@ function App() {
         <Route
           path="/meeting/:id"
           element={
-            // <ProtectRoute>
-            // </ProtectRoute>
+            // <ProtectedRoutes>
+            // </ProtectedRoutes>
             <Meeting />
           }
         />
