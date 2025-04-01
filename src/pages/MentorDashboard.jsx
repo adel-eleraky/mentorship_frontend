@@ -13,6 +13,7 @@ import {
   fetchMentorData,
   updateMentorProfile,
 } from "../rtk/features/mentorSlice";
+import { Call } from "@stream-io/video-react-sdk";
 
 export default function MentorDashboard() {
   const navigate = useNavigate();
@@ -59,6 +60,7 @@ export default function MentorDashboard() {
 
       if (response.data && response.data.data) {
         setScheduledMeetings(response.data.data);
+        console.log(response.data.data);
       }
     } catch (error) {
       console.error("Error fetching mentor sessions:", error);

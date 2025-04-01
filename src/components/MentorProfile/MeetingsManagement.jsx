@@ -9,12 +9,24 @@ const MeetingsManagement = ({
   loading,
   onRefresh,
 }) => {
+  // State to track which meetings have expanded recording sections
+  const [expandedMeetings, setExpandedMeetings] = useState({});
+
+  // Toggle expanded state for a meeting
+  const toggleExpanded = (meetingId) => {
+    setExpandedMeetings((prev) => ({
+      ...prev,
+      [meetingId]: !prev[meetingId],
+    }));
+  };
+
   // Sort meetings to show the nearest one first
   const sortedMeetings = scheduledMeetings.sort((a, b) => {
     const aDate = new Date(a.schedule_time);
     const bDate = new Date(b.schedule_time);
     return aDate - bDate;
   });
+
   const handleDeleteMeeting = async (meetingId) => {
     try {
       await deleteMentorSessions(meetingId);
@@ -77,6 +89,20 @@ const MeetingsManagement = ({
     return timeMessage;
   };
 
+  // Format recording duration
+  const formatDuration = (startTime, endTime) => {
+    if (!startTime || !endTime) return "Unknown duration";
+
+    const start = new Date(startTime);
+    const end = new Date(endTime);
+    const durationMs = end - start;
+
+    const minutes = Math.floor(durationMs / (1000 * 60));
+    const seconds = Math.floor((durationMs % (1000 * 60)) / 1000);
+
+    return `${minutes}m ${seconds}s`;
+  };
+
   return (
     <div className="card">
       <div className="card-body">
@@ -116,48 +142,114 @@ const MeetingsManagement = ({
               </thead>
               <tbody>
                 {sortedMeetings.map((meeting) => (
-                  <tr key={meeting.id || meeting._id}>
-                    <td>{meeting.title}</td>
-                    <td>{formatDate(meeting.schedule_time)}</td>
-                    <td>{meeting.duration} min</td>
-                    <td>
-                      <span
-                        className={`badge ${
-                          meeting.status === "pending"
-                            ? "bg-warning"
-                            : "bg-success"
-                        }`}
-                      >
-                        {meeting.status}
-                      </span>
-                    </td>
-                    <td>
-                      <div className="btn-group btn-group-sm">
-                        <button
-                          className="btn btn-outline-primary"
-                          title="Join meeting"
-                          onClick={() => handleJoinMeeting(meeting)}
+                  <React.Fragment key={meeting.id || meeting._id}>
+                    <tr>
+                      <td>{meeting.title}</td>
+                      <td>{formatDate(meeting.schedule_time)}</td>
+                      <td>{meeting.duration} min</td>
+                      <td>
+                        <span
+                          className={`badge ${
+                            meeting.status === "pending"
+                              ? "bg-warning"
+                              : "bg-success"
+                          }`}
                         >
-                          <i className="bi bi-camera-video"></i>
-                        </button>
-                        <button
-                          className="btn btn-outline-secondary"
-                          title="Edit meeting"
-                        >
-                          <i className="bi bi-pencil"></i>
-                        </button>
-                        <button
-                          className="btn btn-outline-danger"
-                          title="Cancel meeting"
-                          onClick={() =>
-                            handleDeleteMeeting(meeting._id || meeting.id)
-                          }
-                        >
-                          <i className="bi bi-trash"></i>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
+                          {meeting.status}
+                        </span>
+                      </td>
+                      <td>
+                        <div className="btn-group btn-group-sm">
+                          <button
+                            className="btn btn-outline-primary"
+                            title="Join meeting"
+                            onClick={() => handleJoinMeeting(meeting)}
+                          >
+                            <i className="bi bi-camera-video"></i>
+                          </button>
+                          <button
+                            className="btn btn-outline-secondary"
+                            title="Edit meeting"
+                          >
+                            <i className="bi bi-pencil"></i>
+                          </button>
+                          <button
+                            className="btn btn-outline-danger"
+                            title="Cancel meeting"
+                            onClick={() =>
+                              handleDeleteMeeting(meeting._id || meeting.id)
+                            }
+                          >
+                            <i className="bi bi-trash"></i>
+                          </button>
+
+                          <button
+                            className="btn btn-outline-info"
+                            title="View Recordings"
+                            disabled={
+                              !meeting.recordings ||
+                              meeting.recordings.length === 0
+                            }
+                            onClick={() =>
+                              toggleExpanded(meeting._id || meeting.id)
+                            }
+                          >
+                            <i className="bi bi-film"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    {/* Recordings section - shown when expanded */}
+                    {meeting.recordings &&
+                      meeting.recordings.length > 0 &&
+                      expandedMeetings[meeting._id || meeting.id] && (
+                        <tr>
+                          <td colSpan="5" className="p-0">
+                            <div className="bg-light p-3 border-top">
+                              <h6 className="mb-3">
+                                <i className="bi bi-collection-play me-2"></i>
+                                Session Recordings
+                              </h6>
+                              <div className="row row-cols-1 row-cols-md-2 g-3">
+                                {meeting.recordings.map((recording, index) => (
+                                  <div className="col" key={index}>
+                                    <div className="card h-100 shadow-sm">
+                                      <div className="card-body">
+                                        <h6 className="card-title text-truncate">
+                                          Recording {index + 1}
+                                        </h6>
+                                        <p className="card-text small mb-1">
+                                          <i className="bi bi-clock me-1"></i>
+                                          {formatDate(recording.start_time)}
+                                        </p>
+                                        <p className="card-text small mb-2">
+                                          <i className="bi bi-stopwatch me-1"></i>
+                                          {formatDuration(
+                                            recording.start_time,
+                                            recording.end_time
+                                          )}
+                                        </p>
+                                      </div>
+                                      <div className="card-footer bg-transparent border-top-0">
+                                        <a
+                                          href={recording.url}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="btn btn-sm btn-primary w-100"
+                                        >
+                                          <i className="bi bi-play-fill me-1"></i>
+                                          Watch Recording
+                                        </a>
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                  </React.Fragment>
                 ))}
               </tbody>
             </table>

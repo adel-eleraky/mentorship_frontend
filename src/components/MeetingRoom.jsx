@@ -17,10 +17,24 @@ import {
 } from "../components/ui/dropdown-menu";
 import EndCallButton from "./EndCallButton";
 
-const MeetingRoom = () => {
+const MeetingRoom = ({ recordings, refreshRecordings }) => {
   const [layout, setLayout] = useState("speaker-left");
   const [showParticipants, setShowParticipants] = useState(false);
   const navigate = useNavigate();
+
+  // Handle ending the call and saving recordings
+  const handleEndCall = async () => {
+    try {
+      // Refresh recordings one last time before ending
+      await refreshRecordings();
+      alert("Call ended. Recordings saved.");
+      // Navigate away
+      navigate("/");
+    } catch (error) {
+      console.error("Error ending call:", error);
+      navigate("/");
+    }
+  };
 
   const CallLayout = () => {
     switch (layout) {
@@ -53,7 +67,7 @@ const MeetingRoom = () => {
       </div>
 
       <div className="fixed-bottom d-flex w-100 justify-content-center align-items-center gap-3">
-        <CallControls onLeave={() => navigate("/")} />
+        <CallControls onLeave={handleEndCall} />
         <DropdownMenu>
           <div className="d-flex align-items-center">
             <DropdownMenuTrigger className="cursor-pointer rounded-2xl bg-dark px-4 py-2 hover:bg-secondary">
@@ -84,7 +98,7 @@ const MeetingRoom = () => {
             <People className="text-info w-50" />
           </div>
         </button>
-        <EndCallButton />
+        <EndCallButton onClick={handleEndCall} />
       </div>
     </section>
   );
