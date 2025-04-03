@@ -56,6 +56,10 @@ const validationSchema = Yup.object().shape({
   phone: Yup.string()
   .matches(/^01[0-9]{9}$/, "Phone number must be a valid Egyptian number (01xxxxxxxxx)")
   .required("Phone number is required"),
+
+  role: Yup.string()
+      .required("Please select a role")
+      .oneOf(["User", "Mentor"], "Role must be 'User' or 'Mentor'")
 });
 
 export default function Register() {
@@ -254,7 +258,7 @@ export default function Register() {
                   type="submit"
                   fullWidth
                   variant="contained"
-                  color="primary"
+                  color="success"
                   disabled={loading}
                 >
                   {loading ? <CircularProgress size={24} color="inherit" /> : "Register"}

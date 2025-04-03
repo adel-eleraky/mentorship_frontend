@@ -11,8 +11,8 @@
     margin-bottom: 15px;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
     border: 1px solid #e9ecef !important;
-    height: 100%;
-  /* border-radius: 10px; */
+    height: 90vh;
+
   }
   
   /* Main chat container */
@@ -20,7 +20,7 @@
     border-radius: 12px;
     box-shadow: 10 8px 30px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    /* background-color: #fbfbfb; */
+    background-color: #fbfbfb;
   }
   
   /* Room list styling */

@@ -19,12 +19,12 @@ import {
   FormControlLabel,
   CircularProgress,
   Radio,
-  RadioGroup
+  RadioGroup,
+  FormControl,
+  FormLabel
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { useAuthentication } from "../../Context/AuthContext";
-
-import io from "socket.io-client"
+// Redux + Thunks
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../rtk/features/authSlice";
 
@@ -35,139 +35,120 @@ const validationSchema = Yup.object().shape({
 
   password: Yup.string()
     .required("Password is required")
-    .min(8, "Password should be at least 8 characters long")
-    .max(29, "Password should be at most 29 characters long")
-    .matches(/[a-z]/, "Password must contain at least one lowercase letter")
-    .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .matches(/\d/, "Password must contain at least one number")
-    .matches(/[@$!%*?&]/, "Password must contain at least one special character"),
+    .min(8, "At least 8 characters long")
+    .max(29, "At most 29 characters long")
+    .matches(/[a-z]/, "Must contain at least one lowercase letter")
+    .matches(/[A-Z]/, "Must contain at least one uppercase letter")
+    .matches(/\d/, "Must contain at least one number")
+    .matches(/[@$!%*?&]/, "Must contain at least one special character"),
+
+  // ✅ Require role to be either 'User' or 'Mentor'
+  role: Yup.string()
+    .required("Please select a role")
+    .oneOf(["User", "Mentor"], "Role must be 'User' or 'Mentor'")
 });
 
 function Login() {
-
-  // ========================= VE ==============================
-
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  // const [apiError, setApiError] = useState(null);
-  // const { setToken, tokenKey, setUser } = useAuthentication();
-  // const [isLoading, setIsLoading] = useState(false);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-  const { user, loading, errors: serverErrors } = useSelector(state => state.auth)
+  // Redux state
+  const { user, loading, errors: serverErrors } = useSelector((state) => state.auth);
+
+  // If user is already logged in, redirect them
   if (user) {
-    if (user.role === "mentor") return navigate("/mentor")
-    if (user.role === "user") return navigate("/user")
+    if (user.role === "mentor") return navigate("/mentor");
+    if (user.role === "user") return navigate("/user");
   }
 
+  // React Hook Form setup
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors }
   } = useForm({
-    mode: "onChange", // Validate on blur
+    mode: "onChange",
     resolver: yupResolver(validationSchema),
     defaultValues: {
       email: "",
       password: "",
       role: ""
-    },
+    }
   });
 
-  // Called when user submits the form
-  async function onSubmit(values) {
-    // try {
-    //   setIsLoading(true);
-    //   setApiError(null);
-
-    //   console.log(values)
-
-    //   const response = await axios.post("http://localhost:3000/api/v1/auth/login", values);
-
-    //   if (response.status === 200) {
-    //     console.log(response)
-    //     console.log("Login successful:", response.data);
-    //     localStorage.setItem(tokenKey, response.data.token);
-    //     setToken(response.data.token);
-
-    //     // setUser(response.data.data)
-    //     toast.success("Login successful!", { autoClose: 500 });
-
-    //     setTimeout(() => {
-    //       navigate("/");
-    //     }, 1000);
-    //   } else {
-    //     console.log("Unexpected response:", response);
-    //   }
-    // } catch (error) {
-    //   console.error("Error response data:", error.response?.data);
-    //   setApiError(error.response?.data?.message || "Login failed");
-    // } finally {
-    //   setIsLoading(false);
-    // }
-    dispatch(loginUser(values))
-  }
-
+  // Submit handler
+  const onSubmit = (values) => {
+    dispatch(loginUser(values));
+  };
 
   return (
-    <>
+    <Container maxWidth="sm">
+      <Box
+        sx={{
+          mt: 4,
+          mb: 4,
+          p: 4,
+          boxShadow: 3,
+          borderRadius: 2,
+          bgcolor: "background.paper"
+        }}
+      >
+        <Typography variant="h4" align="center" gutterBottom>
+          Login
+        </Typography>
 
-      <Container maxWidth="sm">
-        <Box
-          sx={{
-            mt: 4,
-            mb: 4,
-            p: 4,
-            boxShadow: 3,
-            borderRadius: 2,
-            bgcolor: "background.paper"
-          }}
-        >
-          <Typography variant="h4" align="center" gutterBottom>
-            Login
-          </Typography>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Grid container spacing={2}>
+            {/* Email Field */}
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Email Address"
+                type="email"
+                {...register("email")}
+                error={
+                  Boolean(errors.email) || Boolean(serverErrors?.email)
+                }
+                helperText={
+                  errors.email?.message ?? serverErrors?.email
+                }
+              />
+            </Grid>
 
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <Grid container spacing={2}>
-              {/* Email */}
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Email Address"
-                  type="email"
-                  {...register("email")}
-                  error={Boolean(errors.email) || Boolean(serverErrors?.email)}
-                  helperText={errors.email?.message ?? serverErrors?.email}
-                />
-              </Grid>
+            {/* Password Field */}
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Password"
+                type={showPassword ? "text" : "password"}
+                {...register("password")}
+                error={
+                  Boolean(errors.password) || Boolean(serverErrors?.password)
+                }
+                helperText={
+                  errors.password?.message ?? serverErrors?.password
+                }
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => setShowPassword(!showPassword)}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
+              />
+            </Grid>
 
-              {/* Password */}
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Password"
-                  type={showPassword ? "text" : "password"}
-                  {...register("password")}
-                  error={Boolean(errors.password) || Boolean(serverErrors?.password)}
-                  helperText={errors.password?.message ?? serverErrors?.password}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={() => setShowPassword(!showPassword)}
-                          edge="end"
-                        >
-                          {showPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
-
-              {/* Login as User or Mentor */}
-              <Grid item xs={12}>
-                <RadioGroup>
+            {/* Role (User or Mentor) - Required */}
+            <Grid item xs={12}>
+              <FormControl component="fieldset">
+                <FormLabel component="legend">Login as</FormLabel>
+                <RadioGroup row>
                   <FormControlLabel
                     control={<Radio {...register("role")} value="User" />}
                     label="User"
@@ -177,54 +158,81 @@ function Login() {
                     label="Mentor"
                   />
                 </RadioGroup>
-              </Grid>
-              {/* Remember Me */}
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={<Checkbox name="rememberMe" />}
-                  label="Remember Me"
-                />
-              </Grid>
+              </FormControl>
+              {/* Show Yup error if no role selected */}
+              {errors.role && (
+                <Typography color="error" variant="body2">
+                  {errors.role.message}
+                </Typography>
+              )}
+              {/* Potential server error about role (less common) */}
+              {serverErrors?.role && (
+                <Typography color="error" variant="body2">
+                  {serverErrors.role}
+                </Typography>
+              )}
+            </Grid>
 
-              {/* Don't have an account? */}
+            {/* Remember Me */}
+            <Grid item xs={12}>
+              <FormControlLabel
+                control={<Checkbox name="rememberMe" />}
+                label="Remember Me"
+              />
+            </Grid>
+
+            {/* OPTIONAL: A top-level server error (e.g., "Please confirm your email") */}
+            {serverErrors?.message && (
               <Grid item xs={12}>
-                <Typography align="center" variant="body2">
-                  Don't have an account?{" "}
-                  <Button
-                    variant="text"
-                    color="primary"
-                    onClick={() => navigate("/register")}
-                  >
-                    Sign Up
-                  </Button>
+                <Typography color="error" align="center">
+                  {serverErrors.message}
                 </Typography>
               </Grid>
-              {/* Error from API */}
-              {/* {apiError && (
-                <Grid item xs={12}>
-                  <Typography color="error">{apiError}</Typography>
-                </Grid>
-              )} */}
+            )}
 
-              {/* Submit Button */}
-              <Grid item xs={12}>
+            <Grid item xs={12}>
+              <Typography align="center" variant="body2">
                 <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  disabled={loading}
+                  variant="text"
+                  color="success"
+                  onClick={() => navigate("/forgot-password")}
                 >
-                  {loading ? <CircularProgress size={24} color="inherit" /> : "Login"}
+                  Forgot Password?
                 </Button>
-              </Grid>
+              </Typography>
             </Grid>
-          </form>
-        </Box>
-      </Container>
 
-    </>
+            {/* Submit Button */}
+            <Grid item xs={12}>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="success"
+                disabled={loading}
+              >
+                {loading ? <CircularProgress size={24} color="inherit" /> : "Login"}
+              </Button>
+            </Grid>
+
+            {/* Don't have an account? Sign Up */}
+            <Grid item xs={12}>
+              <Typography align="center" variant="body2">
+                Don't have an account?{" "}
+                <Button
+                  variant="text"
+                  color="success"
+                  onClick={() => navigate("/register")}
+                >
+                  Sign Up
+                </Button>
+              </Typography>
+            </Grid>
+          </Grid>
+        </form>
+      </Box>
+    </Container>
   );
 }
 
-export default Login
+export default Login;

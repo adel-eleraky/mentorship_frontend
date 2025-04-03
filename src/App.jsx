@@ -38,9 +38,9 @@ import Layout from "./components/Layout.jsx";
 import Verify from "./pages/Verify.jsx";
 import Community from "./pages/Community.jsx";
 import CommunityUserProfile from "./pages/community/userProfile/UserProfile.jsx";
-import Success from "./pages/Booking/Success.jsx";
-import Cancel from "./pages/Booking/Cancel.jsx";
 // import Chat from "./components/Chat/Chat";
+import ForgotPassword from "./components/ForgotPassword/ForgotPassword.jsx";
+import ResetPassword from "./components/ResetPassword/ResetPassword.jsx";
 
 const socket = io("http://localhost:3000");
 
@@ -96,6 +96,7 @@ function App() {
               </UnAuthRoute>
             }
           />
+
           <Route path="confirm-email/:token" element={<Verify />} />
           <Route
             path="/chat"
@@ -107,6 +108,9 @@ function App() {
           />
           <Route path="success" element={<Success />} />
           <Route path="cancel" element={<Cancel />} />
+          {/* Forgot Password and Reset Password routes */}
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
         </Route>
 
         <Route
@@ -115,6 +119,14 @@ function App() {
             // <ProtectRoute>
             <Meeting />
             // </ProtectRoute>
+          }
+        />
+        <Route
+          path="/chat"
+          element={
+            <ProtectRoute>
+              <Chat />
+            </ProtectRoute>
           }
         />
       </Routes>
