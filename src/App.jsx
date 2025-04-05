@@ -41,6 +41,8 @@ import CommunityUserProfile from "./pages/community/userProfile/UserProfile.jsx"
 // import Chat from "./components/Chat/Chat";
 import ForgotPassword from "./components/ForgotPassword/ForgotPassword.jsx";
 import ResetPassword from "./components/ResetPassword/ResetPassword.jsx";
+import Success from "./pages/Booking/Success.jsx";
+import Cancel from "./pages/Booking/Cancel.jsx";
 
 const socket = io("http://localhost:3000");
 
