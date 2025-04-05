@@ -54,16 +54,21 @@ const validationSchema = Yup.object().shape({
     .matches(/[@$!%*?&]/, "Password must contain at least one special character")
     .required("Confirm password is required"),
   phone: Yup.string()
-  .matches(/^01[0-9]{9}$/, "Phone number must be a valid Egyptian number (01xxxxxxxxx)")
-  .required("Phone number is required"),
+    .matches(/^01[0-9]{9}$/, "Phone number must be a valid Egyptian number (01xxxxxxxxx)")
+    .required("Phone number is required"),
 });
 
 export default function Register() {
   // State for managing visibility of password
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const { loading, user, errors: serverErrors } = useSelector(state => state.auth)
+  const { loading, user, errors: serverErrors, registerStatus } = useSelector(state => state.auth)
   const dispatch = useDispatch()
+
+  // if(registerStatus== "success") {
+  //   return navigate("/verify")
+  // }
+
 
   // Getting authentication functions and loading state from context
   // const { register: registerUser, authError, isLoading, setAuthError, setIsLoading } = useAuthentication();
@@ -115,12 +120,15 @@ export default function Register() {
   const onSubmit = async (data) => {
 
     dispatch(registerUser(data))
+
     // await registerUserData(data);
   };
 
   return (
     <Container maxWidth="sm">
-      {!user && (
+
+      {registerStatus != "success" ?
+
         <Box
           sx={{
             mt: 4,
@@ -263,23 +271,27 @@ export default function Register() {
             </Grid>
           </form>
         </Box>
-      )}
-      {user && (
-        <Box
-          sx={{
-            mt: 2,
-            p: 2,
-            boxShadow: 2,
-            borderRadius: 1,
-            bgcolor: "background.default",
-            textAlign: "center",
-          }}
-        >
-          <Typography variant="body1" color="textSecondary">
-            Please verify your email address to complete the registration process.
-          </Typography>
-        </Box>
-      )}
+        :
+        <>
+          <Box
+            sx={{
+              my: 5,
+              p: 4,
+              boxShadow: 2,
+              borderRadius: 1,
+              bgcolor: "background.default",
+              textAlign: "center",
+            }}
+          >
+            <Typography variant="body1" color="textSecondary">
+              We have sent Email for you, Check your Inbox
+              Please verify your email address to complete the registration process.
+            </Typography>
+          </Box>
+        </>
+      }
+
+
     </Container>
   );
 }
