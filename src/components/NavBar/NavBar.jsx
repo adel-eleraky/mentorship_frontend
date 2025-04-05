@@ -11,9 +11,12 @@ function NavBar() {
   const navigate = useNavigate();
   const [search, setSearch] = useState("")
   const [searchResult, setSearchResult] = useState([])
-  const id ="67d5edf48678c21491e11ab8";
+  console.log(user);
+  
+  const id =user?._id;
 
   console.log(searchResult)
+  
   // const handleKeyPress = (e) => {
   //   console.log("search" , e.key)
   //   // if (e.key === 'Enter') {

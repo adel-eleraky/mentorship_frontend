@@ -1,0 +1,50 @@
+.rating {
+    display: inline-block;
+  }
+  
+  .rating input {
+    display: none;
+  }
+  
+  .rating label {
+    float: right;
+    cursor: pointer;
+    transition: color 0.3s;
+    color: #172E59;
+
+  }
+  
+  .rating label:before {
+    content: "\2605";
+    font-size: 30px;
+  }
+  
+  .rating input:checked ~ label,
+  .rating label:hover,
+  .rating label:hover ~ label {
+    color: #118577;
+    transition: color 0.3s;
+  }
+  .revbtn{
+    background-color: #118577;
+    color: white;
+    border: none;
+    padding: 10px 10px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+    display: inline;
+    display: inline-block;
+
+  }
+  .revcon{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+.revcon textarea{
+  width: 80%;
+}
