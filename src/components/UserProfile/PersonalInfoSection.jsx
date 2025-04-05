@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import * as Yup from "yup"
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUserProfile } from "../../rtk/features/userSlice";
 import { CircularProgress } from "@mui/material";
 import { ToastContainer, toast } from 'react-toastify';
+import axios from "axios";
 
 const PersonalInfoSection = ({
   userData,
@@ -16,9 +17,27 @@ const PersonalInfoSection = ({
 
   const dispatch = useDispatch()
   const { errors, loading, updateMessage, status } = useSelector(state => state.user)
+  const [preview, setPreview] = useState(null);
+  const [image, setImage] = useState(null)
+  const { user } = useSelector(state => state.auth)
 
 
-  if(status == "success" && updateMessage) {
+  useEffect(() => {
+    if (image) {
+      toast.success(`Image updated successfully`, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  }, [image])
+
+  if (status == "success" && updateMessage) {
     toast.success(`${updateMessage}`, {
       position: "top-center",
       autoClose: 5000,
@@ -28,10 +47,37 @@ const PersonalInfoSection = ({
       draggable: true,
       progress: undefined,
       theme: "light",
-      });
+    });
   }
 
-  if(status == "fail" && errors) {
+  // useEffect(() => {
+  //   if (status == "success" && updateMessage) {
+  //     toast.success(`${updateMessage}`, {
+  //       position: "top-center",
+  //       autoClose: 5000,
+  //       hideProgressBar: false,
+  //       closeOnClick: false,
+  //       pauseOnHover: true,
+  //       draggable: true,
+  //       progress: undefined,
+  //       theme: "light",
+  //     });
+  //   }
+
+  //   if (status == "fail" && errors) {
+  //     toast.error(`${updateMessage}`, {
+  //       position: "top-center",
+  //       autoClose: 5000,
+  //       hideProgressBar: false,
+  //       closeOnClick: false,
+  //       pauseOnHover: true,
+  //       draggable: true,
+  //       progress: undefined,
+  //       theme: "light",
+  //     });
+  //   }
+  // }, [status, updateMessage])
+  if (status == "fail" && errors) {
     toast.error(`${updateMessage}`, {
       position: "top-center",
       autoClose: 5000,
@@ -41,39 +87,39 @@ const PersonalInfoSection = ({
       draggable: true,
       progress: undefined,
       theme: "light",
-      });
+    });
   }
-  
+
   const validationSchema = Yup.object({
     name: Yup.string()
-        .min(3, "Username must be at least 3 characters long")
-        .max(30, "Username cannot exceed 30 characters")
-        .matches(/^[a-zA-Z0-9_ ]+$/, "Username can only contain letters, numbers, and underscores")
-        .required("Full Name is required"),
+      .min(3, "Username must be at least 3 characters long")
+      .max(30, "Username cannot exceed 30 characters")
+      .matches(/^[a-zA-Z0-9_ ]+$/, "Username can only contain letters, numbers, and underscores")
+      .required("Full Name is required"),
 
     email: Yup.string()
-        .email("Please enter a valid email address (e.g., user@example.com)")
-        .required("Email is required"),
+      .email("Please enter a valid email address (e.g., user@example.com)")
+      .required("Email is required"),
 
     phone: Yup.string()
-        .length(11, "Phone number must be 11 characters long")
-        .required("Phone number is required"),
+      .length(11, "Phone number must be 11 characters long")
+      .required("Phone number is required"),
 
     title: Yup.string()
-        .min(3, "Title must be at least 3 characters long")
-        .max(30, "Title cannot exceed 30 characters")
-        .required("Professional Title is required"),
+      .min(3, "Title must be at least 3 characters long")
+      .max(30, "Title cannot exceed 30 characters")
+      .required("Professional Title is required"),
 
     about: Yup.string()
-        .min(20, "About must be at least 20 characters long")
-        .max(500, "About cannot exceed 500 characters")
-        .required("About is required"),
+      .min(20, "About must be at least 20 characters long")
+      .max(500, "About cannot exceed 500 characters")
+      .required("About is required"),
 
     skills: Yup.array()
-        .of(Yup.string().trim().required("Skill cannot be empty"))
-        .min(1, "At least one skill is required")
-        .required("Skills are required"),
-});
+      .of(Yup.string().trim().required("Skill cannot be empty"))
+      .min(1, "At least one skill is required")
+      .required("Skills are required"),
+  });
 
 
 
@@ -90,11 +136,92 @@ const PersonalInfoSection = ({
     dispatch(updateUserProfile(values))
   }
 
+
+  const ImageUploadSchema = Yup.object().shape({
+    image: Yup.mixed()
+      .required("An image is required")
+      .test(
+        "fileFormat",
+        "Unsupported format",
+        (value) =>
+          value &&
+          ["image/jpeg", "image/png", "image/jpg"].includes(value.type)
+      )
+      .test("fileSize", "File too large", (value) => value && value.size <= 5 * 1024 * 1024),
+  });
+
+  const handleImageUpload = async (values) => {
+    // console.log(value)
+    const formData = new FormData();
+    formData.append("image", values.image);
+
+    const res = await axios.put(`http://localhost:3000/api/v1/users/upload`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      withCredentials: true,
+    });
+    setImage(res.data.data.image)
+  }
+
+  console.log(image)
   return (
     <div className="card">
       <div className="card-body">
         <h2 className="card-title">Personal Information</h2>
+        <img
+          src={`http://localhost:3000/img/users/${user.image}`}
+          alt="Preview"
+          className="img-thumbnail rounded-circle"
+          style={{ width: "100px" }}
+        />
 
+        <div className="mb-3">
+          <Formik
+            initialValues={{ image: null }}
+            validationSchema={ImageUploadSchema}
+            onSubmit={handleImageUpload}
+          >
+            {({ setFieldValue, errors, touched }) => (
+              <Form encType="multipart/form-data">
+                {/* File Input */}
+                <div className="mb-3">
+                  <label className="form-label">Select an Image</label>
+                  <input
+                    type="file"
+                    className="form-control"
+                    onChange={(event) => {
+                      const file = event.currentTarget.files[0];
+                      setFieldValue("image", file);
+                      setPreview(URL.createObjectURL(file));
+                    }}
+                  />
+                  {errors.image && touched.image && (
+                    <div className="text-danger mt-1">{errors.image}</div>
+                  )}
+                </div>
+
+                {/* Image Preview */}
+                {preview && (
+                  <div className="mb-3 d-flex align-items-center">
+                    <img
+                      src={preview}
+                      alt="Preview"
+                      className="img-thumbnail rounded-circle"
+                      style={{ width: "100px" }}
+                    />
+                    <button type="submit" className="btn btn-primary ms-3" style={{ height: "45px" }}>
+                      Upload
+                    </button>
+                  </div>
+                )}
+
+                {/* Submit Button */}
+
+              </Form>
+            )}
+          </Formik>
+        </div>
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -178,7 +305,7 @@ const PersonalInfoSection = ({
               </div>
 
               <button type="submit" className="btn btn-primary">
-                
+
                 {loading ? <> <CircularProgress size={24} color="inherit" /> Saving.. </> : "Save Changes"}
               </button>
             </Form>
