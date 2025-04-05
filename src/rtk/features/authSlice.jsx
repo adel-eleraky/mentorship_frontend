@@ -35,7 +35,7 @@ export const registerUser = createAsyncThunk("auth/register", async (credentials
 
 export const verifyUser = createAsyncThunk("auth/verify", async (token, { rejectWithValue }) => {
     try {
-        const response = await axios.post(`${API_URL}/auth/confirm-email/${token}`, { withCredentials: true });
+        const response = await axios.get(`${API_URL}/auth/confirm-email/${token}`, { withCredentials: true });
         return response.data;
     } catch (err) {
 
@@ -56,11 +56,23 @@ export const getLoggedInUser = createAsyncThunk("auth/loggedInUser", async (_, {
     }
 })
 
+export const logout = createAsyncThunk("auth/logout", async (_, { rejectWithValue }) => {
+    try {
+        const response = await axios.get(`${API_URL}/auth/logout`, { withCredentials: true });
+
+        return response.data
+    } catch (error) {
+        console.log(error)
+        return rejectWithValue(error.response?.data || "logout failed");
+    }
+})
+
 // Create auth slice
 const authSlice = createSlice({
     name: "auth",
     initialState: {
         status: "",
+        registerStatus: "",
         message: "",
         user: null,
         loading: false,
@@ -93,14 +105,14 @@ const authSlice = createSlice({
             .addCase(registerUser.fulfilled, (state, action) => {
                 console.log(action.payload)
                 state.loading = false
-                state.status = action.payload.status
+                state.registerStatus = action.payload.status
                 state.user = action.payload.data
                 state.message = action.payload.message
                 state.token = action.payload.token
             })
             .addCase(registerUser.rejected, (state, action) => {
                 state.loading = false
-                state.status = action.payload.status
+                state.registerStatus = action.payload.status
                 state.errors = action.payload.errors
                 state.message = action.payload.message
             })
@@ -119,6 +131,9 @@ const authSlice = createSlice({
                 state.status = action.payload.status
                 state.errors = action.payload.errors
                 state.message = action.payload.message
+            })
+            .addCase(logout.fulfilled , (state, action) => {
+                state.user = null
             })
     },
 });
