@@ -77,7 +77,7 @@ function MentorProfile() {
     fetchMentor();
     fetchReviews();
 
-  }, []);
+  }, [id]);
   
   
   return (
