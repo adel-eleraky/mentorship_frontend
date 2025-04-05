@@ -90,15 +90,9 @@ function App() {
               <Register />
             </UnAuthRoute>
           } />
+          {/* <Route path="verify" element={<Verify />} /> */}
           <Route path="confirm-email/:token" element={<Verify />} />
-          <Route
-          path="/chat"
-          element={
-            <ProtectRoute>
-              <Chat />
-            </ProtectRoute>
-          }
-        />
+
           <Route path="success" element={<Success />} />
           <Route path="cancel" element={<Cancel />} />
         </Route>
@@ -111,7 +105,15 @@ function App() {
             // </ProtectRoute>
           }
         />
-     
+
+        <Route
+          path="/chat"
+          element={
+            <ProtectRoute>
+              <Chat />
+            </ProtectRoute>
+          }
+        />
 
       </Routes>
     </Provider>
