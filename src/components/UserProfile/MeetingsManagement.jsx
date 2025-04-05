@@ -10,14 +10,15 @@ const MeetingsManagement = ({
 }) => {
 
 
-  const { sessions } = useSelector(state => state.user )
+  // const { sessions } = useSelector(state => state.user )
   // what about sorting meeting to show the nearest one the first
+  console.log(scheduledMeetings)
 
-  const sortedMeetings = scheduledMeetings.sort((a, b) => {
-    const aDate = new Date(a.schedule_time);
-    const bDate = new Date(b.schedule_time);
-    return aDate - bDate;
-  });
+  // const sortedMeetings = scheduledMeetings.sort((a, b) => {
+  //   const aDate = new Date(a.schedule_time);
+  //   const bDate = new Date(b.schedule_time);
+  //   return aDate - bDate;
+  // });
   return (
     <div className="card">
       <div className="card-body">
@@ -56,19 +57,19 @@ const MeetingsManagement = ({
                 </tr>
               </thead>
               <tbody>
-                {sortedMeetings.map((meeting) => (
-                  <tr key={meeting.id}>
-                    <td>{meeting.title}</td>
-                    <td>{formatDate(meeting.schedule_time)}</td>
-                    <td>{meeting.duration} min</td>
+                {scheduledMeetings.map(({session}) => (
+                  <tr key={session.id}>
+                    <td>{session.title}</td>
+                    <td>{formatDate(session.schedule_time)}</td>
+                    <td>{session.duration} min</td>
                     <td>
                       <span
-                        className={`badge ${meeting.status === "pending"
+                        className={`badge ${session.status === "pending"
                             ? "bg-warning"
                             : "bg-success"
                           }`}
                       >
-                        {meeting.status}
+                        {session.status}
                       </span>
                     </td>
                     <td>
