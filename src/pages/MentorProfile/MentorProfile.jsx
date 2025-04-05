@@ -133,14 +133,14 @@ function MentorProfile() {
       <div className="container py-3 mb-4 bg-light rounded shadow-sm mt-5">
         <div className="d-flex justify-content-between">
           <h3 className="mx-3">Sessions</h3>
-          {/* <button
+          <button
             href="#"
             className="btn edit-send"
             data-bs-toggle="modal"
             data-bs-target="#exampleModa2"
           >
-            Add Session
-          </button> */}
+            Session Request
+          </button>
         </div>
 
         <div>
@@ -155,7 +155,7 @@ function MentorProfile() {
               <div className="modal-content">
                 <div className="modal-header">
                   <h1 className="modal-title fs-5" id="exampleModalLabel">
-                    Add Session
+                  Request a Session
                   </h1>
                   <button
                     type="button"
@@ -173,7 +173,7 @@ function MentorProfile() {
                       <input type="text" className="form-control" id="title2" />
                     </div>
 
-                    <div className="col-md-6">
+                    {/* <div className="col-md-6">
                       <label htmlFor="inputPrice" className="form-label">
                         Price
                       </label>
@@ -182,7 +182,7 @@ function MentorProfile() {
                         className="form-control"
                         id="inputPrice"
                       />
-                    </div>
+                    </div> */}
 
                     <div class="mb-3">
                       <label for="discription" class="form-label">
@@ -201,11 +201,13 @@ function MentorProfile() {
                       </label>
                       <select className="form-select ">
                         <option value="1" className="options">
-                          30 minutes , 0.5 hour
+                          30 minutes
                         </option>
-                        <option value="2">60 minutes , 1 hour</option>
-                        <option value="3"> 90 minutes , 1.5 hour</option>
-                        <option value="3"> 120 minutes , 2 hour</option>
+                        <option value="2"> 1 hour</option>
+                        <option value="3"> 1.5 hour</option>
+                        <option value="3"> 2 hour</option>
+                        <option value="3"> 2.5 hour</option>
+                        <option value="3"> 3 hour</option>
                       </select>
                     </div>
 
@@ -233,7 +235,7 @@ function MentorProfile() {
                         />
                       </div>
                     </div>
-                    <div className="col-12">
+                    {/* <div className="col-12">
                       <div className="form-check">
                         <input
                           className="form-check-input"
@@ -244,7 +246,7 @@ function MentorProfile() {
                           Has Chat Room
                         </label>
                       </div>
-                    </div>
+                    </div> */}
                   </form>
                 </div>
                 <div className="modal-footer">
@@ -256,7 +258,7 @@ function MentorProfile() {
                     Close
                   </button>
                   <button type="button" className="btn edit-send">
-                    Save changes
+                    Submit
                   </button>
                 </div>
               </div>
