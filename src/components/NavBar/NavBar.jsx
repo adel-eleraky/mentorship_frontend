@@ -1,8 +1,9 @@
 import axios from "axios";
 import "./NavBar.css"
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { logout } from "../../rtk/features/authSlice";
 
 function NavBar() {
   // const { token, logout } = useAuthentication();
@@ -11,6 +12,7 @@ function NavBar() {
   const navigate = useNavigate();
   const [search, setSearch] = useState("")
   const [searchResult, setSearchResult] = useState([])
+  const dispatch = useDispatch()
   const id ="67d5edf48678c21491e11ab8";
 
   console.log(searchResult)
@@ -29,10 +31,12 @@ function NavBar() {
     setSearch(e.target.value)
     const mentors = await fetchSearch(e.target.value)
     setSearchResult(mentors.data)
+    setSearch("")
   }
 
-  async function logout() {
-    await axios.get("http://localhost:3000/api/v1/auth/logout", { withCredentials: true })
+  async function handleLogout() {
+    // await axios.get("http://localhost:3000/api/v1/auth/logout", { withCredentials: true })
+    dispatch(logout())
     // return navigate("/login")
     // <Navigate to={"/login" }/>
   }
@@ -85,7 +89,7 @@ function NavBar() {
                     <div className="position-absolute search_result">
                       {searchResult.map(mentor => {
                         return (
-                          <Link to={`mentorprofile/${mentor._id}`}>
+                          <Link to={`mentorprofile/${mentor._id}`} onClick={() => setSearchResult([])}>
                             <div className="mb-3 d-flex ">
                               <img src={`http://localhost:3000/img/users/${mentor.image}`} style={{ width: "40px", height: "40px" }} className="img-fluid me-3" alt="" />
                               <h5 className="name"> {mentor.name} <br /> <p className="title"> {mentor.title} </p> </h5>
@@ -144,7 +148,7 @@ function NavBar() {
                   <>
                     <li className="nav-item dropdown">
                       <img
-                        className="nav-link dropdown-toggle img-fluid p-0"
+                        className="nav-link rounded-circle dropdown-toggle img-fluid p-0"
                         style={{ width: "40px" }}
                         src={`http://localhost:3000/img/users/${user.image}`}
                         role="button"
@@ -158,8 +162,13 @@ function NavBar() {
                           </NavLink>
                         </li>
                         <li>
+                          <NavLink className="dropdown-item" to={`/community`}>
+                            Community
+                          </NavLink>
+                        </li>
+                        <li>
                           <NavLink className="dropdown-item" to={`/community/user/${id}`}>
-                            Profile
+                            Community Profile
                           </NavLink>
                         </li>
                         <li>
@@ -170,7 +179,7 @@ function NavBar() {
                      
                       </ul>
                       </li>
-                      <button className="btn fw-bold second-color" onClick={() => logout()}>
+                      <button className="btn fw-bold second-color" onClick={() => handleLogout()}>
                         Logout
                       </button>
                   </>
