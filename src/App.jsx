@@ -38,9 +38,9 @@ import Layout from "./components/Layout.jsx";
 import Verify from "./pages/Verify.jsx";
 import Community from "./pages/Community.jsx";
 import CommunityUserProfile from "./pages/community/userProfile/UserProfile.jsx";
-import Success from "./pages/Booking/Success.jsx";
-import Cancel from "./pages/Booking/Cancel.jsx";
 // import Chat from "./components/Chat/Chat";
+import ForgotPassword from "./components/ForgotPassword/ForgotPassword.jsx";
+import ResetPassword from "./components/ResetPassword/ResetPassword.jsx";
 
 const socket = io("http://localhost:3000");
 
@@ -80,21 +80,38 @@ function App() {
               </ProtectRoute>
             }
           ></Route>
-          <Route path="/login" element={
-            <UnAuthRoute>
-              <Login />
-            </UnAuthRoute>
-          } />
-          <Route path="/register" element={
-            <UnAuthRoute>
-              <Register />
-            </UnAuthRoute>
-          } />
+          <Route
+            path="/login"
+            element={
+              <UnAuthRoute>
+                <Login />
+              </UnAuthRoute>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <UnAuthRoute>
+                <Register />
+              </UnAuthRoute>
+            }
+          />
+
           {/* <Route path="verify" element={<Verify />} /> */}
           <Route path="confirm-email/:token" element={<Verify />} />
-
+          <Route
+          path="/chat"
+          element={
+            <ProtectRoute>
+              <Chat />
+            </ProtectRoute>
+          }
+        />
           <Route path="success" element={<Success />} />
           <Route path="cancel" element={<Cancel />} />
+          {/* Forgot Password and Reset Password routes */}
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
         </Route>
 
         <Route
@@ -105,7 +122,6 @@ function App() {
             // </ProtectRoute>
           }
         />
-
         <Route
           path="/chat"
           element={
@@ -114,7 +130,6 @@ function App() {
             </ProtectRoute>
           }
         />
-
       </Routes>
     </Provider>
   );

@@ -2,7 +2,7 @@ import axios from "axios";
 import "./NavBar.css"
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { Link, Navigate, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { logout } from "../../rtk/features/authSlice";
 
 function NavBar() {
@@ -13,7 +13,6 @@ function NavBar() {
   const [search, setSearch] = useState("")
   const [searchResult, setSearchResult] = useState([])
   const dispatch = useDispatch()
-  const id ="67d5edf48678c21491e11ab8";
 
   console.log(searchResult)
   // const handleKeyPress = (e) => {
@@ -46,8 +45,7 @@ function NavBar() {
       <nav className="navbar navbar-expand-lg">
         <div className="container mt-2 border-bottom border-light-subtle">
           <NavLink className="navbar-brand fs-4 bold mb-2" to={"/"}>
-            <span className="fw-bold second-color">Mentor</span>
-            <span className="fw-medium frist-color">Ship</span>
+            <span className="fw-bold">Mentor</span>Ship
           </NavLink>
           <button
             className="navbar-toggler"
@@ -139,9 +137,7 @@ function NavBar() {
               </li>
 
               <li className="nav-item mx-4">
-                <NavLink className="btn btn-success " 
-                style={{ background: "#118577" }}
-                to={'/mentors'}>Browse all mentors</NavLink>
+                <NavLink className="btn btn-success" to={'/mentors'}>Browse all mentors</NavLink>
               </li>
               {user ?
                 (
@@ -176,7 +172,11 @@ function NavBar() {
                             Chat
                           </NavLink>
                         </li>
-                     
+                        <li>
+                          <button className="dropdown-item" onClick={() => logout()}>
+                            Logout
+                          </button>
+                        </li>
                       </ul>
                       </li>
                       <button className="btn fw-bold second-color" onClick={() => handleLogout()}>

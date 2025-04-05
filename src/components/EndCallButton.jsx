@@ -5,14 +5,24 @@ import { useNavigate } from "react-router";
 import { hexToRgb } from "@mui/material";
 import { height } from "@mui/system";
 
-const EndCallButton = () => {
+const EndCallButton = ({ refreshRecordings }) => {
   const call = useCall();
   const navigate = useNavigate();
 
   const handleEndCall = async () => {
     if (call) {
-      await call.leave();
-      navigate("/mentor");
+      try {
+        // If refreshRecordings function is provided, call it to save recordings
+        if (refreshRecordings) {
+          await refreshRecordings();
+        }
+        // Then leave the call
+        await call.leave();
+        navigate("/mentor");
+      } catch (error) {
+        console.error("Error ending call:", error);
+        navigate("/mentor");
+      }
     }
   };
 

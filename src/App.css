@@ -23,22 +23,3 @@ a {
   text-decoration: none !important;
   color: black;
 }
-.frist-color{
-  color: #118577;
-}
-.second-color{
-  color: #172E59;
-}
-.card-bacpro{
-  background: linear-gradient(#ffffff, #ffffff) padding-box,
-      linear-gradient(145deg, transparent 35%, #118577, #ffffff) border-box;
-      border: 2px solid transparent;
-      border-radius: 8px;
-      padding: 20px;
-      border-radius: 8px;
-      cursor: pointer;
-      transform-origin: top bottom;
-      transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
-
-
-}
