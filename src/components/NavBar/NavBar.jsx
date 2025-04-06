@@ -15,6 +15,7 @@ function NavBar() {
   const dispatch = useDispatch()
 
   console.log(searchResult)
+  
   // const handleKeyPress = (e) => {
   //   console.log("search" , e.key)
   //   // if (e.key === 'Enter') {
