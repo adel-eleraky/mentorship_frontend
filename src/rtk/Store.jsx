@@ -3,6 +3,7 @@ import roomReducer from "./features/RoomSlice";
 import userReducer from "./features/userSlice";
 import mentorReducer from "./features/mentorSlice"; 
 import authReducer from "./features/authSlice";
+import postReducer from "./features/postSlice";
 
 
 const Store = configureStore({
@@ -11,6 +12,7 @@ const Store = configureStore({
         user: userReducer,
         auth: authReducer,
         mentor: mentorReducer,
+        post: postReducer
     },
 });
 
