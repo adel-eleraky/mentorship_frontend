@@ -4,6 +4,8 @@ import { useParams } from 'react-router'
 import axios from 'axios'
 import PostsList from '../../../components/PostsList/PostsList'
 import CreatePostSection from '../../../components/CreatePostSection/CreatePostSection'
+import { useDispatch, useSelector } from 'react-redux'
+import { getUserPosts } from '../../../rtk/features/postSlice'
 
 const postsData = [
   {
@@ -29,28 +31,29 @@ const postsData = [
 function CommunityUserProfile() {
 
   const { id } = useParams()
-  const [posts , setPosts] = useState([])
-
-  console.log(posts)
-
-  const fetchUserPosts = async () => {
-    const res = await axios.get(`http://localhost:3000/api/v1/users/${id}/posts`)
-    return res.data
-  }
+  const dispatch = useDispatch()
+  const { userPosts , loading} = useSelector(state => state.post)
+  const { user } = useSelector(state => state.auth)
+  
+  // const fetchUserPosts = async () => {
+  //   const res = await axios.get(`http://localhost:3000/api/v1/users/${id}/posts`)
+  //   return res.data
+  // }
 
   useEffect(() => {
 
-    fetchUserPosts().then((data) => {
-      setPosts(data.data)
-    })
-  }, [id])
+    dispatch(getUserPosts(id))
+    // fetchUserPosts().then((data) => {
+    //   setPosts(data.data)
+    // })
+  }, [id , loading])
 
   return (
     <>
  <div className=" user-pro ">
   <div className="cover-photo">
     <div className='container'>
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png" className="profile-picture" alt="Profile Picture" />
+    <img src={`http://localhost:3000/img/users/${user?.image}`} className="profile-picture" alt="Profile Picture" />
 
 
     </div>
@@ -60,8 +63,8 @@ function CommunityUserProfile() {
   <div className="profile-info ">
     <div className="d-flex justify-content-between align-items-end">
       <div>
-        <h1 className="fw-bold mb-0">John Doe</h1>
-        <h5>Software Engineer</h5>
+        <h1 className="fw-bold mb-0">{user?.name}</h1>
+        <h5>{user?.title}</h5>
         <div>
           <span className="text-muted mb-0">123 Following : </span>
           <span className="text-muted mb-0"> 1500 Followers </span>
@@ -88,11 +91,11 @@ function CommunityUserProfile() {
           <i className="fas fa-home me-2 user-icon" /> Lives in <strong>New York</strong>
         </p>
         <p className="text-center mb-3">
-          <i className="fa-solid fa-phone me-2 user-icon" /> 0123-456-789
+          <i className="fa-solid fa-phone me-2 user-icon" /> {user?.phone}
         </p>
         <p className="text-center mb-3">
           <i className="fa-solid fa-envelope me-2 user-icon" />
-          robert.johnson@example.com
+          {user?.email}
         </p>
         <p className="text-center mb-3">
           <i className="fas fa-solid fa-calendar-days user-icon" /> Join at <strong>2025-4-24</strong>
@@ -132,7 +135,7 @@ function CommunityUserProfile() {
       {/* Create Post */}
       <CreatePostSection />
       {/* Posts */}
-      <PostsList posts={postsData} />
+      <PostsList posts={[...userPosts].reverse()} />
     </div>
   </div>
 </div>

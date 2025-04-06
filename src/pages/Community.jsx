@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import profileImg from "../assets/profile-img.png";
 import backgroundImg from "../assets/background-img.jpg";
 import PostsList from "../components/PostsList/PostsList";
 import CreatePostSection from "../components/CreatePostSection/CreatePostSection";
 import { Link } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllPosts } from "../rtk/features/postSlice";
 
 const profileData = {
     id: 1,
@@ -36,9 +38,19 @@ const postsData = [
     },
 ];
 
+
 export default function Community() {
     const { id, name, title, location, institute, image, background } = profileData;
 
+    
+    const dispatch = useDispatch()
+    const { posts } = useSelector(state => state.post)
+    const { user } = useSelector(state => state.auth)
+    
+    console.log(user)
+    useEffect(() => {
+        dispatch(getAllPosts())
+    }, [])
     return (
         <div className="container my-4">
             <div className="row mt-2">
@@ -54,10 +66,10 @@ export default function Community() {
                         </div>
 
                         <div className="flex flex-col items-center" style={{ zIndex: 1, position: "relative", top: "-45px", left: "30px" }}>
-                            <Link to={`user/${id}`}>
+                            <Link to={`user/${user?._id}`}>
                                 <img
-                                    src={image}
-                                    alt={name}
+                                    src={`http://localhost:3000/img/users/${user?.image}`}
+                                    alt={user?.name}
                                     className="border-4 border-white rounded-circle shadow-md object-cover bg-white"
                                     style={{ width: '90px' }}
                                 />
@@ -65,10 +77,10 @@ export default function Community() {
                         </div>
 
                         <div className="text-start p-4 pt-0">
-                            <h2 className="text-xl font-semibold">{name}</h2>
-                            <p className="text-gray-600 text-sm">{title}</p>
-                            <p className="text-muted text-sm">{location}</p>
-                            <p className="text-sm font-medium">{institute}</p>
+                            <h2 className="text-xl font-semibold">{user?.name}</h2>
+                            <p className="text-gray-600 text-sm">{user?.title}</p>
+                            {/* <p className="text-muted text-sm">{location}</p> */}
+                            {/* <p className="text-sm font-medium">{institute}</p> */}
                         </div>
                     </div>
                 </div>
@@ -79,7 +91,7 @@ export default function Community() {
                     <CreatePostSection />
 
                     {/* Posts */}
-                    <PostsList posts={postsData} />
+                    <PostsList posts={posts} />
                 </div>
             </div>
         </div>
