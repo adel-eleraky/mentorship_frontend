@@ -2,6 +2,7 @@ import "./MentorProfile.css";
 import React, { useEffect, useState } from "react";
 import { NavLink,useParams} from "react-router-dom";
 import axios from "axios";
+import {loadStripe} from '@stripe/stripe-js';
 
 function MentorProfile() {
 
@@ -63,6 +64,19 @@ function MentorProfile() {
     }
   };
 
+  const makePayment = async (sessionId) => {
+
+    const stripe = await loadStripe('pk_test_51MQiTdHdpPhRIKKWKS8bzAP7QcJHnbcqNmCzH9SK64ifDGAZFzIGTZIxEOmIoXIOs5MiUrhlFZqtpA6YGK2PqNrL00HGYrQEpd');
+    
+    const res = await axios.get(`http://localhost:3000/api/v1/bookings/checkout-session/${sessionId}`, { withCredentials: true})
+    const { data: session } = await res.data
+
+    console.log("session " , session)
+    const result = stripe.redirectToCheckout({
+      sessionId:  session.id 
+    })
+  }
+
 
   useEffect(() => {
  
@@ -77,7 +91,7 @@ function MentorProfile() {
   return (
     <>
 {      (loading) ? <p>Loading...</p>:
- <div className="row  ">
+ <div className="row m-0 ">
  <div className="comtainer  rounded">
    <div className="px-5 pb-4  cover mb-5">
      <div className="media  profile-head comtainer">
@@ -91,9 +105,9 @@ function MentorProfile() {
          />
          <div className="media-body m-3 ">
           <div>
-          <h2 className="mt-2 mb-2">{mentor?.name}</h2>
-           <p className=" mentor-title mb-2">{mentor?.title}</p>
-           <p> Experience :{mentor?.experience}</p>
+          <h2 className="mt-2 mb-2 fw-bold second-color">{mentor?.name}</h2>
+           <p className=" mentor-title mb-2 fw-medium">{mentor?.title}</p>
+           <p> Experience: {mentor?.experience}</p>
            {/* <button
              href="#"
              className="btn edit-send"
@@ -121,7 +135,7 @@ function MentorProfile() {
 }     
 
       {/* =========================== About ============================ */}
-      <div className="container py-3 mb-4 bg-light rounded shadow-sm mt-5">
+      <div className="container py-3 mb-4 bg-light rounded shadow-sm mt-4">
         <h3 className="mx-3">About</h3>
           {(loading) ? <p>Loading...</p>:
         <div className="p-4 rounded  bg-light">
@@ -367,7 +381,7 @@ function MentorProfile() {
              
               </div>
               <div className="mt-2">
-                <button className="btn booking w-100">Register Now</button>
+                <button className="btn booking w-100" onClick={() => makePayment(session._id)}>Register Now</button>
               </div>
             </div>
           </div>
@@ -387,7 +401,7 @@ function MentorProfile() {
       {/* ============================ Skills =========================== */}
         <div className="container py-3 mb-4 bg-light rounded shadow-sm mt-5">
           
-        <h3 className="mx-3">Skills: </h3>
+        <h3 className="mx-3 fw-medium">Skills: </h3>
         <div className="p-4 rounded  bg-light">
           {skills.map((s, index) => (
            <span key={index} className="list-skills">{s}</span>

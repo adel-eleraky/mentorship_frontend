@@ -4,8 +4,12 @@ import { Link } from 'react-router-dom';
 
 export default function MentorCardLarge({ mentor }) {
     return (
-        <div className="shadow-sm p-3 border-0 rounded-3 bg-white" style={{ maxWidth: "700px" }}>
-            <div className="d-flex">
+        <div className="shadow-sm p-3 border-0 rounded-3 bg-white "
+            style={{
+                maxWidth: "700px"
+            }}
+        >
+            <div className="d-flex ">
                 <div className="me-3">
                     <img
                         src={profileImg}
@@ -16,10 +20,10 @@ export default function MentorCardLarge({ mentor }) {
                 </div>
 
                 <div className="flex-grow-1">
-                    <h5 className="fw-bold mb-2">
+                    <h5 className="fw-bold mb-2 second-color">
                         {mentor.name}
                     </h5>
-                    <p className="mb-1 text-muted">
+                    <p className="mb-1 text-muted fw-medium">
                         {mentor.title}
                     </p>
                     <p className="text-success mb-2" style={{ fontSize: "14px", cursor: "pointer" }}>
@@ -28,11 +32,11 @@ export default function MentorCardLarge({ mentor }) {
                     </p>
 
                     <p className="mb-2">
-                        <i className='fa-solid fa-star text-warning'></i>
-                        <i className='fa-solid fa-star text-warning'></i>
-                        <i className='fa-solid fa-star text-warning'></i>
-                        <i className='fa-solid fa-star text-warning'></i>
-                        <i className='fa-solid fa-star text-warning'></i>{' '}
+                        <i className='fa-solid fa-star frist-color'></i>
+                        <i className='fa-solid fa-star frist-color'></i>
+                        <i className='fa-solid fa-star frist-color'></i>
+                        <i className='fa-solid fa-star frist-color'></i>
+                        <i className='fa-solid fa-star frist-color'></i>{' '}
                         {/* <span className="fw-bold">5.0</span> <span className="text-muted">(40 reviews)</span> */}
                     </p>
 
@@ -53,7 +57,10 @@ export default function MentorCardLarge({ mentor }) {
                         {/* <p className="mb-0">
                             <span className="fw-bold fs-5">${mentor.price}</span> <small className='fw-bold'>/ session</small>
                         </p> */}
-                        <Link className="btn btn-success px-4" to={`/mentorprofile/${mentor._id}`}>View Profile</Link>
+                        {/* <Link className="btn btn-success px-4" to={`/mentorprofile/${mentor._id}`}>View Profile</Link> */}
+                        <Link className="btn btn-success fw-medium px-4"
+                            style={{ backgroundColor: "#118577" }}
+                            to={`/mentorprofile/${mentor._id}`}>View Profile</Link>
                     </div>
                 </div>
             </div>

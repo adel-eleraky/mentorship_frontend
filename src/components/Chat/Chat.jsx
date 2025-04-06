@@ -147,7 +147,7 @@ function Chat() {
               <div className="chat-box" style={{ height: '62vh', overflowY: 'auto' }}>
                 {roomMessages.length > 0 ? (
                   <div className="messages-container">
-                    {roomMessages.map((msg, index) => (
+                    {/* {roomMessages.map((msg, index) => (
                       <div className='d-flex mb-3'>
                         <img src={`http://localhost:3000/img/users/${msg.sender.image}`} style={{ width: "50px"}} className='img-fluid sender_img' alt="" />
                         <div
@@ -162,6 +162,49 @@ function Chat() {
                           </div>
                           <div className="message-content">{msg.content}</div>
                         </div>
+                      </div>
+                    ))}
+                    <div ref={messagesEndRef} />
+                  </div> */}
+                    {roomMessages.map((msg, index) => (
+                      <div
+                        key={index}
+                        className={`d-flex mb-3 ${msg.sender_role === "Mentor" ? 'flex-row-reverse' : 'flex-row'}`}
+                      >
+                        <img
+                          src={msg.sender.image
+                            ? `http://localhost:3000/img/users/${msg.sender.image}`
+                            : '/default-avatar.png'
+                          }
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = '/default-avatar.png';
+                          }}
+                          style={{
+                            width: "50px",
+                            height: "50px",
+                            objectFit: 'cover',
+                            borderRadius: '50%',
+                            marginLeft: msg.sender_role === "Mentor" ? '10px' : '0',
+                            marginRight: msg.sender_role !== "Mentor" ? '10px' : '0'
+                          }}
+                          className='img-fluid sender_img'
+                          alt={`${msg.sender.name}'s avatar`}
+                        />
+                        <div
+                          className={`message ${msg.sender_role === "Mentor" ? 'outgoing' : 'incoming'}`}
+                        >
+                          <div className="message-header d-flex justify-content-between gap-5">
+                            <strong>{msg.sender.name}</strong>
+                            <span className="message-time">
+                              {msg.createdAt ? new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
+                            </span>
+                          </div>
+                          <div className="message-content">{msg.content}</div>
+
+                        </div>
+
+
                       </div>
                     ))}
                     <div ref={messagesEndRef} />

@@ -101,14 +101,14 @@ function App() {
 
           {/* <Route path="verify" element={<Verify />} /> */}
           <Route path="confirm-email/:token" element={<Verify />} />
-          <Route
+          {/* <Route
           path="/chat"
           element={
             <ProtectRoute>
               <Chat />
             </ProtectRoute>
           }
-        />
+        /> */}
           <Route path="success" element={<Success />} />
           <Route path="cancel" element={<Cancel />} />
           {/* Forgot Password and Reset Password routes */}
