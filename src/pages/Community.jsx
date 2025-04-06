@@ -91,7 +91,7 @@ export default function Community() {
                     <CreatePostSection />
 
                     {/* Posts */}
-                    <PostsList posts={posts} />
+                    <PostsList posts={[...posts].reverse()} />
                 </div>
             </div>
         </div>
