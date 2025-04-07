@@ -61,11 +61,11 @@ export default function Community() {
                             <img
                                 src={background}
                                 alt="background"
-                                style={{ width: "100%", height: "100px", objectFit: "cover" }}
+                                style={{ width: "100%", height: "150px", objectFit: "cover" }}
                             />
                         </div>
 
-                        <div className="flex flex-col items-center" style={{ zIndex: 1, position: "relative", top: "-45px", left: "30px" }}>
+                        <div className="flex flex-col items-center " style={{ zIndex: 1, position: "relative", top: "-45px", left: "30px" }}>
                             <Link to={`user/${user?._id}`}>
                                 <img
                                     src={`http://localhost:3000/img/users/${user?.image}`}
@@ -77,7 +77,7 @@ export default function Community() {
                         </div>
 
                         <div className="text-start p-4 pt-0">
-                            <h2 className="text-xl font-semibold">{user?.name}</h2>
+                            <h2 className="text-xl font-semibold second-color">{user?.name}</h2>
                             <p className="text-gray-600 text-sm">{user?.title}</p>
                             {/* <p className="text-muted text-sm">{location}</p> */}
                             {/* <p className="text-sm font-medium">{institute}</p> */}

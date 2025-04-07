@@ -31,6 +31,35 @@ export const createPost = createAsyncThunk("post/createPost" , async (post , { r
     }
 })
 
+export const likePost = createAsyncThunk("post/likePost", async (postId, { rejectWithValue }) => {
+    try {
+        const { data } = await axios.post(
+            "http://localhost:3000/api/v1/likes",
+            { post: postId },
+            { withCredentials: true }
+        );
+        return data;
+    } catch (err) {
+        return rejectWithValue(err.response?.data || { message: 'Network error occurred' });
+    }
+});
+
+
+export const createComment = createAsyncThunk("post/createComment", async ({ postId, content }, { rejectWithValue }) => {
+    try {
+        const { data } = await axios.post(
+            "http://localhost:3000/api/v1/comments", 
+            { post: postId, content }, 
+            { withCredentials: true }
+        )
+        return data
+    } catch (err) {
+        return rejectWithValue(err.response?.data || { message: 'Network error occurred' });
+
+    }
+})
+
+
 
 const postSlice = createSlice({
     name: "post",
@@ -40,7 +69,14 @@ const postSlice = createSlice({
         status: "",
         message: "",
         loading: false,
-        errors: ""
+        errors: "",
+        commentLoading: false,
+        commentStatus: "",
+        commentMessage: "",
+        likeLoading: false,
+        likeStatus: "",
+        likeMessage: "",
+        likeError: ""
     },
     extraReducers: (builder) => {
         builder.addCase(getAllPosts.fulfilled , (state, action) => {
@@ -54,6 +90,57 @@ const postSlice = createSlice({
         .addCase(createPost.pending , (state , action) => {
             state.loading = true
         })
+
+
+
+         .addCase(createComment.pending, (state, action) => {
+            state.commentLoading = true
+        })
+        .addCase(createComment.fulfilled, (state, action) => {
+            state.commentStatus = action.payload.status
+            state.commentMessage = action.payload.message
+            state.commentLoading = false
+            
+         
+            if (action.payload.data && action.payload.data.postId) {
+                const postIndex = state.posts.findIndex(post => post.id === action.payload.data.postId);
+                if (postIndex !== -1 && state.posts[postIndex].comments) {
+                    state.posts[postIndex].comments.push(action.payload.data);
+                }
+            }
+        })
+        // ==============
+        .addCase(likePost.pending, (state) => {
+            state.likeLoading = true;
+        })
+        .addCase(likePost.fulfilled, (state, action) => {
+            state.likeLoading = false;
+            state.likeStatus = action.payload.status;
+            state.likeMessage = action.payload.message;
+          
+            const likedPostId = action.payload?.data?.postId;
+            const userId = action.payload?.data?.user;
+          
+            if (likedPostId && userId) {
+              const postIndex = state.posts.findIndex((post) => post._id === likedPostId);
+              if (postIndex !== -1) {
+                const post = state.posts[postIndex];
+                if (!post.reactions?.likes) post.reactions.likes = [];
+                post.reactions.likes.push({ user: userId });
+              }
+            }
+          })
+          
+        .addCase(likePost.rejected, (state, action) => {
+            state.likeLoading = false;
+            state.likeError = action.payload?.message || "Something went wrong";
+        })
+
+
+
+
+
+         
         .addCase(createPost.fulfilled , (state , action) => {
             state.status = action.payload.status
             state.message = action.payload.message
