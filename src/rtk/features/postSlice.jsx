@@ -94,12 +94,12 @@ const postSlice = createSlice({
 
 
          .addCase(createComment.pending, (state, action) => {
-            state.commentLoading = true
+            state.loading = true
         })
         .addCase(createComment.fulfilled, (state, action) => {
             state.commentStatus = action.payload.status
             state.commentMessage = action.payload.message
-            state.commentLoading = false
+            state.loading = false
             
          
             if (action.payload.data && action.payload.data.postId) {
@@ -111,10 +111,10 @@ const postSlice = createSlice({
         })
         // ==============
         .addCase(likePost.pending, (state) => {
-            state.likeLoading = true;
+            state.loading = true;
         })
         .addCase(likePost.fulfilled, (state, action) => {
-            state.likeLoading = false;
+            state.loading = false;
             state.likeStatus = action.payload.status;
             state.likeMessage = action.payload.message;
           
@@ -132,7 +132,7 @@ const postSlice = createSlice({
           })
           
         .addCase(likePost.rejected, (state, action) => {
-            state.likeLoading = false;
+            state.loading = false;
             state.likeError = action.payload?.message || "Something went wrong";
         })
 

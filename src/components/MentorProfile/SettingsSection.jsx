@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 const SettingsSection = () => {
-  const daysOfWeek = [ "Saturday", "Sunday","Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+  const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
   const timeSlots = ["9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"];
   
   // Initialize state for each day with empty availability
@@ -61,29 +61,31 @@ const SettingsSection = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    // Format data for API submission
-    const formattedAvailability = [];
+    // Format data as an object with days and times array
+    const formattedAvailability = {};
     
     Object.keys(availability).forEach(day => {
       if (availability[day].isAvailable) {
+        const availableTimes = [];
+        
         Object.keys(availability[day].slots).forEach(slot => {
           if (availability[day].slots[slot]) {
-            formattedAvailability.push({
-              day,
-              time: slot
-            });
+            availableTimes.push(slot);
           }
         });
+        
+        // Only add days that have at least one time slot selected
+        if (availableTimes.length > 0) {
+          formattedAvailability[day] = availableTimes;
+        }
       }
     });
     
     // Here you would typically send the data to your API
     console.log("Submitting availability:", formattedAvailability);
     
-    // Show success toast - you would use your toast library here
-    // toast.success("Your availability has been saved successfully!");
-    
-    // For demo, use alert
+    // For demo, show the formatted data in console and alert
+    console.log(JSON.stringify(formattedAvailability, null, 2));
     alert("Your availability has been saved successfully!");
   };
 

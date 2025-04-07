@@ -44,13 +44,13 @@ export default function Community() {
 
     
     const dispatch = useDispatch()
-    const { posts } = useSelector(state => state.post)
+    const { posts,loading } = useSelector(state => state.post)
     const { user } = useSelector(state => state.auth)
     
     console.log(user)
     useEffect(() => {
         dispatch(getAllPosts())
-    }, [])
+    }, [loading])
     return (
         <div className="container my-4">
             <div className="row mt-2">

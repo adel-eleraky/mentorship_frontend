@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import './UserProfile.css'
 import { useParams } from 'react-router'
 import axios from 'axios'
@@ -117,7 +117,7 @@ function CommunityUserProfile() {
     {/* Right Content - Posts */}
     <div className="col-md-7 col-lg-8">
       {/* Create Post */}
-      <CreatePostSection />
+      {id===user?._id ? <CreatePostSection /> : ""}
       {/* Posts */}
       <PostsList posts={[...userPosts].reverse()} />
     </div>
