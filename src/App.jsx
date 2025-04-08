@@ -43,7 +43,7 @@ import Cancel from './pages/Booking/Cancel.jsx';
 // import Chat from "./components/Chat/Chat";
 import ForgotPassword from "./components/ForgotPassword/ForgotPassword.jsx";
 import ResetPassword from "./components/ResetPassword/ResetPassword.jsx";
-
+import Error from "./pages/Error/Error.jsx";
 
 const socket = io("http://localhost:3000");
 
@@ -133,6 +133,7 @@ function App() {
             </ProtectRoute>
           }
         />
+            <Route path="*" element={<Error />} />
       </Routes>
     </Provider>
   );

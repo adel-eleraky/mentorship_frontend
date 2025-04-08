@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createComment } from "../../rtk/features/postSlice";
-import { likePost } from "../../rtk/features/postSlice";
+import { likePost, unlikePost , deletePost } from "../../rtk/features/postSlice";
+
 import { toast } from "react-toastify";
 import "./PostCard.css";
 
@@ -48,31 +49,58 @@ export default function PostCard({ post }) {
       theme: "light",
     });
   };
-  const handleLike = (postId) => {
+  const handleLikeToggle = (postId) => {
     if (hasLiked) {
-        toast.info("You already liked this post!", {
-          position: "top-center",
-          autoClose: 3000,
+      dispatch(unlikePost(postId))
+        .unwrap()
+        .then(() => {
+          toast.info("Like removed", {
+            position: "top-center",
+            autoClose: 3000,
+          });
+        })
+        .catch((err) => {
+          toast.error(err.message || "Failed to unlike post", {
+            position: "top-center",
+            autoClose: 3000,
+          });
         });
-        return;
-      }
-    
-    dispatch(likePost(postId))
-      .unwrap()
-      .then((res) => {
-        toast.success("Liked post successfully", {
-          position: "top-center",
-          autoClose: 3000,
+    } else {
+      dispatch(likePost(postId))
+        .unwrap()
+        .then(() => {
+          toast.success("Post liked", {
+            position: "top-center",
+            autoClose: 3000,
+          });
+        })
+        .catch((err) => {
+          toast.error(err.message || "Failed to like post", {
+            position: "top-center",
+            autoClose: 3000,
+          });
         });
-      })
-      .catch((err) => {
-        toast.error(err.message || "Failed to like post", {
-          position: "top-center",
-          autoClose: 3000,
-        });
-      });
+    }
   };
   
+
+  const handleDeletePost = () => {
+      dispatch(deletePost(postId))
+        .unwrap()
+        .then(() => {
+          toast.success("Post deleted successfully", {
+            position: "top-center",
+            autoClose: 3000,
+          });
+        })
+        .catch((err) => {
+          toast.error(err.message || "Failed to delete post", {
+            position: "top-center",
+            autoClose: 3000,
+          });
+        });
+  };
+
 
   return (
     <>
@@ -119,7 +147,7 @@ export default function PostCard({ post }) {
                   <button className="edit-btn dropdown-item ">
                     <i className="fas fa-edit" /> Edit
                   </button>
-                  <button className="dropdown-item delete-btn mt-1">
+                  <button className="dropdown-item delete-btn mt-1" onClick={handleDeletePost} >
                     <i className="fas fa-trash-alt" /> Delete
                   </button>
                 </div>
@@ -153,7 +181,7 @@ export default function PostCard({ post }) {
         </div>
         <div className="post-actions">
           <div className="d-flex justify-content-between">
-            <button className="w-50"  onClick={() => handleLike(post._id)}>
+            <button className="w-50"  onClick={() => handleLikeToggle(post._id)}>
               {hasLiked ? <i class="fa-solid fa-thumbs-up me-2 frist-color"></i> : <i className="far fa-thumbs-up me-2 frist-color" /> }
 
               {hasLiked ? "Liked" : "Like"}
