@@ -5,15 +5,22 @@ import axios from "axios";
 import { loadStripe } from "@stripe/stripe-js";
 import ReviewMentor from "../../components/ReviewMentor/ReviewMentor";
 import MentorInfo from "../../components/MentorInfo/MentorInfo";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserSessions } from "../../rtk/features/userSlice";
 
 function MentorProfile() {
+  const dispatch = useDispatch()
   const [skills, setSkills] = useState([]);
   const [skill, setSkill] = useState("");
   const [mentor, setMentor] = useState(null);
   const [loading, setLoading] = useState(true);
   const [sessions, setSessions] = useState([]);
   let { id } = useParams();
+  const { sessions: userSessions } = useSelector(state => state.user)
+  const { user } = useSelector(state => state.auth)
 
+  console.log("registered sessions ", userSessions)
+  console.log("mentor sessions ", sessions)
   const formatDate = (isoString) => {
     if (!isoString) return "";
     const date = new Date(isoString);
@@ -78,7 +85,10 @@ function MentorProfile() {
   useEffect(() => {
     fetchSessions();
     fetchMentor();
-  }, [id]);
+    
+    dispatch(getUserSessions())
+    
+  }, [id, user]);
 
   return (
     <>
@@ -88,79 +98,155 @@ function MentorProfile() {
 
       <div className="container py-3 mb-4  mt-5">
         <div className="d-flex justify-content-between">
-          <h3 className="mx-3 second-color">Sessions :</h3>
+          <h3 className="mx-3">Sessions</h3>
+          <button
+            href="#"
+            className="btn edit-send"
+            data-bs-toggle="modal"
+            data-bs-target="#exampleModa2"
+          >
+            Session Request
+          </button>
         </div>
 
-        <div className="p-4   ">
-          <div className="container py-4">
-            <div className="row g-3">
-              {sessions.length === 0 ? (
-                <p>No sessions yet</p>
-              ) : (
-                sessions.map((session) => (
-                  <div className="col-md-4" key={session.id}>
-                    {/* <div className="card">
-            <div className="card-header d-flex justify-content-between align-items-center py-2">
-              <h4 className="card-title">{session.title}</h4>
-              <span className="badges price-badge">${session.price}</span>
-            </div>
-            <div className="card-body">
-              <div className="mb-2">
-                <div className="info-label">Description</div>
-                <div className="description-box">
-                  {session.description}
+        <div>
+          <div
+            className="modal fade"
+            id="exampleModa2"
+            tabIndex={-1}
+            aria-labelledby="exampleModalLabel"
+            aria-hidden="true"
+          >
+            <div className="modal-dialog modal-xl ">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h1 className="modal-title fs-5" id="exampleModalLabel">
+                  Request a Session
+                  </h1>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  />
                 </div>
-              </div>
-              <div className="mb-2">
-                <div className="info-label">Duration</div>
-                <div className="icon-text mt-1">
-                  <i className="bi bi-clock" /> {session.duration} minutes
-                </div>
-              </div>
-              <div className="mb-2">
-                <div className="d-flex justify-content-between">
-                  <div>
-                    <div className="info-label">Date</div>
-                    <div className="icon-text">
-                      <i className="bi bi-calendar3" /> {session.schedule_time}
+                <div className="modal-body container">
+                  <form className="row g-3 container">
+                    <div className="col-md-6">
+                      <label htmlFor="title2" className="form-label">
+                        Title
+                      </label>
+                      <input type="text" className="form-control" id="title2" />
                     </div>
-                  </div>
 
-                  <div>
-                    <div className="info-label">Time</div>
-                    <div className="icon-text">
-                      <i className="bi bi-alarm" /> {session.time} 
+                    {/* <div className="col-md-6">
+                      <label htmlFor="inputPrice" className="form-label">
+                        Price
+                      </label>
+                      <input
+                        type="number"
+                        className="form-control"
+                        id="inputPrice"
+                      />
+                    </div> */}
+
+                    <div class="mb-3">
+                      <label for="discription" class="form-label">
+                        Discription
+                      </label>
+                      <textarea
+                        class="form-control"
+                        id="discription"
+                        rows="6"
+                      ></textarea>
                     </div>
-                  </div>
-                  
+
+                    <div className="col-md-6">
+                      <label htmlFor="" className="form-label">
+                        Duration
+                      </label>
+                      <select className="form-select ">
+                        <option value="1" className="options">
+                          30 minutes
+                        </option>
+                        <option value="2"> 1 hour</option>
+                        <option value="3"> 1.5 hour</option>
+                        <option value="3"> 2 hour</option>
+                        <option value="3"> 2.5 hour</option>
+                        <option value="3"> 3 hour</option>
+                      </select>
+                    </div>
+
+                    <div className="row g-3">
+                      <div className="col-sm-6">
+                        <label htmlFor="inputDate" className="form-label">
+                          Date
+                        </label>
+                        <input
+                          type="date"
+                          className="form-control"
+                          aria-label="Date"
+                          id="inputDate"
+                        />
+                      </div>
+                      <div className="col-sm-6">
+                        <label htmlFor="inputTime" className="form-label">
+                          Time
+                        </label>
+                        <input
+                          type="time"
+                          className="form-control"
+                          aria-label="Time"
+                          id="inputTime"
+                        />
+                      </div>
+                    </div>
+                    {/* <div className="col-12">
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          id="gridCheck"
+                        />
+                        <label className="form-check-label" htmlFor="gridCheck">
+                          Has Chat Room
+                        </label>
+                      </div>
+                    </div> */}
+                  </form>
+                </div>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                  >
+                    Close
+                  </button>
+                  <button type="button" className="btn edit-send">
+                    Submit
+                  </button>
                 </div>
               </div>
-              <div className="mb-2">
-                {session.features && session.features.map((feature, index) => (
-                  <span key={index} className="badges features-badge me-1">
-                    <i className={`bi bi-${feature.icon}`} /> {feature.name}
-                  </span>
-                ))}
-                {session.has_room ?<span className="badges features-badge">
-                  <i className="bi bi-chat-dots" /> Chat Room
-                </span>:   <span className="badges features-nbadge">
-                  <i className="bi bi-chat-dots" /> Chat Room
-                </span>}
-             
-              </div>
-              <div className="mt-2">
-                <button className="btn booking w-100" onClick={() => makePayment(session._id)}>Register Now</button>
-              </div>
             </div>
-          </div> */}
+          </div>
+        </div>
+        <div className="p-4 rounded  bg-light">
 
-                    <div class="session-card">
-                      <div class="session-main-content">
-                        <div class="session-header">
-                          <span>{session.title}</span>
-                          <span className="frist-color mx-2">
-                            ${session.price}
-                          </span>
+          {/* ======================================================= */}
+            <div className="container py-4">
+              <div className="row g-3">
+                {/* <div className="col-md-4">
+                  <div className="card">
+                    <div className="card-header d-flex justify-content-between align-items-center py-2">
+                      <h4 className="card-title">Web Development</h4>
+                      <span className="badges  price-badge">$99.99</span>
+                    </div>
+                    <div className="card-body">
+                      <div className="mb-2">
+                        <div className="info-label">Description</div>
+                        <div className="description-box">
+                          A comprehensive workshop covering HTML, CSS, and Bootstrap fundamentals.
                         </div>
                         <p class="session-heading"> {session?.description}</p>
 
@@ -210,13 +296,20 @@ function MentorProfile() {
 
                       </div>
                       <div class="session-footer second-color">
-                      <button className="btn booking w-100" onClick={() => makePayment(session._id)}>Register Now</button>
+                      <button 
+                        className="btn booking w-100"
+                        style={{ width: "100% !important"}}
+                        disabled={isRegistered}
+                        onClick={() => makePayment(session._id)}
+                      >
+                        {isRegistered ? "Already registered" : "Register Now"}
+                      </button>
 
                    
                       </div>
                     </div>
                   </div>
-                ))
+                )})
               )}
             </div>
           </div>
