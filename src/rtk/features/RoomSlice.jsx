@@ -23,13 +23,25 @@ export const getRooms = createAsyncThunk("room/fetchAll", async (_, { rejectWith
 
 })
 
+
+export const getUserRooms = createAsyncThunk("room/fetchUserRooms", async (id, { rejectWithValue }) => {
+    try {
+        const { data } = await axios.get(`http://localhost:3000/api/v1/users/${id}/rooms`, { withCredentials: true});
+        return data
+    } catch (error) {
+        return rejectWithValue(error?.response?.data)
+    }
+
+})
+
 const initialState = {
     status: "",
     message: "",
     data: "",
     rooms: [],
     roomMessages: [],
-    errors: ""
+    errors: "",
+    userRooms: []
 }
 
 const roomSlice = createSlice({
@@ -42,16 +54,23 @@ const roomSlice = createSlice({
         }
     },
     extraReducers: (builder) => {
-        builder.addCase(getRoomMessages.fulfilled, (state, action) => {
-            state.status = action.payload.status
-            state.message = action.payload.message
-            state.roomMessages = action.payload.data
-        })
-        .addCase(getRooms.fulfilled , (state, action) => {
-            state.status = action.payload.status
-            state.message = action.payload.message
-            state.rooms = action.payload.data
-        })
+        builder
+            .addCase(getRoomMessages.fulfilled, (state, action) => {
+                state.status = action.payload.status
+                state.message = action.payload.message
+                state.roomMessages = action.payload.data
+            })
+            .addCase(getRooms.fulfilled, (state, action) => {
+                state.status = action.payload.status
+                state.message = action.payload.message
+                state.rooms = action.payload.data
+            })
+            .addCase(getUserRooms.fulfilled, (state, action) => {
+                state.status = action.payload.status
+                state.message = action.payload.message
+                state.userRooms = action.payload.data
+            })
+            
     }
 })
 

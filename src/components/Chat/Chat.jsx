@@ -4,7 +4,7 @@ import io from 'socket.io-client';
 import axios from 'axios';
 import './Chat.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { addMessage, getRoomMessages, getRooms } from '../../rtk/features/RoomSlice';
+import { addMessage, getRoomMessages, getRooms, getUserRooms } from '../../rtk/features/RoomSlice';
 const socket = io('http://localhost:3000', {
   transports: ["websocket"], // Try forcing WebSocket transport
   withCredentials: true,
@@ -18,7 +18,7 @@ function Chat() {
   const [activeTab, setActiveTab] = useState('all');
   const messagesEndRef = useRef(null);
   const dispatch = useDispatch()
-  const { roomMessages, rooms } = useSelector(state => state.room)
+  const { roomMessages, rooms, userRooms } = useSelector(state => state.room)
   const { user } = useSelector(state => state.auth)
 
   console.log("room messages", roomMessages)
@@ -37,7 +37,7 @@ function Chat() {
 
   useEffect(() => {
 
-    dispatch(getRooms())
+    dispatch(getUserRooms())
     socket.on('receive_room_msg', (data) => {
       dispatch(addMessage(data))
     });
@@ -80,9 +80,9 @@ function Chat() {
   };
 
   // Filter rooms based on activeTab
-  const filteredRooms = activeTab === 'all' ? rooms :
-    activeTab === 'rooms' ? rooms.filter(room => !room.isDirectMessage) :
-      rooms.filter(room => room.isDirectMessage);
+  const filteredRooms = activeTab === 'all' ? userRooms :
+    activeTab === 'rooms' ? userRooms.filter(room => !room.isDirectMessage) :
+    userRooms.filter(room => room.isDirectMessage);
 
   return (
     <div className="container mt-2 chat-app">
