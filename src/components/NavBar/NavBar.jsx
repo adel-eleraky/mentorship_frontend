@@ -175,11 +175,11 @@ function NavBar() {
                           })
                         )}
                 
-                        <li>
+                        {/* <li>
                           <NavLink className="dropdown-item text-primary text-center" to="/notifications">
                             View all
                           </NavLink>
-                        </li> */}
+                        </li>  */}
                       </ul>
                     </li>
                     <li className="nav-item dropdown">
