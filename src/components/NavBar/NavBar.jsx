@@ -174,8 +174,7 @@ function NavBar() {
                             )
                           })
                         )}
-                        {/* <li className="dropdown-item">💬 You have a new message</li> */}
-                        {/* <li className="dropdown-item">✅ Task completed successfully</li> */}
+                
                         <li>
                           <NavLink className="dropdown-item text-primary text-center" to="/notifications">
                             View all
@@ -224,14 +223,7 @@ function NavBar() {
                       Logout
                     </button>
                   </>
-                  // <>
-                  //   <li className="nav-item">
-                  //     <NavLink className="nav-link" to={'/chat'}>Chats</NavLink>
-                  //   </li>
-                  //   <li className="nav-item">
-                  //     <NavLink className="nav-link" to={`${user.role == "user" ? "/user" : "/mentor"}`}>Profile</NavLink>
-                  //   </li>
-                  // </>
+ 
                 ) :
                 (
                   <li className="nav-item ms-4">
@@ -241,12 +233,7 @@ function NavBar() {
                   </li>
                 )
               }
-              {/* <li className="nav-item ms-4">
-                <NavLink className="nav-link" to={'/'}>Log Out</NavLink>
-              </li> */}
-              {/* <li className="nav-item ms-4">
-                <NavLink className="nav-link" to={'/register'}>Register</NavLink>
-              </li> */}
+    
 
             </ul>
           </div>
