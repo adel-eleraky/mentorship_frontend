@@ -15,7 +15,7 @@ import {
 import NavBar from "./components/NavBar/NavBar";
 import Home from "./pages/Home";
 import Footer from "./components/Footer/Footer";
-import { Provider, useDispatch } from "react-redux";
+import { Provider, useDispatch, useSelector } from "react-redux";
 import Store from "./rtk/Store";
 import UserProfile from "./pages/UserProfile";
 
@@ -50,6 +50,7 @@ const socket = io("http://localhost:3000");
 function App() {
   const location = useLocation();
   const hideNavFooter = location.pathname.startsWith("/meeting/");
+  
 
   return (
     <Provider store={Store}>
@@ -62,7 +63,7 @@ function App() {
           <Route path="mentors" element={<BrowseMentors />} />
 
           <Route path="community" element={<Community />} />
-          <Route path="community/user/:id" element={<CommunityUserProfile />} />
+          <Route path="community/user/:id/:role" element={<CommunityUserProfile />} />
 
           {/* protected Routes */}
 

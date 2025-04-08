@@ -6,34 +6,57 @@ import PostsList from '../../../components/PostsList/PostsList'
 import CreatePostSection from '../../../components/CreatePostSection/CreatePostSection'
 import { useDispatch, useSelector } from 'react-redux'
 import { getUserPosts } from '../../../rtk/features/postSlice'
+import { getUser } from '../../../rtk/features/userSlice'
+import { getMentor } from '../../../rtk/features/mentorSlice'
 
 
 function CommunityUserProfile() {
 
-  const { id } = useParams()
+  const { id, role } = useParams()
   const dispatch = useDispatch()
   const { userPosts , loading} = useSelector(state => state.post)
-  const { user } = useSelector(state => state.auth)
+  const { user: authUser } = useSelector(state => state.auth)
+  const { user } = useSelector(state => state.user)
+  const { mentor } = useSelector(state => state.mentor)
+  
+  const [userData , setUserData] = useState("")
+  
   
   // const fetchUserPosts = async () => {
   //   const res = await axios.get(`http://localhost:3000/api/v1/users/${id}/posts`)
   //   return res.data
   // }
 
+  console.log("user data", userData)
   useEffect(() => {
 
     dispatch(getUserPosts(id))
+    if(role == "User") {
+      dispatch(getUser(id))
+      setUserData(user)
+
+    }else if(role == "Mentor") {
+      dispatch(getMentor(id))
+      setUserData(mentor)
+
+    }
+
+    // if(role == "User") {
+    //   setUserData(user)
+    // } else if(role == "Mentor") {
+    //   setUserData(mentor)
+    // }
     // fetchUserPosts().then((data) => {
     //   setPosts(data.data)
     // })
-  }, [id , loading])
+  }, [id ,role , loading])
 
   return (
     <>
  <div className=" user-pro ">
   <div className="cover-photo">
     <div className='container'>
-    <img src={`http://localhost:3000/img/users/${user?.image}`} className="profile-picture" alt="Profile Picture" />
+    <img src={`http://localhost:3000/img/users/${userData?.image}`} className="profile-picture" alt="Profile Picture" />
 
 
     </div>
@@ -43,8 +66,8 @@ function CommunityUserProfile() {
   <div className="profile-info ">
     <div className="d-flex justify-content-between align-items-end">
       <div>
-        <h1 className="fw-bold mb-0 second-color">{user?.name}</h1>
-        <h5>{user?.title}</h5>
+        <h1 className="fw-bold mb-0 second-color">{userData?.name}</h1>
+        <h5>{userData?.title}</h5>
         <div>
           <span className="text-muted mb-0">123 Following : </span>
           <span className="text-muted mb-0"> 1500 Followers </span>
@@ -65,14 +88,14 @@ function CommunityUserProfile() {
       <div className="bg-white p-3 rounded mb-3 shadow-sm user-info">
         <h3 className="fw-bold second-color">Info</h3>
         <p className="text-center mt-3 mb-3">
-          <i className="fas fa-briefcase me-2 user-icon" /> Works as <strong>Software Engineer</strong>
+          <i className="fas fa-briefcase me-2 user-icon" /> Works as <strong>{userData?.title}</strong>
         </p>
         <p className="text-center mb-3">
-          <i className="fa-solid fa-phone me-2 user-icon" /> {user?.phone}
+          <i className="fa-solid fa-phone me-2 user-icon" /> {userData?.phone}
         </p>
         <p className="text-center mb-3">
           <i className="fa-solid fa-envelope me-2 user-icon" />
-          {user?.email}
+          {userData?.email}
         </p>
         <p className="text-center mb-3">
           <i className="fas fa-solid fa-calendar-days user-icon" /> Join at <strong>2025-4-24</strong>

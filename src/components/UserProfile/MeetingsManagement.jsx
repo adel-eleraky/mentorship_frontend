@@ -2,6 +2,7 @@ import React, { useState } from "react";
 // import MeetingsList from "./MeetingsList";
 import { formatDate } from "../../utils/dateUtils";
 import { useSelector } from "react-redux";
+import { Link } from "react-router";
 
 const MeetingsManagement = ({
   scheduledMeetings,
@@ -74,10 +75,10 @@ const MeetingsManagement = ({
                     </td>
                     <td>
                       <div className="btn-group btn-group-sm">
-                        <button className="btn btn-primary" >
+                        <Link className="btn btn-primary" to={`/meeting/${session._id}`}>
                           <i className="bi bi-camera-video me-2"></i>
                           Join Meeting
-                        </button>
+                        </Link>
                       </div>
                     </td>
                   </tr>

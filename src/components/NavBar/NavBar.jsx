@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, Navigate, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { logout } from "../../rtk/features/authSlice";
+import { markNotificationRead } from "../../rtk/features/notificationSlice";
 
 function NavBar() {
   // const { token, logout } = useAuthentication();
@@ -13,10 +14,15 @@ function NavBar() {
   const [search, setSearch] = useState("")
   const [searchResult, setSearchResult] = useState([])
   const dispatch = useDispatch()
+  const { notifications } = useSelector(state => state.notification)
 
-  console.log(searchResult)
-  
-  // const handleKeyPress = (e) => {
+  console.log("notifications", notifications)
+
+  const unreadNotifications = notifications?.reduce((count, notify) => {
+    return notify.isRead === false ? count + 1 : count;
+  }, 0);
+
+    // const handleKeyPress = (e) => {
   //   console.log("search" , e.key)
   //   // if (e.key === 'Enter') {
   //   //   navigate('/mentors');
@@ -104,7 +110,7 @@ function NavBar() {
               </form>
             )}
 
-            <ul className="navbar-nav mb-2 mb-lg-0 ms-auto">
+            <ul className="navbar-nav mb-2 mb-lg-0 ms-auto align-items-center">
               <li className="nav-item dropdown">
                 <a
                   className="nav-link dropdown-toggle text-dark"
@@ -148,6 +154,67 @@ function NavBar() {
               {user ?
                 (
                   <>
+                    <li className="nav-item dropdown me-2">
+                      <a
+                        className="nav-link dropdown-toggle position-relative notification-badge"
+                        href="#"
+                        role="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
+                        <i className="fas fa-bell fa-lg fs-4 text-dark"></i>
+                        {/* Optional badge */}
+                        <span className="position-absolute  top-0 start-25 translate-middle badge rounded-pill bg-danger">
+                          {unreadNotifications}
+                          <span className="visually-hidden">unread notifications</span>
+                        </span>
+                      </a>
+                      <ul className="dropdown-menu dropdown-menu-end" style={{ width: "300px" }}>
+                        <li className="dropdown-item text-muted">You have {unreadNotifications} notifications</li>
+                        <li><hr className="dropdown-divider" /></li>
+                        {notifications.length != 0 && (
+                          [...notifications]?.reverse().map(notify => {
+                            return (
+                              <>
+                                <li className="dropdown-item" style={{ whiteSpace: "normal" }}>
+                                  <input
+                                    type="checkbox"
+                                    className="form-check-input me-2"
+                                    checked={notify.isRead}
+                                    onChange={() => {
+                                        dispatch(markNotificationRead(notify?._id))
+                                      console.log(`Marking notification ${notify?._id} as read`);
+                                    }}
+                                  />
+                                  {notify?.type === "comment" && (
+                                    <i className="fas fa-comment-alt" style={{ color: "#4CAF50", marginRight: "8px" }}></i> 
+                                  )}
+                                  {notify?.type === "like" && (
+                                    <i className="fas fa-thumbs-up" style={{ color: "#2196F3", marginRight: "8px" }}></i> 
+                                  )}
+                                  {notify?.type === "booking" && (
+                                    <i className="fas fa-calendar-check" style={{ color: "#FF9800", marginRight: "8px" }}></i> 
+                                  )}
+                                  {notify?.type === "message" && (
+                                    <i className="fas fa-envelope" style={{ color: "#FF5722", marginRight: "8px" }}></i>
+                                  )}
+
+                                  {notify?.message}
+                                </li>
+                                <hr />
+                              </>
+                            )
+                          })
+                        )}
+                        {/* <li className="dropdown-item">💬 You have a new message</li> */}
+                        {/* <li className="dropdown-item">✅ Task completed successfully</li> */}
+                        <li>
+                          <NavLink className="dropdown-item text-primary text-center" to="/notifications">
+                            View all
+                          </NavLink>
+                        </li>
+                      </ul>
+                    </li>
                     <li className="nav-item dropdown">
                       <img
                         className="nav-link rounded-circle dropdown-toggle img-fluid p-0"
