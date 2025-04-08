@@ -1,30 +1,135 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import {
+  Drawer,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  IconButton,
+  Box,
+  Toolbar,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
+
+const drawerWidth = 240;
+
+const sections = [
+  {
+    id: "personal",
+    label: "Personal Information",
+    icon: "bi-person-lines-fill",
+  },
+  { id: "meetings", label: "Meetings", icon: "bi-calendar-event" },
+  { id: "schedule", label: "Schedule", icon: "bi-calendar-week" },
+  { id: "joinRoom", label: "Join Room", icon: "bi-camera-video" },
+  { id: "changePassword", label: "Change Password", icon: "bi-lock" },
+  { id: "settings", label: "Settings", icon: "bi-gear" },
+];
 
 const ProfileNavigation = ({ activeSection, setActiveSection }) => {
-  const sections = [
-    { id: "personal", label: "Personal Information" },
-    { id: "meetings", label: "Meetings" },
-    { id: "schedule", label: "Schedule" },
-    { id: "joinRoom", label: "Join Room" },
-    { id: "changePassword", label: "change password" },
-    { id: "settings", label: "Settings" },
-  ];
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isBelow800px = useMediaQuery("(max-width:800px)");
+  const [open, setOpen] = useState(!isBelow800px);
+
+  // Update drawer state when screen size changes
+  useEffect(() => {
+    setOpen(!isBelow800px);
+  }, [isBelow800px]);
+
+  const toggleDrawer = () => {
+    setOpen(!open);
+  };
 
   return (
-    <ul className="nav nav-tabs mb-4">
-      {sections.map((section) => (
-        <li className="nav-item" key={section.id}>
-          <button
-            className={`nav-link ${
-              activeSection === section.id ? "active" : ""
-            }`}
-            onClick={() => setActiveSection(section.id)}
-          >
-            {section.label}
-          </button>
-        </li>
-      ))}
-    </ul>
+    <Drawer
+      variant="permanent"
+      open={open}
+      sx={{
+        width: open ? (isMobile ? 180 : drawerWidth) : 60,
+        flexShrink: 0,
+        display: "block",
+        float: "left",
+        height: "100%",
+        overflow: "auto",
+        zIndex: "1",
+        "& .MuiDrawer-paper": {
+          width: open ? (isMobile ? 180 : drawerWidth) : 60,
+          boxSizing: "border-box",
+          transition: "width 0.3s",
+          position: "absolute",
+          top: "0",
+          bottom: "0",
+          height: "100%",
+          borderRight: "1px solid rgba(0, 0, 0, 0.12)",
+          backgroundColor: "#f8f9fa",
+        },
+      }}
+    >
+      <Toolbar
+        sx={{
+          minHeight: "48px !important",
+          backgroundColor: "#198754",
+          display: "flex",
+          justifyContent: "flex-end",
+          padding: "0 8px",
+        }}
+      >
+        <IconButton onClick={toggleDrawer} sx={{ color: "white" }}>
+          {open ? (
+            <i className="bi bi-chevron-left"></i>
+          ) : (
+            <i className="bi bi-list"></i>
+          )}
+        </IconButton>
+      </Toolbar>
+      <List>
+        {sections.map((section) => (
+          <ListItem key={section.id} disablePadding>
+            <ListItemButton
+              selected={activeSection === section.id}
+              onClick={() => setActiveSection(section.id)}
+              sx={{
+                "&.Mui-selected": {
+                  backgroundColor: "#e8f5e9",
+                  borderLeft: "4px solid #198754",
+                  "&:hover": {
+                    backgroundColor: "#333433",
+                  },
+                },
+                "&:hover": {
+                  backgroundColor: "#cad0ca",
+                },
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  color: activeSection === section.id ? "#198754" : "#757575",
+                  minWidth: "40px",
+                }}
+              >
+                <i className={`bi ${section.icon} fs-5`}></i>
+              </ListItemIcon>
+              {open && (
+                <ListItemText
+                  primary={section.label}
+                  sx={{
+                    "& .MuiTypography-root": {
+                      fontWeight:
+                        activeSection === section.id ? "bold" : "normal",
+                      color:
+                        activeSection === section.id ? "#198754" : "#424242",
+                    },
+                  }}
+                />
+              )}
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    </Drawer>
   );
 };
 

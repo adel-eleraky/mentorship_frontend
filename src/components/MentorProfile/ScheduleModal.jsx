@@ -97,7 +97,7 @@ const ScheduleModal = ({
   };
 
   return (
-    <Modal show={show} onHide={handleClose} size="lg">
+    <Modal show={show} onHide={handleClose} size="lg" style={{ zIndex: 1050 }}>
       <Modal.Header closeButton>
         <Modal.Title>
           {meetingData && meetingData._id

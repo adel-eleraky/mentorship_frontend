@@ -158,58 +158,62 @@ export default function MentorDashboard() {
   }
 
   return (
-    <div className="container my-4">
+    <div
+      className=" py-4 position-relative d-flex"
+      style={{ minHeight: " 70vh", gap: "10px" }}
+    >
       <ToastContainer position="bottom-right" autoClose={3000} />
-      <h1 className="mb-4">Mentor Profile</h1>
 
       <ProfileNavigation
         activeSection={activeSection}
         setActiveSection={setActiveSection}
       />
+      <div className="m-auto w-100 pe-3">
+        <h1 className="mb-4">Mentor Profile</h1>
 
-      {activeSection === "personal" && (
-        <PersonalInfoSection
-          mentorData={mentor}
-          loading={loading}
-          message={message}
+        {activeSection === "personal" && (
+          <PersonalInfoSection
+            mentorData={mentor}
+            loading={loading}
+            message={message}
+          />
+        )}
+
+        {activeSection === "meetings" && (
+          <MeetingsManagement
+            scheduledMeetings={scheduledMeetings}
+            loading={sessionsLoading}
+            error={error}
+            onStartInstantMeeting={handleStartInstantMeeting}
+            onRefresh={fetchMentorSessions}
+            onShowScheduleModal={handleShowScheduleModal}
+          />
+        )}
+
+        {activeSection === "schedule" && (
+          <ScheduleSection
+            onStartInstantMeeting={handleStartInstantMeeting}
+            onShowScheduleModal={handleShowScheduleModal}
+          />
+        )}
+
+        {activeSection === "joinRoom" && <JoinRoomSection />}
+        {activeSection === "changePassword" && (
+          <ChangePassword person="mentors" />
+        )}
+        {activeSection === "settings" && <SettingsSection />}
+        <ScheduleModal
+          show={showScheduleModal}
+          mentorId={mentor?._id}
+          handleClose={() => {
+            setShowScheduleModal(false);
+            setMeetingToEdit(null);
+          }}
+          onScheduleMeeting={handleScheduleMeeting}
+          isLoading={createMeetingLoading}
+          meetingData={meetingToEdit}
         />
-      )}
-
-      {activeSection === "meetings" && (
-        <MeetingsManagement
-          scheduledMeetings={scheduledMeetings}
-          loading={sessionsLoading}
-          error={error}
-          onStartInstantMeeting={handleStartInstantMeeting}
-          onRefresh={fetchMentorSessions}
-          onShowScheduleModal={handleShowScheduleModal}
-        />
-      )}
-
-      {activeSection === "schedule" && (
-        <ScheduleSection
-          onStartInstantMeeting={handleStartInstantMeeting}
-          onShowScheduleModal={handleShowScheduleModal}
-        />
-      )}
-
-      {activeSection === "joinRoom" && <JoinRoomSection />}
-      {activeSection === "changePassword" && (
-        <ChangePassword person="mentors" />
-      )}
-      {activeSection === "settings" && <SettingsSection />}
-
-      <ScheduleModal
-        show={showScheduleModal}
-        mentorId={mentor?._id}
-        handleClose={() => {
-          setShowScheduleModal(false);
-          setMeetingToEdit(null);
-        }}
-        onScheduleMeeting={handleScheduleMeeting}
-        isLoading={createMeetingLoading}
-        meetingData={meetingToEdit}
-      />
+      </div>
     </div>
   );
 }
