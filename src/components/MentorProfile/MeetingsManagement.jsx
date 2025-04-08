@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import MeetingsList from "./MeetingsList";
 import { formatDate } from "../../utils/dateUtils";
 import { deleteMentorSessions } from "../../services/mentorService";
+import ResponsiveDialog from "../../utils/ResponsiveDialog.jsx";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const MeetingsManagement = ({
   scheduledMeetings,
@@ -11,6 +14,12 @@ const MeetingsManagement = ({
 }) => {
   // State to track which meetings have expanded recording sections
   const [expandedMeetings, setExpandedMeetings] = useState({});
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedMeetingId, setSelectedMeetingId] = useState(null);
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [agreeText, setAgreeText] = useState("");
+  const [disagreeText, setDisagreeText] = useState("");
 
   // Toggle expanded state for a meeting
   const toggleExpanded = (meetingId) => {
@@ -29,15 +38,35 @@ const MeetingsManagement = ({
 
   const handleDeleteMeeting = async (meetingId) => {
     try {
-      await deleteMentorSessions(meetingId);
+      await deleteMentorSessions(meetingId)
+        .then(() => {
+          toast.success("Session Deleted successfully!");
+        })
+        .catch((error) => {
+          toast.error("Failed to delete session. Please try again.");
+        });
 
       onRefresh();
-
-      alert("Meeting deleted successfully.");
     } catch (error) {
       console.error("Error deleting meeting:", error);
-      alert("Failed to delete meeting. Please try again.");
+      // alert("Failed to delete meeting. Please try again.");
     }
+  };
+  const handleDeleteClick = (meetingId) => {
+    setSelectedMeetingId(meetingId);
+    setDialogOpen(true);
+    setTitle("Confirm Deletion");
+    setContent(
+      "Are you sure you want to delete this meeting? This action cannot be undone."
+    );
+    setAgreeText("Delete");
+    setDisagreeText("Cancel");
+  };
+
+  const handleConfirmDelete = async () => {
+    await handleDeleteMeeting(selectedMeetingId);
+    setDialogOpen(false);
+    setSelectedMeetingId(null);
   };
 
   // Handle joining a meeting
@@ -55,8 +84,13 @@ const MeetingsManagement = ({
       // Calculate time remaining
       const timeRemaining = formatTimeRemaining(meetingTime, currentTime);
 
-      // Show alert with time information
-      alert(
+      setDialogOpen(true);
+      setTitle("");
+
+      setAgreeText("");
+      setDisagreeText("Cancel");
+
+      setContent(
         `This session is scheduled for ${formatDate(
           meeting.schedule_time
         )}.\n\n${timeRemaining}\n\nYou can join the meeting 15 minutes before the scheduled time.`
@@ -108,6 +142,7 @@ const MeetingsManagement = ({
       <div className="card-body">
         <div className="d-flex justify-content-between align-items-center mb-4">
           <h2 className="card-title mb-0">Scheduled Meetings</h2>
+          <ToastContainer position="bottom-right" autoClose={3000} />
         </div>
 
         {error && (
@@ -177,7 +212,7 @@ const MeetingsManagement = ({
                             className="btn btn-outline-danger"
                             title="Cancel meeting"
                             onClick={() =>
-                              handleDeleteMeeting(meeting._id || meeting.id)
+                              handleDeleteClick(meeting._id || meeting.id)
                             }
                           >
                             <i className="bi bi-trash"></i>
@@ -256,6 +291,15 @@ const MeetingsManagement = ({
           </div>
         )}
       </div>
+      <ResponsiveDialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        onAgree={handleConfirmDelete}
+        title={title}
+        content={content}
+        agreeText={agreeText}
+        disagreeText={disagreeText}
+      />
     </div>
   );
 };

@@ -1,16 +1,18 @@
 import React from "react";
 import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateMentorProfile } from "../../rtk/features/mentorSlice";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const PersonalInfoSection = ({
   mentorData,
 
-  loading,
   message,
 }) => {
   const dispatch = useDispatch();
+  const { loading } = useSelector((state) => state.mentor);
 
   const validationSchema = Yup.object({
     name: Yup.string()
@@ -56,13 +58,20 @@ const PersonalInfoSection = ({
   };
 
   const submitHandler = (values) => {
-    dispatch(updateMentorProfile(values));
+    dispatch(updateMentorProfile(values))
+      .then(() => {
+        toast.success("Profile updated successfully!");
+      })
+      .catch((error) => {
+        toast.error("Failed to update profile. Please try again.");
+      });
   };
 
   return (
     <div className="card">
       <div className="card-body">
         <h2 className="card-title">Personal Information</h2>
+        <ToastContainer position="bottom-right" autoClose={3000} />
 
         <Formik
           initialValues={initialValues}

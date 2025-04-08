@@ -9,11 +9,14 @@ import ScheduleSection from "../components/MentorProfile/ScheduleSection";
 import JoinRoomSection from "../components/MentorProfile/JoinRoomSection";
 import SettingsSection from "../components/MentorProfile/SettingsSection";
 import ProfileNavigation from "../components/MentorProfile/ProfileNavigation";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   fetchMentorData,
   updateMentorProfile,
 } from "../rtk/features/mentorSlice";
 import { Call } from "@stream-io/video-react-sdk";
+import ChangePassword from "../components/MentorProfile/ChangePassword";
 
 export default function MentorDashboard() {
   const navigate = useNavigate();
@@ -52,9 +55,9 @@ export default function MentorDashboard() {
     try {
       setSessionsLoading(true);
       setError(null);
-
+      console.log(mentor._id);
       const response = await axios.get(
-        "http://localhost:3000/api/v1/mentors/sessions",
+        `http://localhost:3000/api/v1/mentors/${mentor._id}/sessions`,
         { withCredentials: true }
       );
 
@@ -94,7 +97,8 @@ export default function MentorDashboard() {
       if (responseData && responseData.data) {
         // Refresh the sessions list instead of manually adding
         fetchMentorSessions();
-        alert("Meeting scheduled successfully!");
+        // alert("Meeting scheduled successfully!");
+        toast.success("Meeting scheduled successfully!");
       } else {
         throw new Error("No data received from the server");
       }
@@ -144,6 +148,7 @@ export default function MentorDashboard() {
 
   return (
     <div className="container my-4">
+      <ToastContainer position="bottom-right" autoClose={3000} />
       <h1 className="mb-4">Mentor Profile</h1>
 
       <ProfileNavigation
@@ -177,7 +182,7 @@ export default function MentorDashboard() {
       )}
 
       {activeSection === "joinRoom" && <JoinRoomSection />}
-
+      {activeSection === "changePassword" && <ChangePassword />}
       {activeSection === "settings" && <SettingsSection />}
 
       <ScheduleModal
