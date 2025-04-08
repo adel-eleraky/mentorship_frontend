@@ -62,8 +62,8 @@ function App() {
 
           <Route path="mentors" element={<BrowseMentors />} />
 
-          <Route path="community" element={<Community />} />
-          <Route path="community/user/:id/:role" element={<CommunityUserProfile />} />
+          <Route path="community" element={ <ProtectRoute > <Community /> </ProtectRoute>} />
+          <Route path="community/user/:id/:role" element={<ProtectRoute> <CommunityUserProfile /> </ProtectRoute>} />
 
           {/* protected Routes */}
 
