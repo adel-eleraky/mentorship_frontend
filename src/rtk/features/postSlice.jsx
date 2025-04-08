@@ -44,6 +44,29 @@ export const likePost = createAsyncThunk("post/likePost", async (postId, { rejec
     }
 });
 
+export const unlikePost = createAsyncThunk("post/unlikePost", async (postId, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.delete(
+        `http://localhost:3000/api/v1/likes/${postId}`,
+        { withCredentials: true }
+      );
+      return data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || { message: "Network error occurred" });
+    }
+  });
+  
+  export const deletePost = createAsyncThunk("post/deletePost", async (postId, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.delete(
+        `http://localhost:3000/api/v1/posts/${postId}`,
+        { withCredentials: true }
+      );
+      return { ...data, postId }; 
+    } catch (err) {
+      return rejectWithValue(err.response?.data || { message: "Network error occurred" });
+    }
+  });
 
 export const createComment = createAsyncThunk("post/createComment", async ({ postId, content }, { rejectWithValue }) => {
     try {
@@ -76,7 +99,11 @@ const postSlice = createSlice({
         likeLoading: false,
         likeStatus: "",
         likeMessage: "",
-        likeError: ""
+        likeError: "",
+        deleteLoading: false,
+        deleteStatus: "",
+        deleteMessage: "",
+        deleteError: ""
     },
     extraReducers: (builder) => {
         builder.addCase(getAllPosts.fulfilled , (state, action) => {
@@ -136,7 +163,46 @@ const postSlice = createSlice({
             state.likeError = action.payload?.message || "Something went wrong";
         })
 
+        // ===============
+        .addCase(unlikePost.fulfilled, (state, action) => {
+            state.loading = false;
+            state.likeStatus = action.payload.status;
+            state.likeMessage = action.payload.message;
+          
+            const unlikedPostId = action.payload?.data?.postId;
+            const userId = action.payload?.data?.user;
+          
+            if (unlikedPostId && userId) {
+              const postIndex = state.posts.findIndex((post) => post._id === unlikedPostId);
+              if (postIndex !== -1) {
+                const post = state.posts[postIndex];
+                if (post.reactions?.likes) {
+                  post.reactions.likes = post.reactions.likes.filter((like) => like.user !== userId);
+                }
+              }
+            }
+          })
 
+          .addCase(unlikePost.pending, (state) => {
+            state.loading = true;
+        })
+        //   ==========
+        .addCase(deletePost.pending, (state) => {
+            state.deleteLoading = true;
+          })
+          .addCase(deletePost.fulfilled, (state, action) => {
+            state.deleteLoading = false;
+            state.deleteStatus = action.payload.status;
+            state.deleteMessage = action.payload.message;
+            
+            state.posts = state.posts.filter(post => post._id !== action.payload.postId);
+            
+            state.userPosts = state.userPosts.filter(post => post._id !== action.payload.postId);
+          })
+          .addCase(deletePost.rejected, (state, action) => {
+            state.deleteLoading = false;
+            state.deleteError = action.payload?.message || "Failed to delete post";
+          })
 
 
 

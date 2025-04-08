@@ -43,7 +43,7 @@ import Cancel from "./pages/Booking/Cancel.jsx";
 // import Chat from "./components/Chat/Chat";
 import ForgotPassword from "./components/ForgotPassword/ForgotPassword.jsx";
 import ResetPassword from "./components/ResetPassword/ResetPassword.jsx";
-
+import Error from "./pages/Error/Error.jsx";
 
 const socket = io("http://localhost:3000");
 
@@ -62,8 +62,8 @@ function App() {
 
           <Route path="mentors" element={<BrowseMentors />} />
 
-          <Route path="community" element={<Community />} />
-          <Route path="community/user/:id/:role" element={<CommunityUserProfile />} />
+          <Route path="community" element={ <ProtectRoute > <Community /> </ProtectRoute>} />
+          <Route path="community/user/:id/:role" element={<ProtectRoute> <CommunityUserProfile /> </ProtectRoute>} />
 
           {/* protected Routes */}
 
@@ -134,6 +134,7 @@ function App() {
             </ProtectRoute>
           }
         />
+            <Route path="*" element={<Error />} />
       </Routes>
     </Provider>
   );

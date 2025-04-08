@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useDispatch, useSelector } from "react-redux";
-import { updateUserProfile } from "../../rtk/features/userSlice";
+import { updateUserProfile, uploadImage } from "../../rtk/features/userSlice";
 import { CircularProgress } from "@mui/material";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
+import { getLoggedInUser } from "../../rtk/features/authSlice";
 
 const PersonalInfoSection = ({
   userData,
@@ -15,7 +16,7 @@ const PersonalInfoSection = ({
   removeExpertise,
 }) => {
   const dispatch = useDispatch();
-  const { errors, loading, updateMessage, status } = useSelector(
+  const { errors, loading, updateMessage, status, imageLoading, imageMessage, updateLoading } = useSelector(
     (state) => state.user
   );
   const [preview, setPreview] = useState(null);
@@ -23,32 +24,34 @@ const PersonalInfoSection = ({
   const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    if (image) {
-      toast.success(`Image updated successfully`, {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-    }
-  }, [image]);
+    // if (image) {
+    // toast.success(`Image updated successfully`, {
+    //   position: "top-center",
+    //   autoClose: 5000,
+    //   hideProgressBar: false,
+    //   closeOnClick: false,
+    //   pauseOnHover: true,
+    //   draggable: true,
+    //   progress: undefined,
+    //   theme: "light",
+    // });
+    // }
 
-  if (status == "success" && updateMessage) {
-    toast.success(`${updateMessage}`, {
-      position: "top-center",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: false,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
-  }
+    dispatch(getLoggedInUser())
+  }, [imageLoading]);
+
+  // if (status == "success" && updateMessage) {
+  //   toast.success(`${updateMessage}`, {
+  //     position: "top-center",
+  //     autoClose: 5000,
+  //     hideProgressBar: false,
+  //     closeOnClick: false,
+  //     pauseOnHover: true,
+  //     draggable: true,
+  //     progress: undefined,
+  //     theme: "light",
+  //   });
+  // }
 
   // useEffect(() => {
   //   if (status == "success" && updateMessage) {
@@ -77,18 +80,18 @@ const PersonalInfoSection = ({
   //     });
   //   }
   // }, [status, updateMessage])
-  if (status == "fail" && errors) {
-    toast.error(`${updateMessage}`, {
-      position: "top-center",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: false,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
-  }
+  // if (status == "fail" && errors) {
+  //   toast.error(`${updateMessage}`, {
+  //     position: "top-center",
+  //     autoClose: 5000,
+  //     hideProgressBar: false,
+  //     closeOnClick: false,
+  //     pauseOnHover: true,
+  //     draggable: true,
+  //     progress: undefined,
+  //     theme: "light",
+  //   });
+  // }
 
   const validationSchema = Yup.object({
     name: Yup.string()
@@ -161,23 +164,25 @@ const PersonalInfoSection = ({
 
   const handleImageUpload = async (values) => {
     // console.log(value)
-    const formData = new FormData();
-    formData.append("image", values.image);
 
-    const res = await axios.put(
-      `http://localhost:3000/api/v1/users/upload`,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        withCredentials: true,
-      }
-    );
-    setImage(res.data.data.image);
+    dispatch(uploadImage(values))
+    // const formData = new FormData();
+    // formData.append("image", values.image);
+
+    // const res = await axios.put(
+    //   `http://localhost:3000/api/v1/users/upload`,
+    //   formData,
+    //   {
+    //     headers: {
+    //       "Content-Type": "multipart/form-data",
+    //     },
+    //     withCredentials: true,
+    //   }
+    // );
+    // setImage(res.data.data.image);
   };
 
-  console.log(image);
+  console.log(imageLoading , imageMessage);
   return (
     <div className="card">
       <div className="card-body">
@@ -189,6 +194,9 @@ const PersonalInfoSection = ({
           className="img-thumbnail rounded-circle"
           style={{ width: "100px" }}
         />
+        {!imageLoading && imageMessage && (
+          <div className="alert alert-success mt-3" style={{ width: "fit-content"}}>{imageMessage}</div>
+        )}
 
         <div className="mb-3">
           <Formik
@@ -392,6 +400,9 @@ const PersonalInfoSection = ({
             </Form>
           )}
         </Formik>
+        {!updateLoading && updateMessage && (
+          <div className="alert alert-success mt-3" style={{ width: "fit-content"}}>{updateMessage}</div>
+        )}
       </div>
     </div>
   );
