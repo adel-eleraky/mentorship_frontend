@@ -69,7 +69,7 @@ function NavBar() {
           </button>
 
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
-            {location.pathname !== "/mentors" && (
+            { (
               <form className="d-flex mb-2 mb-lg-0 ms-auto" role="search">
                 <div style={{ position: "relative", width: "350px" }}>
                   <input
@@ -176,11 +176,11 @@ function NavBar() {
                         )}
                         {/* <li className="dropdown-item">💬 You have a new message</li> */}
                         {/* <li className="dropdown-item">✅ Task completed successfully</li> */}
-                        <li>
+                        {/* <li>
                           <NavLink className="dropdown-item text-primary text-center" to="/notifications">
                             View all
                           </NavLink>
-                        </li>
+                        </li> */}
                       </ul>
                     </li>
                     <li className="nav-item dropdown">
@@ -214,14 +214,14 @@ function NavBar() {
                           </NavLink>
                         </li>
                         <li>
-                          <button className="dropdown-item" onClick={() => logout()}>
+                          <button className="dropdown-item" onClick={() => handleLogout()}>
                             Logout
                           </button>
                         </li>
                       </ul>
                     </li>
-                    <button className="btn fw-bold second-color" onClick={() => handleLogout()}>
-                      Logout
+                    <button className="btn fw-bold second-color">
+                      {user?.name}
                     </button>
                   </>
                   // <>

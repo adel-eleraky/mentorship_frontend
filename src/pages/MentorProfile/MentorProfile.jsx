@@ -1,6 +1,6 @@
 import "./MentorProfile.css";
 import React, { useEffect, useState } from "react";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { loadStripe } from "@stripe/stripe-js";
 import ReviewMentor from "../../components/ReviewMentor/ReviewMentor";
@@ -10,6 +10,7 @@ import { getUserSessions } from "../../rtk/features/userSlice";
 
 function MentorProfile() {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const [skills, setSkills] = useState([]);
   const [skill, setSkill] = useState("");
   const [mentor, setMentor] = useState(null);
@@ -93,7 +94,7 @@ function MentorProfile() {
   return (
     <>
       <MentorInfo mentor={mentor} />
-  
+
       {/* ============================ Sessions =========================== */}
       <div className="container py-3 mb-4 mt-5">
         <div className="d-flex justify-content-between">
@@ -106,7 +107,7 @@ function MentorProfile() {
             Session Request
           </button>
         </div>
-  
+
         {/* Session Request Modal */}
         <div className="modal fade" id="exampleModa2" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div className="modal-dialog modal-xl">
@@ -121,12 +122,12 @@ function MentorProfile() {
                     <label htmlFor="title2" className="form-label">Title</label>
                     <input type="text" className="form-control" id="title2" />
                   </div>
-  
+
                   <div className="mb-3">
                     <label htmlFor="discription" className="form-label">Description</label>
                     <textarea className="form-control" id="discription" rows="6"></textarea>
                   </div>
-  
+
                   <div className="col-md-6">
                     <label htmlFor="duration" className="form-label">Duration</label>
                     <select className="form-select" id="duration">
@@ -138,7 +139,7 @@ function MentorProfile() {
                       <option value="6">3 hours</option>
                     </select>
                   </div>
-  
+
                   <div className="row g-3">
                     <div className="col-sm-6">
                       <label htmlFor="inputDate" className="form-label">Date</label>
@@ -158,19 +159,19 @@ function MentorProfile() {
             </div>
           </div>
         </div>
-  
+
         {/* Sessions List */}
         <div className="p-4 rounded bg-light">
           <div className="container py-4">
             <div className="row g-3">
               {sessions.map((session, index) => {
                 const isRegistered = userSessions.some(
-                  reg => reg.session._id === session._id && reg.user._id === user._id
+                  reg => reg.session?._id === session?._id && reg.user?._id === user?._id
                 );
-  
+
                 return (
                   <div className="col-md-4" key={index}>
-                    <div className="card">
+                    {/* <div className="card">
                       <div className="card-header d-flex justify-content-between align-items-center py-2">
                         <h4 className="card-title">{session.title}</h4>
                         <span className="badges price-badge">${session.price}</span>
@@ -234,6 +235,71 @@ function MentorProfile() {
                           </button>
                         </div>
                       </div>
+                    </div> */}
+                    <div class="session-card">
+                      <div class="session-main-content">
+                        <div class="session-header">
+                          <span>{session.title}</span>
+                          <span className="frist-color mx-2">
+                            ${session.price}
+                          </span>
+                        </div>
+                        <p class="session-heading"> {session?.description}</p>
+
+                        <div class="session-categories d-flex jastify-content-between align-items-center">
+                          <div className="mb-2">
+                            <div className="info-label">Duration:</div>
+                            <div className="icon-text mt-1">
+                              <i className="bi bi-clock" /> {session?.duration}{" "}
+                              minutes
+                            </div>
+                          </div>
+
+                          <div className="mb-2 mx-4">
+                            <div className="info-label">Date</div>
+                            <div className="icon-text">
+                              <i className="bi bi-calendar3" />{" "}
+                              {formatDate(session?.schedule_time)}
+                            </div>
+                          </div>
+                        </div>
+                        <div class="session-categories d-flex jastify-content-between align-items-center">
+                          <div className="mb-2">
+                            <div className="info-label">Time:</div>
+                            <div className="icon-text mt-1">
+                              <i className="bi bi-alarm" />
+                              {formatTime(session?.duration)}
+                            </div>
+                          </div>
+
+                          <div className="mb-2 mt-1 mx-4">
+                            {session.features && session.features.map((feature, index) => (
+                              <span key={index} className="badges features-badge me-1">
+                                <i className={`bi bi-${feature.icon}`} /> {feature.name}
+                              </span>
+                            ))}
+                            {session.has_room ? <span className="badges features-badge">
+                              <i className="bi bi-chat-dots" />  Chat Room
+                            </span> : <span className="badges features-nbadge">
+                              <i className="bi bi-chat-dots" /> Chat Room
+                            </span>}
+                          </div>
+                        </div>
+                      </div>
+                      <div class="session-footer second-color">
+                        <button
+                          className="btn booking w-100"
+                          disabled={isRegistered}
+                          onClick={() => {
+                            if(!user) {
+                              return navigate("/login")
+                            }
+                            makePayment(session._id)
+                          }}
+                        >
+                          {isRegistered ? "Already registered" : "Register Now"}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 );
@@ -242,7 +308,7 @@ function MentorProfile() {
           </div>
         </div>
       </div>
-  
+
       {/* ============================ Skills =========================== */}
       <div className="container py-3 mb-4 mt-5">
         <h3 className="mx-3 fw-medium second-color">Skills :</h3>
@@ -254,7 +320,7 @@ function MentorProfile() {
           ))}
         </div>
       </div>
-  
+
       {/* ============================ ReviewMentor =========================== */}
       <div>
         <ReviewMentor mentor={mentor?._id} />

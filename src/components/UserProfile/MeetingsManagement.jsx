@@ -59,23 +59,23 @@ const MeetingsManagement = ({
               </thead>
               <tbody>
                 {scheduledMeetings.map(({session}) => (
-                  <tr key={session.id}>
-                    <td>{session.title}</td>
-                    <td>{formatDate(session.schedule_time)}</td>
-                    <td>{session.duration} min</td>
+                  <tr key={session?.id}>
+                    <td>{session?.title}</td>
+                    <td>{formatDate(session?.schedule_time)}</td>
+                    <td>{session?.duration} min</td>
                     <td>
                       <span
-                        className={`badge ${session.status === "pending"
+                        className={`badge ${session?.status === "pending"
                             ? "bg-warning"
                             : "bg-success"
                           }`}
                       >
-                        {session.status}
+                        {session?.status}
                       </span>
                     </td>
                     <td>
                       <div className="btn-group btn-group-sm">
-                        <Link className="btn btn-primary" to={`/meeting/${session._id}`}>
+                        <Link className="btn btn-primary" to={`/meeting/${session?._id}`}>
                           <i className="bi bi-camera-video me-2"></i>
                           Join Meeting
                         </Link>
