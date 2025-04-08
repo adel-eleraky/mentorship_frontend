@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getUserSessions } from "../../rtk/features/userSlice";
 
 function MentorProfile() {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
   const navigate = useNavigate()
   const [skills, setSkills] = useState([]);
   const [skill, setSkill] = useState("");
@@ -17,11 +17,11 @@ function MentorProfile() {
   const [loading, setLoading] = useState(true);
   const [sessions, setSessions] = useState([]);
   let { id } = useParams();
-  const { sessions: userSessions } = useSelector((state) => state.user);
-  const { user } = useSelector((state) => state.auth);
+  const { sessions: userSessions } = useSelector(state => state.user)
+  const { user } = useSelector(state => state.auth)
 
-  console.log("registered sessions ", userSessions);
-  console.log("mentor sessions ", sessions);
+  console.log("registered sessions ", userSessions)
+  console.log("mentor sessions ", sessions)
   const formatDate = (isoString) => {
     if (!isoString) return "";
     const date = new Date(isoString);
@@ -30,7 +30,6 @@ function MentorProfile() {
   const formatTime = (isoString) => {
     if (!isoString) return "";
     const date = new Date(isoString);
-    return date.toTimeString().split(" ")[0];
     return date.toTimeString().split(" ")[0];
   };
 
@@ -109,35 +108,20 @@ function MentorProfile() {
           </button>
         </div>
 
-        <div>
-          <div
-            className="modal fade"
-            id="exampleModa2"
-            tabIndex={-1}
-            aria-labelledby="exampleModalLabel"
-            aria-hidden="true"
-          >
-            <div className="modal-dialog modal-xl ">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h1 className="modal-title fs-5" id="exampleModalLabel">
-                    Request a Session
-                  </h1>
-                  <button
-                    type="button"
-                    className="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                  />
-                </div>
-                <div className="modal-body container">
-                  <form className="row g-3 container">
-                    <div className="col-md-6">
-                      <label htmlFor="title2" className="form-label">
-                        Title
-                      </label>
-                      <input type="text" className="form-control" id="title2" />
-                    </div>
+        {/* Session Request Modal */}
+        <div className="modal fade" id="exampleModa2" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div className="modal-dialog modal-xl">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h1 className="modal-title fs-5" id="exampleModalLabel">Request a Session</h1>
+                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+              </div>
+              <div className="modal-body container">
+                <form className="row g-3 container">
+                  <div className="col-md-6">
+                    <label htmlFor="title2" className="form-label">Title</label>
+                    <input type="text" className="form-control" id="title2" />
+                  </div>
 
                   <div className="mb-3">
                     <label htmlFor="discription" className="form-label">Description</label>
@@ -196,7 +180,7 @@ function MentorProfile() {
                         <div className="mb-2">
                           <div className="info-label">Description</div>
                           <div className="description-box">{session.description}</div>
-
+  
                           <div className="session-categories d-flex justify-content-between align-items-center">
                             <div className="mb-2">
                               <div className="info-label">Duration:</div>
@@ -204,7 +188,7 @@ function MentorProfile() {
                                 <i className="bi bi-clock" /> {session.duration} minutes
                               </div>
                             </div>
-
+  
                             <div className="mb-2 mx-4">
                               <div className="info-label">Date</div>
                               <div className="icon-text">
@@ -212,7 +196,7 @@ function MentorProfile() {
                               </div>
                             </div>
                           </div>
-
+  
                           <div className="session-categories d-flex justify-content-between align-items-center">
                             <div className="mb-2">
                               <div className="info-label">Time:</div>
@@ -221,7 +205,7 @@ function MentorProfile() {
                                 {formatTime(session.duration)}
                               </div>
                             </div>
-
+  
                             <div className="mb-2 mt-1 mx-4">
                               {session.features && session.features.map((feature, index) => (
                                 <span key={index} className="badges features-badge me-1">
@@ -240,7 +224,7 @@ function MentorProfile() {
                             </div>
                           </div>
                         </div>
-
+  
                         <div className="session-footer second-color">
                           <button
                             className="btn booking w-100"
@@ -261,41 +245,15 @@ function MentorProfile() {
                           </span>
                         </div>
                         <p class="session-heading"> {session?.description}</p>
-        <div className="p-4 rounded bg-light">
-          {/* ======================================================= */}
-          <div className="container py-4">
-            <div className="row g-3">
-              {sessions.length > 0 ? (
-                sessions.map((session) => {
-                  // Check if user has registered for this session
-                  const isRegistered = userSessions.some(
-                    (userSession) => userSession._id === session._id
-                  );
 
-                  return (
-                    <div className="col-md-4" key={session._id}>
-                      <div className="card">
-                        <div className="card-header d-flex justify-content-between align-items-center py-2">
-                          <h4 className="card-title">{session.title}</h4>
-                          <span className="badges price-badge">
-                            ${session.price}
-                          </span>
-                        </div>
-                        <div className="card-body">
+                        <div class="session-categories d-flex jastify-content-between align-items-center">
                           <div className="mb-2">
-                            <div className="info-label">Description</div>
-                            <div className="description-box">
-                              {session.description}
+                            <div className="info-label">Duration:</div>
+                            <div className="icon-text mt-1">
+                              <i className="bi bi-clock" /> {session?.duration}{" "}
+                              minutes
                             </div>
-
-                            <div className="session-categories d-flex jastify-content-between align-items-center">
-                              <div className="mb-2">
-                                <div className="info-label">Duration:</div>
-                                <div className="icon-text mt-1">
-                                  <i className="bi bi-clock" />{" "}
-                                  {session.duration} minutes
-                                </div>
-                              </div>
+                          </div>
 
                           <div className="mb-2 mx-4">
                             <div className="info-label">Date</div>
@@ -305,14 +263,12 @@ function MentorProfile() {
                             </div>
                           </div>
                         </div>
-
-
                         <div class="session-categories d-flex jastify-content-between align-items-center">
                           <div className="mb-2">
                             <div className="info-label">Time:</div>
                             <div className="icon-text mt-1">
-                            <i className="bi bi-alarm" />
-                               {formatTime(session?.duration)}
+                              <i className="bi bi-alarm" />
+                              {formatTime(session?.duration)}
                             </div>
                           </div>
 
@@ -327,54 +283,24 @@ function MentorProfile() {
                             </span> : <span className="badges features-nbadge">
                               <i className="bi bi-chat-dots" /> Chat Room
                             </span>}
-                              <div className="mb-2 mt-1 mx-4">
-                                {session.features &&
-                                  session.features.map((feature, index) => (
-                                    <span
-                                      key={index}
-                                      className="badges features-badge me-1"
-                                    >
-                                      <i className={`bi bi-${feature.icon}`} />{" "}
-                                      {feature.name}
-                                    </span>
-                                  ))}
-                                {session.has_room ? (
-                                  <span className="badges features-badge">
-                                    <i className="bi bi-chat-dots" /> Chat Room
-                                  </span>
-                                ) : (
-                                  <span className="badges features-nbadge">
-                                    <i className="bi bi-chat-dots" /> Chat Room
-                                  </span>
-                                )}
-                              </div>
-                            </div>
                           </div>
                         </div>
-
-
-
                       </div>
                       <div class="session-footer second-color">
-                      <button
-                        className="btn booking w-100"
-                        style={{ width: "100% !important"}}
-                        disabled={isRegistered}
-                        onClick={() => makePayment(session._id)}
-                      >
-                        {isRegistered ? "Already registered" : "Register Now"}
-                      </button>
-
-
+                        <button
+                          className="btn booking w-100"
+                          disabled={isRegistered}
+                          onClick={() => {
+                            if(!user) {
+                              return navigate("/login")
+                            }
+                            makePayment(session._id)
+                          }}
+                        >
+                          {isRegistered ? "Already registered" : "Register Now"}
+                        </button>
                       </div>
                     </div>
-                  );
-                })
-              ) : (
-                <div className="col-12 text-center">
-                  <p>No sessions available from this mentor yet.</p>
-                </div>
-              )}
                   </div>
                 );
               })}
