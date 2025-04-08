@@ -11,6 +11,7 @@ const ScheduleModal = ({
   onScheduleMeeting,
   isLoading,
   mentorId,
+  meetingData,
 }) => {
   const validationSchema = Yup.object({
     title: Yup.string()
@@ -31,25 +32,62 @@ const ScheduleModal = ({
     has_room: Yup.boolean().required("Has room is required"),
   });
 
-  const initialValues = {
-    title: "",
-    price: 0,
-    description: "",
-    duration: 0,
-    schedule_time: "",
-    has_room: false,
+  // Set initial values based on whether we're editing or creating
+  const getInitialValues = () => {
+    if (meetingData && meetingData._id) {
+      // Format the date for the datetime-local input
+      const scheduleDate = meetingData.schedule_time
+        ? new Date(meetingData.schedule_time)
+        : new Date();
+
+      const formattedDate = scheduleDate.toISOString().slice(0, 16);
+
+      return {
+        title: meetingData.title || "",
+        price: meetingData.price || 0,
+        description: meetingData.description || "",
+        duration: meetingData.duration || 30,
+        schedule_time: formattedDate,
+        has_room: meetingData.has_room || false,
+      };
+    }
+
+    return {
+      title: "",
+      price: "",
+      description: "",
+      duration: 30,
+      schedule_time: "",
+      has_room: false,
+    };
   };
 
-  const submitHandler = async (values, { setSubmitting }) => {
+  const submitHandler = async (values, { setSubmitting, resetForm }) => {
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/v1/sessions",
-        {
-          ...values,
-        },
-        { withCredentials: true }
-      );
+      let response;
+
+      if (meetingData && meetingData._id) {
+        // Update existing meeting
+        response = await axios.put(
+          `http://localhost:3000/api/v1/mentors/sessions/${meetingData._id}`,
+          {
+            ...values,
+          },
+          { withCredentials: true }
+        );
+      } else {
+        // Create new meeting
+        response = await axios.post(
+          "http://localhost:3000/api/v1/sessions",
+          {
+            ...values,
+          },
+          { withCredentials: true }
+        );
+      }
+
       onScheduleMeeting(response.data);
+      resetForm();
       handleClose();
     } catch (error) {
       console.error("Error scheduling session:", error);
@@ -61,13 +99,18 @@ const ScheduleModal = ({
   return (
     <Modal show={show} onHide={handleClose} size="lg">
       <Modal.Header closeButton>
-        <Modal.Title>Schedule a New Session</Modal.Title>
+        <Modal.Title>
+          {meetingData && meetingData._id
+            ? "Edit Session"
+            : "Schedule a New Session"}
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Formik
-          initialValues={initialValues}
+          initialValues={getInitialValues()}
           validationSchema={validationSchema}
           onSubmit={submitHandler}
+          enableReinitialize={true}
         >
           {({ isSubmitting, setFieldValue }) => (
             <Form>
@@ -186,7 +229,13 @@ const ScheduleModal = ({
                 variant="primary"
                 disabled={isSubmitting || isLoading}
               >
-                {isSubmitting || isLoading ? "Scheduling..." : "Schedule"}
+                {isSubmitting || isLoading
+                  ? meetingData && meetingData._id
+                    ? "Updating..."
+                    : "Scheduling..."
+                  : meetingData && meetingData._id
+                  ? "Update Session"
+                  : "Schedule Session"}
               </Button>
             </Form>
           )}

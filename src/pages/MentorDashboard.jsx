@@ -43,6 +43,7 @@ export default function MentorDashboard() {
   const [sessionsLoading, setSessionsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
+  const [meetingToEdit, setMeetingToEdit] = useState(null);
 
   // Fetch mentor data and sessions
   useEffect(() => {
@@ -98,7 +99,11 @@ export default function MentorDashboard() {
         // Refresh the sessions list instead of manually adding
         fetchMentorSessions();
         // alert("Meeting scheduled successfully!");
-        toast.success("Meeting scheduled successfully!");
+        toast.success(
+          meetingToEdit
+            ? "Meeting updated successfully!"
+            : "Meeting scheduled successfully!"
+        );
       } else {
         throw new Error("No data received from the server");
       }
@@ -106,6 +111,12 @@ export default function MentorDashboard() {
       console.error("Error processing meeting data:", error);
       setError("Failed to schedule meeting. Please try again.");
     }
+  };
+
+  // Handle showing schedule modal with optional meeting data for editing
+  const handleShowScheduleModal = (meetingData = null) => {
+    setMeetingToEdit(meetingData);
+    setShowScheduleModal(true);
   };
 
   // Handle starting an instant meeting
@@ -171,26 +182,33 @@ export default function MentorDashboard() {
           error={error}
           onStartInstantMeeting={handleStartInstantMeeting}
           onRefresh={fetchMentorSessions}
+          onShowScheduleModal={handleShowScheduleModal}
         />
       )}
 
       {activeSection === "schedule" && (
         <ScheduleSection
           onStartInstantMeeting={handleStartInstantMeeting}
-          onShowScheduleModal={() => setShowScheduleModal(true)}
+          onShowScheduleModal={handleShowScheduleModal}
         />
       )}
 
       {activeSection === "joinRoom" && <JoinRoomSection />}
-      {activeSection === "changePassword" && <ChangePassword />}
+      {activeSection === "changePassword" && (
+        <ChangePassword person="mentors" />
+      )}
       {activeSection === "settings" && <SettingsSection />}
 
       <ScheduleModal
         show={showScheduleModal}
         mentorId={mentor?._id}
-        handleClose={() => setShowScheduleModal(false)}
+        handleClose={() => {
+          setShowScheduleModal(false);
+          setMeetingToEdit(null);
+        }}
         onScheduleMeeting={handleScheduleMeeting}
         isLoading={createMeetingLoading}
+        meetingData={meetingToEdit}
       />
     </div>
   );

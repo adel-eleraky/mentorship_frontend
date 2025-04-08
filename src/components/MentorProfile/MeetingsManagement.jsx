@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 const MeetingsManagement = ({
   scheduledMeetings,
+  onShowScheduleModal,
   error,
   loading,
   onRefresh,
@@ -205,6 +206,7 @@ const MeetingsManagement = ({
                           <button
                             className="btn btn-outline-secondary"
                             title="Edit meeting"
+                            onClick={() => onShowScheduleModal(meeting)}
                           >
                             <i className="bi bi-pencil"></i>
                           </button>
