@@ -6,6 +6,7 @@ const ProfileNavigation = ({ activeSection, setActiveSection }) => {
     { id: "meetings", label: "Meetings" },
     { id: "schedule", label: "Schedule" },
     { id: "joinRoom", label: "Join Room" },
+    { id: "changePassword", label: "change password" },
     { id: "settings", label: "Settings" },
   ];
 
