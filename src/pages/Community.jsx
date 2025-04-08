@@ -44,13 +44,13 @@ export default function Community() {
 
     
     const dispatch = useDispatch()
-    const { posts } = useSelector(state => state.post)
+    const { posts, loading } = useSelector(state => state.post)
     const { user } = useSelector(state => state.auth)
     
-    console.log(user)
+    console.log("user" ,user)
     useEffect(() => {
         dispatch(getAllPosts())
-    }, [])
+    }, [loading])
     return (
         <div className="container my-4">
             <div className="row mt-2">
@@ -66,7 +66,7 @@ export default function Community() {
                         </div>
 
                         <div className="flex flex-col items-center " style={{ zIndex: 1, position: "relative", top: "-45px", left: "30px" }}>
-                            <Link to={`user/${user?._id}`}>
+                            <Link to={`user/${user?._id}/${user?.role}`}>
                                 <img
                                     src={`http://localhost:3000/img/users/${user?.image}`}
                                     alt={user?.name}
