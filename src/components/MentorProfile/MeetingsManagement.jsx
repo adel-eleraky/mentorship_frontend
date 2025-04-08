@@ -12,12 +12,15 @@ const MeetingsManagement = ({
   error,
   loading,
   onRefresh,
+  title = "Scheduled Meetings",
+  isPast = false,
+  showRecordings = false,
 }) => {
   // State to track which meetings have expanded recording sections
   const [expandedMeetings, setExpandedMeetings] = useState({});
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedMeetingId, setSelectedMeetingId] = useState(null);
-  const [title, setTitle] = useState("");
+  const [dialogTitle, setDialogTitle] = useState("");
   const [content, setContent] = useState("");
   const [agreeText, setAgreeText] = useState("");
   const [disagreeText, setDisagreeText] = useState("");
@@ -34,7 +37,7 @@ const MeetingsManagement = ({
   const sortedMeetings = scheduledMeetings.sort((a, b) => {
     const aDate = new Date(a.schedule_time);
     const bDate = new Date(b.schedule_time);
-    return aDate - bDate;
+    return isPast ? bDate - aDate : aDate - bDate; // Reverse order for past meetings
   });
 
   const handleDeleteMeeting = async (meetingId) => {
@@ -50,13 +53,13 @@ const MeetingsManagement = ({
       onRefresh();
     } catch (error) {
       console.error("Error deleting meeting:", error);
-      // alert("Failed to delete meeting. Please try again.");
     }
   };
+
   const handleDeleteClick = (meetingId) => {
     setSelectedMeetingId(meetingId);
     setDialogOpen(true);
-    setTitle("Confirm Deletion");
+    setDialogTitle("Confirm Deletion");
     setContent(
       "Are you sure you want to delete this meeting? This action cannot be undone."
     );
@@ -86,11 +89,9 @@ const MeetingsManagement = ({
       const timeRemaining = formatTimeRemaining(meetingTime, currentTime);
 
       setDialogOpen(true);
-      setTitle("");
-
+      setDialogTitle("");
       setAgreeText("");
-      setDisagreeText("Cancel");
-
+      setDisagreeText("Close");
       setContent(
         `This session is scheduled for ${formatDate(
           meeting.schedule_time
@@ -138,11 +139,27 @@ const MeetingsManagement = ({
     return `${minutes}m ${seconds}s`;
   };
 
+  // Get status badge color
+  const getStatusBadgeClass = (status) => {
+    switch (status) {
+      case "active":
+        return "bg-success";
+      case "pending":
+        return "bg-warning";
+      case "completed":
+        return "bg-info";
+      case "cancelled":
+        return "bg-danger";
+      default:
+        return "bg-secondary";
+    }
+  };
+
   return (
     <div className="card">
       <div className="card-body">
         <div className="d-flex justify-content-between align-items-center mb-4">
-          <h2 className="card-title mb-0">Scheduled Meetings</h2>
+          <h2 className="card-title mb-0">{title}</h2>
           <ToastContainer position="bottom-right" autoClose={3000} />
         </div>
 
@@ -159,137 +176,131 @@ const MeetingsManagement = ({
             </div>
             <p className="mt-2">Loading your meetings...</p>
           </div>
-        ) : scheduledMeetings.length === 0 ? (
+        ) : sortedMeetings.length === 0 ? (
           <div className="text-center py-5">
             <i className="bi bi-calendar-x fs-1 text-muted mb-3"></i>
-            <p className="lead">No scheduled meetings found</p>
+            <p className="lead">
+              No {isPast ? "previous" : "scheduled"} meetings found
+            </p>
           </div>
         ) : (
-          <div className="table-responsive">
-            <table className="table table-hover">
-              <thead>
-                <tr>
-                  <th>Title</th>
-                  <th>Date & Time</th>
-                  <th>Duration</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {sortedMeetings.map((meeting) => (
-                  <React.Fragment key={meeting.id || meeting._id}>
-                    <tr>
-                      <td>{meeting.title}</td>
-                      <td>{formatDate(meeting.schedule_time)}</td>
-                      <td>{meeting.duration} min</td>
-                      <td>
-                        <span
-                          className={`badge ${
-                            meeting.status === "pending"
-                              ? "bg-warning"
-                              : "bg-success"
-                          }`}
-                        >
-                          {meeting.status}
-                        </span>
-                      </td>
-                      <td>
-                        <div className="btn-group btn-group-sm">
+          <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {sortedMeetings.map((meeting) => (
+              <div className="col" key={meeting.id || meeting._id}>
+                <div className="card h-100 shadow-sm border-0 hover-shadow">
+                  <div className="card-header bg-transparent d-flex justify-content-between align-items-center">
+                    <span
+                      className={`badge ${getStatusBadgeClass(meeting.status)}`}
+                    >
+                      {meeting.status}
+                    </span>
+                    <div className="dropdown">
+                      <button
+                        className="btn btn-sm btn-light"
+                        type="button"
+                        id="dropdownMenuButton"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
+                        <i className="bi bi-three-dots-vertical"></i>
+                      </button>
+                      <ul
+                        className="dropdown-menu dropdown-menu-end"
+                        aria-labelledby="dropdownMenuButton"
+                      >
+                        <li>
                           <button
-                            className="btn btn-outline-primary"
-                            title="Join meeting"
+                            className="dropdown-item"
                             onClick={() => handleJoinMeeting(meeting)}
                           >
-                            <i className="bi bi-camera-video"></i>
+                            <i className="bi bi-camera-video me-2"></i>Join
+                            Meeting
                           </button>
+                        </li>
+                        <li>
                           <button
-                            className="btn btn-outline-secondary"
-                            title="Edit meeting"
+                            className="dropdown-item"
                             onClick={() => onShowScheduleModal(meeting)}
                           >
-                            <i className="bi bi-pencil"></i>
+                            <i className="bi bi-pencil me-2"></i>Edit Meeting
                           </button>
+                        </li>
+                        <li>
+                          <hr className="dropdown-divider" />
+                        </li>
+                        <li>
                           <button
-                            className="btn btn-outline-danger"
-                            title="Cancel meeting"
+                            className="dropdown-item text-danger"
                             onClick={() =>
                               handleDeleteClick(meeting._id || meeting.id)
                             }
                           >
-                            <i className="bi bi-trash"></i>
+                            <i className="bi bi-trash me-2"></i>Delete Meeting
                           </button>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div className="card-body">
+                    <h5 className="card-title mb-3">{meeting.title}</h5>
 
-                          <button
-                            className="btn btn-outline-info"
-                            title="View Recordings"
-                            disabled={
-                              !meeting.recordings ||
-                              meeting.recordings.length === 0
-                            }
-                            onClick={() =>
-                              toggleExpanded(meeting._id || meeting.id)
-                            }
-                          >
-                            <i className="bi bi-film"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    {/* Recordings section - shown when expanded */}
-                    {meeting.recordings &&
-                      meeting.recordings.length > 0 &&
-                      expandedMeetings[meeting._id || meeting.id] && (
-                        <tr>
-                          <td colSpan="5" className="p-0">
-                            <div className="bg-light p-3 border-top">
-                              <h6 className="mb-3">
-                                <i className="bi bi-collection-play me-2"></i>
-                                Session Recordings
-                              </h6>
-                              <div className="row row-cols-1 row-cols-md-2 g-3">
-                                {meeting.recordings.map((recording, index) => (
-                                  <div className="col" key={index}>
-                                    <div className="card h-100 shadow-sm">
-                                      <div className="card-body">
-                                        <h6 className="card-title text-truncate">
-                                          Recording {index + 1}
-                                        </h6>
-                                        <p className="card-text small mb-1">
-                                          <i className="bi bi-clock me-1"></i>
-                                          {formatDate(recording.start_time)}
-                                        </p>
-                                        <p className="card-text small mb-2">
-                                          <i className="bi bi-stopwatch me-1"></i>
-                                          {formatDuration(
-                                            recording.start_time,
-                                            recording.end_time
-                                          )}
-                                        </p>
-                                      </div>
-                                      <div className="card-footer bg-transparent border-top-0">
-                                        <a
-                                          href={recording.url}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                          className="btn btn-sm btn-primary w-100"
-                                        >
-                                          <i className="bi bi-play-fill me-1"></i>
-                                          Watch Recording
-                                        </a>
-                                      </div>
-                                    </div>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
+                    <div className="d-flex align-items-center mb-2">
+                      <i className="bi bi-calendar-date text-primary me-2"></i>
+                      <span>{formatDate(meeting.schedule_time)}</span>
+                    </div>
+
+                    <div className="d-flex align-items-center mb-2">
+                      <i className="bi bi-clock text-primary me-2"></i>
+                      <span>{meeting.duration} minutes</span>
+                    </div>
+
+                    {/* Show recording badge if available */}
+                    {meeting.recordings && meeting.recordings.length > 0 && (
+                      <div className="d-flex align-items-center mb-2">
+                        <i className="bi bi-camera-video text-success me-2"></i>
+                        <span className="text-success">
+                          {meeting.recordings.length} Recording
+                          {meeting.recordings.length > 1 ? "s" : ""} Available
+                        </span>
+                      </div>
+                    )}
+
+                    {meeting.description && (
+                      <div className="mt-3">
+                        <p className="card-text text-muted small">
+                          {meeting.description.length > 100
+                            ? `${meeting.description.substring(0, 100)}...`
+                            : meeting.description}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="card-footer bg-transparent border-top-0">
+                    <div className="d-flex justify-content-between">
+                      <button
+                        className="btn btn-primary"
+                        onClick={() => handleJoinMeeting(meeting)}
+                      >
+                        <i className="bi bi-camera-video-fill me-1"></i> Join
+                      </button>
+
+                      {/* For recordings section, show direct link to first recording */}
+                      {meeting.recordings && meeting.recordings.length > 0 && (
+                        <a
+                          href={meeting.recordings[0].url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn btn-outline-info"
+                        >
+                          <i className="bi bi-play-circle me-1"></i> Watch
+                        </a>
                       )}
-                  </React.Fragment>
-                ))}
-              </tbody>
-            </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>
@@ -297,7 +308,7 @@ const MeetingsManagement = ({
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
         onAgree={handleConfirmDelete}
-        title={title}
+        title={dialogTitle}
         content={content}
         agreeText={agreeText}
         disagreeText={disagreeText}

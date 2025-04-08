@@ -168,8 +168,8 @@ export default function MentorDashboard() {
         activeSection={activeSection}
         setActiveSection={setActiveSection}
       />
-      <div className="m-auto w-100 pe-3">
-        <h1 className="mb-4">Mentor Profile</h1>
+      <div className="mx-auto w-100 pe-3">
+        {/* <h1 className="mb-4">Mentor Profile</h1> */}
 
         {activeSection === "personal" && (
           <PersonalInfoSection
@@ -179,14 +179,44 @@ export default function MentorDashboard() {
           />
         )}
 
-        {activeSection === "meetings" && (
+        {activeSection === "upcoming" && (
           <MeetingsManagement
-            scheduledMeetings={scheduledMeetings}
+            scheduledMeetings={scheduledMeetings.filter(
+              (meeting) => new Date(meeting.schedule_time) > new Date()
+            )}
             loading={sessionsLoading}
             error={error}
             onStartInstantMeeting={handleStartInstantMeeting}
             onRefresh={fetchMentorSessions}
             onShowScheduleModal={handleShowScheduleModal}
+            title="Upcoming Meetings"
+          />
+        )}
+
+        {activeSection === "previous" && (
+          <MeetingsManagement
+            scheduledMeetings={scheduledMeetings.filter(
+              (meeting) => new Date(meeting.schedule_time) < new Date()
+            )}
+            loading={sessionsLoading}
+            error={error}
+            onRefresh={fetchMentorSessions}
+            onShowScheduleModal={handleShowScheduleModal}
+            title="Previous Meetings"
+            isPast={true}
+          />
+        )}
+
+        {activeSection === "recordings" && (
+          <MeetingsManagement
+            scheduledMeetings={scheduledMeetings.filter(
+              (meeting) => meeting.recordings && meeting.recordings.length > 0
+            )}
+            loading={sessionsLoading}
+            error={error}
+            onRefresh={fetchMentorSessions}
+            title="Meeting Recordings"
+            showRecordings={true}
           />
         )}
 
