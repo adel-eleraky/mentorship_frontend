@@ -29,7 +29,7 @@ export const updateMentorProfile = createAsyncThunk(
   }
 );
 export const fetchMentorData = createAsyncThunk(
-  "mentor/getMentor",
+  "mentor/getMentorData",
   async (_, { rejectWithValue }) => {
     try {
       const { data } = await axios.get(
@@ -56,6 +56,17 @@ export const getMentorSessions = createAsyncThunk(
   }
 );
 
+
+export const getMentor = createAsyncThunk("mentor/getMentor", async (id, { rejectWithValue }) => {
+  try {
+    const { data } = await axios.get(`http://localhost:3000/api/v1/mentors/${id}`, { withCredentials: true });
+    return data
+  } catch (error) {
+    return rejectWithValue(error?.response?.data)
+  }
+
+})
+
 const initialState = {
   loading: false,
   status: "",
@@ -76,12 +87,12 @@ const mentorSlice = createSlice({
         state.errors = null;
       })
       .addCase(fetchMentors.fulfilled, (state, action) => {
-          state.loading = false;
-          state.mentors = action.payload;
+        state.loading = false;
+        state.mentors = action.payload;
       })
       .addCase(fetchMentors.rejected, (state, action) => {
-          state.loading = false;
-          state.errors = action.payload.errors;
+        state.loading = false;
+        state.errors = action.payload.errors;
       })
       .addCase(updateMentorProfile.pending, (state, action) => {
         state.loading = true;
@@ -124,6 +135,9 @@ const mentorSlice = createSlice({
       .addCase(fetchMentorData.rejected, (state, action) => {
         state.loading = false;
         state.errors = action.payload;
+      })
+      .addCase(getMentor.fulfilled, (state, action) => {
+        state.mentor = action.payload.data
       });
   },
 });

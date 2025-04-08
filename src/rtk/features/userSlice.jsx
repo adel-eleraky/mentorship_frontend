@@ -23,6 +23,17 @@ export const getUserSessions = createAsyncThunk("user/getSessions", async (_, { 
 
 })
 
+
+export const getUser = createAsyncThunk("user/getUser", async (id, { rejectWithValue }) => {
+    try {
+        const { data } = await axios.get(`http://localhost:3000/api/v1/users/${id}`, { withCredentials: true});
+        return data
+    } catch (error) {
+        return rejectWithValue(error?.response?.data)
+    }
+
+})
+
 const initialState = {
     loading: false,
     status: "",
@@ -65,6 +76,9 @@ const userSlice = createSlice({
                 state.status = action.payload.status
                 // state.message = action.payload.message
                 state.errors = action.payload.errors
+            })
+            .addCase(getUser.fulfilled , (state, action ) => {
+                state.user = action.payload.data
             })
     }
 })
