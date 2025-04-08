@@ -67,6 +67,18 @@ export const getMentor = createAsyncThunk("mentor/getMentor", async (id, { rejec
 
 })
 
+
+
+export const setMentorAvailability = createAsyncThunk("mentor/Availability ", async (availability, { rejectWithValue }) => {
+  try {
+    const { data } = await axios.post(`http://localhost:3000/api/v1/mentors/availability `, {availability} ,  { withCredentials: true });
+    return data
+  } catch (error) {
+    return rejectWithValue(error?.response?.data)
+  }
+
+})
+
 const initialState = {
   loading: false,
   status: "",
@@ -75,6 +87,7 @@ const initialState = {
   mentors: [],
   sessions: [],
   errors: null,
+  Availability: {}
 };
 
 const mentorSlice = createSlice({
@@ -138,6 +151,10 @@ const mentorSlice = createSlice({
       })
       .addCase(getMentor.fulfilled, (state, action) => {
         state.mentor = action.payload.data
+      })
+      .addCase(setMentorAvailability.fulfilled, (state, action) => {
+        console.log("set availabil" , action.payload.data)
+        state.Availability = action.payload.data.availability
       });
   },
 });
