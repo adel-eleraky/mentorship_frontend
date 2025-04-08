@@ -4,6 +4,7 @@ const ProfileNavigation = ({ activeSection, setActiveSection }) => {
   const sections = [
     { id: "personal", label: "Personal Information" },
     { id: "sessions", label: "Sessions" },
+    { id: "changePassword", label: "change password" },
   ];
 
   return (

@@ -1,32 +1,31 @@
-import React, { useEffect, useState } from 'react'
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import { Link, useNavigate } from 'react-router';
-import "./css/UserProfile.css"
-import ProfileNavigation from './../components/UserProfile/ProfileNavigation';
-import PersonalInfoSection from '../components/UserProfile/PersonalInfoSection';
-import MeetingsManagement from './../components/UserProfile/MeetingsManagement';
-import { useDispatch, useSelector } from 'react-redux';
-import { getUserSessions } from '../rtk/features/userSlice';
+import React, { useEffect, useState } from "react";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import { Link, useNavigate } from "react-router";
+import "./css/UserProfile.css";
+import ProfileNavigation from "./../components/UserProfile/ProfileNavigation";
+import PersonalInfoSection from "../components/UserProfile/PersonalInfoSection";
+import MeetingsManagement from "./../components/UserProfile/MeetingsManagement";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserSessions } from "../rtk/features/userSlice";
+import ChangePassword from "../components/MentorProfile/ChangePassword";
 
 function UserProfile() {
   const navigate = useNavigate();
-  const { user } = useSelector(state => state.auth)
-  const { sessions } = useSelector(state => state.user)
+  const { user } = useSelector((state) => state.auth);
+  const { sessions } = useSelector((state) => state.user);
 
-  const dispatch = useDispatch()
-  
+  const dispatch = useDispatch();
+
   const [activeSection, setActiveSection] = useState("personal");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-
-
   useEffect(() => {
-    dispatch(getUserSessions())
+    dispatch(getUserSessions());
   }, []);
 
   // Handle input changes
@@ -62,7 +61,6 @@ function UserProfile() {
     });
   };
 
-
   if (loading) {
     return <div className="text-center mt-5">Loading profile...</div>;
   }
@@ -86,14 +84,11 @@ function UserProfile() {
       )}
 
       {activeSection === "sessions" && (
-        <MeetingsManagement
-          scheduledMeetings={sessions}
-          error={error}
-        // onStartInstantMeeting={handleStartInstantMeeting}
-        />
+        <MeetingsManagement scheduledMeetings={sessions} error={error} />
       )}
+      {activeSection === "changePassword" && <ChangePassword person="users" />}
     </div>
   );
 }
 
-export default UserProfile
+export default UserProfile;

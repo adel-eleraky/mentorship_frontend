@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import * as Yup from "yup"
+import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUserProfile } from "../../rtk/features/userSlice";
 import { CircularProgress } from "@mui/material";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 
 const PersonalInfoSection = ({
@@ -13,14 +14,13 @@ const PersonalInfoSection = ({
   handleExpertiseChange,
   removeExpertise,
 }) => {
-
-
-  const dispatch = useDispatch()
-  const { errors, loading, updateMessage, status } = useSelector(state => state.user)
+  const dispatch = useDispatch();
+  const { errors, loading, updateMessage, status } = useSelector(
+    (state) => state.user
+  );
   const [preview, setPreview] = useState(null);
-  const [image, setImage] = useState(null)
-  const { user } = useSelector(state => state.auth)
-
+  const [image, setImage] = useState(null);
+  const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
     if (image) {
@@ -35,7 +35,7 @@ const PersonalInfoSection = ({
         theme: "light",
       });
     }
-  }, [image])
+  }, [image]);
 
   if (status == "success" && updateMessage) {
     toast.success(`${updateMessage}`, {
@@ -94,7 +94,10 @@ const PersonalInfoSection = ({
     name: Yup.string()
       .min(3, "Username must be at least 3 characters long")
       .max(30, "Username cannot exceed 30 characters")
-      .matches(/^[a-zA-Z0-9_ ]+$/, "Username can only contain letters, numbers, and underscores")
+      .matches(
+        /^[a-zA-Z0-9_ ]+$/,
+        "Username can only contain letters, numbers, and underscores"
+      )
       .required("Full Name is required"),
 
     email: Yup.string()
@@ -121,8 +124,6 @@ const PersonalInfoSection = ({
       .required("Skills are required"),
   });
 
-
-
   const initialValues = {
     name: userData.name || "",
     title: userData.title || "",
@@ -130,12 +131,17 @@ const PersonalInfoSection = ({
     skills: userData.skills || [],
     email: userData.email || "",
     phone: userData.phone || "",
-  }
+  };
 
   const submitHandler = (values) => {
-    dispatch(updateUserProfile(values))
-  }
-
+    dispatch(updateUserProfile(values));
+    // .then(() => {
+    //   toast.success("Profile updated successfully!");
+    // })
+    // .catch((error) => {
+    //   toast.error("Failed to update profile. Please try again.");
+    // });
+  };
 
   const ImageUploadSchema = Yup.object().shape({
     image: Yup.mixed()
@@ -144,10 +150,13 @@ const PersonalInfoSection = ({
         "fileFormat",
         "Unsupported format",
         (value) =>
-          value &&
-          ["image/jpeg", "image/png", "image/jpg"].includes(value.type)
+          value && ["image/jpeg", "image/png", "image/jpg"].includes(value.type)
       )
-      .test("fileSize", "File too large", (value) => value && value.size <= 5 * 1024 * 1024),
+      .test(
+        "fileSize",
+        "File too large",
+        (value) => value && value.size <= 5 * 1024 * 1024
+      ),
   });
 
   const handleImageUpload = async (values) => {
@@ -155,20 +164,25 @@ const PersonalInfoSection = ({
     const formData = new FormData();
     formData.append("image", values.image);
 
-    const res = await axios.put(`http://localhost:3000/api/v1/users/upload`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-      withCredentials: true,
-    });
-    setImage(res.data.data.image)
-  }
+    const res = await axios.put(
+      `http://localhost:3000/api/v1/users/upload`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      }
+    );
+    setImage(res.data.data.image);
+  };
 
-  console.log(image)
+  console.log(image);
   return (
     <div className="card">
       <div className="card-body">
         <h2 className="card-title">Personal Information</h2>
+        {/* <ToastContainer position="bottom-right" autoClose={3000} /> */}
         <img
           src={`http://localhost:3000/img/users/${user.image}`}
           alt="Preview"
@@ -210,14 +224,17 @@ const PersonalInfoSection = ({
                       className="img-thumbnail rounded-circle"
                       style={{ width: "100px" }}
                     />
-                    <button type="submit" className="btn btn-primary ms-3" style={{ height: "45px" }}>
+                    <button
+                      type="submit"
+                      className="btn btn-primary ms-3"
+                      style={{ height: "45px" }}
+                    >
                       Upload
                     </button>
                   </div>
                 )}
 
                 {/* Submit Button */}
-
               </Form>
             )}
           </Formik>
@@ -233,24 +250,52 @@ const PersonalInfoSection = ({
                 <label htmlFor="name" className="form-label">
                   Full Name
                 </label>
-                <Field type="text" className="form-control" id="name" name="name" />
-                <ErrorMessage name="name" component="div" className="text-danger" />
+                <Field
+                  type="text"
+                  className="form-control"
+                  id="name"
+                  name="name"
+                />
+                <ErrorMessage
+                  name="name"
+                  component="div"
+                  className="text-danger"
+                />
               </div>
 
               <div className="mb-3">
                 <label htmlFor="title" className="form-label">
                   Professional Title
                 </label>
-                <Field type="text" className="form-control" id="title" name="title" />
-                <ErrorMessage name="title" component="div" className="text-danger" />
+                <Field
+                  type="text"
+                  className="form-control"
+                  id="title"
+                  name="title"
+                />
+                <ErrorMessage
+                  name="title"
+                  component="div"
+                  className="text-danger"
+                />
               </div>
 
               <div className="mb-3">
                 <label htmlFor="about" className="form-label">
                   About
                 </label>
-                <Field as="textarea" className="form-control" id="about" name="about" rows="4" />
-                <ErrorMessage name="about" component="div" className="text-danger" />
+                <Field
+                  as="textarea"
+                  className="form-control"
+                  id="about"
+                  name="about"
+                  rows="4"
+                />
+                <ErrorMessage
+                  name="about"
+                  component="div"
+                  className="text-danger"
+                />
               </div>
 
               <div className="mb-3">
@@ -264,7 +309,10 @@ const PersonalInfoSection = ({
                   placeholder="Type and press Enter to add"
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && e.target.value.trim()) {
-                      setFieldValue("skills", [...values.skills, e.target.value.trim()]);
+                      setFieldValue("skills", [
+                        ...values.skills,
+                        e.target.value.trim(),
+                      ]);
                       e.target.value = "";
                       e.preventDefault();
                     }
@@ -278,7 +326,12 @@ const PersonalInfoSection = ({
                         type="button"
                         className="btn-close btn-close-white ms-2"
                         aria-label="Remove"
-                        onClick={() => setFieldValue("skills", values.skills.filter((_, i) => i !== index))}
+                        onClick={() =>
+                          setFieldValue(
+                            "skills",
+                            values.skills.filter((_, i) => i !== index)
+                          )
+                        }
                         style={{ fontSize: "0.5rem" }}
                       ></button>
                     </span>
@@ -290,23 +343,51 @@ const PersonalInfoSection = ({
                 <label htmlFor="email" className="form-label">
                   Email
                 </label>
-                <Field type="email" className="form-control" id="email" name="email" />
-                <ErrorMessage name="email" component="div" className="text-danger" />
-                {errors?.email && <div className="text-danger"> {errors?.email} </div>}
+                <Field
+                  type="email"
+                  className="form-control"
+                  id="email"
+                  name="email"
+                />
+                <ErrorMessage
+                  name="email"
+                  component="div"
+                  className="text-danger"
+                />
+                {errors?.email && (
+                  <div className="text-danger"> {errors?.email} </div>
+                )}
               </div>
 
               <div className="mb-3">
                 <label htmlFor="phone" className="form-label">
                   Phone Number
                 </label>
-                <Field type="tel" className="form-control" id="phone" name="phone" />
-                <ErrorMessage name="phone" component="div" className="text-danger" />
-                {errors?.phone && <div className="text-danger"> {errors?.phone} </div>}
+                <Field
+                  type="tel"
+                  className="form-control"
+                  id="phone"
+                  name="phone"
+                />
+                <ErrorMessage
+                  name="phone"
+                  component="div"
+                  className="text-danger"
+                />
+                {errors?.phone && (
+                  <div className="text-danger"> {errors?.phone} </div>
+                )}
               </div>
 
               <button type="submit" className="btn btn-primary">
-
-                {loading ? <> <CircularProgress size={24} color="inherit" /> Saving.. </> : "Save Changes"}
+                {loading ? (
+                  <>
+                    {" "}
+                    <CircularProgress size={24} color="inherit" /> Saving..{" "}
+                  </>
+                ) : (
+                  "Save Changes"
+                )}
               </button>
             </Form>
           )}

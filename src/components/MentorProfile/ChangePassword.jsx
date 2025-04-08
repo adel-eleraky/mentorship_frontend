@@ -5,7 +5,7 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export default function ChangePassword() {
+export default function ChangePassword({ person }) {
   const [isLoading, setIsLoading] = useState(false);
 
   // Validation schema
@@ -35,7 +35,7 @@ export default function ChangePassword() {
     setIsLoading(true);
     try {
       const response = await axios.put(
-        "http://localhost:3000/api/v1/mentors/update-password",
+        `http://localhost:3000/api/v1/${person}/update-password`,
         {
           oldPassword: values.oldPassword,
           newPassword: values.newPassword,
