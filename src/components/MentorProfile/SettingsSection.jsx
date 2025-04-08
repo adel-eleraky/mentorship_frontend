@@ -1,8 +1,12 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { setMentorAvailability } from "../../rtk/features/mentorSlice";
 
 const SettingsSection = () => {
+
+  const dispatch = useDispatch()
   const daysOfWeek = [
     "Monday",
     "Tuesday",
@@ -104,11 +108,13 @@ const SettingsSection = () => {
     // Here you would typically send the data to your API
     console.log("Submitting availability:", formattedAvailability);
 
+    dispatch(setMentorAvailability(formattedAvailability))
     // For demo, show the formatted data in console and alert
     console.log(JSON.stringify(formattedAvailability, null, 2));
 
     toast.success("Your availability has been saved successfully!");
   };
+
 
   return (
     <div className="card shadow-sm border-0">

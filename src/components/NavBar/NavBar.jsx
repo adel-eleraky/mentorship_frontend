@@ -111,39 +111,7 @@ function NavBar() {
             )}
 
             <ul className="navbar-nav mb-2 mb-lg-0 ms-auto align-items-center">
-              <li className="nav-item dropdown">
-                <a
-                  className="nav-link dropdown-toggle text-dark"
-                  href="#"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  For Businesses
-                </a>
-                <ul className="dropdown-menu">
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Mentorship for Teams
-                    </a>
-                  </li>
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Information for Employers
-                    </a>
-                  </li>
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Executive & CEO Coaching
-                    </a>
-                  </li>
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Fractional Executives
-                    </a>
-                  </li>
-                </ul>
-              </li>
+              
 
               <li className="nav-item mx-4">
                 {/* <NavLink className="btn btn-success" to={'/mentors'}>Browse all mentors</NavLink> */}
@@ -285,34 +253,7 @@ function NavBar() {
         </div>
       </nav >
 
-      <div className="container-fluid px-5 py-2 shadow-sm border-bottom">
-        <nav className="d-flex justify-content-between">
-          <a href="#" className="nav-link">
-            Engineering Mentors
-          </a>
-          <a href="#" className="nav-link">
-            Design Mentors
-          </a>
-          <a href="#" className="nav-link">
-            Startup Mentors
-          </a>
-          <a href="#" className="nav-link">
-            Product Managers
-          </a>
-          <a href="#" className="nav-link">
-            Marketing Coaches
-          </a>
-          <a href="#" className="nav-link">
-            Leadership Mentors
-          </a>
-          <a href="#" className="nav-link">
-            Career Coaches
-          </a>
-          <a href="#" className="nav-link">
-            Top Mentors
-          </a>
-        </nav>
-      </div>
+      
     </>
   );
 }
