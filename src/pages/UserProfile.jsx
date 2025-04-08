@@ -66,27 +66,32 @@ function UserProfile() {
   }
 
   return (
-    <div className="container my-4">
-      <h1 className="mb-4">User Profile</h1>
-
+    <div
+      className=" py-4 position-relative d-flex"
+      style={{ minHeight: " 70vh", gap: "10px" }}
+    >
       <ProfileNavigation
         activeSection={activeSection}
         setActiveSection={setActiveSection}
       />
+      <div className="m-auto w-100 pe-3">
+        <h1 className="mb-4">User Profile</h1>
+        {activeSection === "personal" && (
+          <PersonalInfoSection
+            userData={user}
+            handleInputChange={handleInputChange}
+            handleExpertiseChange={handleExpertiseChange}
+            removeExpertise={removeExpertise}
+          />
+        )}
 
-      {activeSection === "personal" && (
-        <PersonalInfoSection
-          userData={user}
-          handleInputChange={handleInputChange}
-          handleExpertiseChange={handleExpertiseChange}
-          removeExpertise={removeExpertise}
-        />
-      )}
-
-      {activeSection === "sessions" && (
-        <MeetingsManagement scheduledMeetings={sessions} error={error} />
-      )}
-      {activeSection === "changePassword" && <ChangePassword person="users" />}
+        {activeSection === "sessions" && (
+          <MeetingsManagement scheduledMeetings={sessions} error={error} />
+        )}
+        {activeSection === "changePassword" && (
+          <ChangePassword person="users" />
+        )}
+      </div>
     </div>
   );
 }
