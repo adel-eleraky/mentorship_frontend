@@ -67,38 +67,76 @@ const PersonalInfoSection = ({ mentorData, message }) => {
   return (
     <div className="personal-info-container">
       <div
-        className="profile-header mb-4 p-4 bg-gradient rounded-3 shadow-sm"
+        className="profile-header mb-4 p-5 bg-gradient rounded-4 shadow"
         style={{
           background: "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)",
+          borderBottom: "3px solid #198754",
         }}
       >
         <div className="row align-items-center">
-          <div className="col-md-8">
-            <h2 className="display-6 fw-bold text-success mb-2">
+          <div className="col-lg-8 col-md-7">
+            <h2 className="display-6 fw-bold text-success mb-3">
               Personal Information
             </h2>
-            <p className="text-muted lead">
+            <p className="text-muted lead mb-0">
               Manage your profile details and expertise
             </p>
           </div>
-          <div className="col-md-4 text-md-end">
-            <div className="position-relative d-inline-block">
+          <div className="col-lg-4 col-md-5 text-md-end mt-4 mt-md-0">
+            <div
+              className="position-relative d-flex align-items-center justify-content-center m-auto"
+              style={{ overflow: "hidden", width: "120px", height: "120px" }}
+            >
               <img
                 src={
-                  mentorData.profileImage || "https://via.placeholder.com/100"
+                  // mentorData.profileImage || "https://via.placeholder.com/150"
+                  "https://picsum.photos/150/150"
                 }
                 alt="Profile"
-                className="rounded-circle profile-image shadow"
+                className="rounded-circle profile-image shadow-lg"
                 style={{
-                  width: "100px",
-                  height: "100px",
+                  maxWidth: "120px",
+                  maxHeight: "120px",
                   objectFit: "cover",
-                  border: "4px solid white",
+                  border: "5px solid white",
+                  transition: "transform 0.3s ease",
                 }}
+                onMouseOver={(e) => (e.target.style.transform = "scale(1.05)")}
+                onMouseOut={(e) => (e.target.style.transform = "scale(1)")}
               />
-              <span className="position-absolute bottom-0 end-0 bg-success rounded-circle p-2 border border-white">
-                <i className="bi bi-pencil-fill text-white small"></i>
-              </span>
+
+              <Formik
+              // initialValues={{ image: null }}
+              // validationSchema={ImageUploadSchema}
+              // onSubmit={handleImageUpload}
+              >
+                {({ setFieldValue, errors, touched }) => (
+                  <Form encType="multipart/form-data">
+                    <span
+                      className="position-absolute bg-success border border-white shadow d-flex align-items-center justify-content-center"
+                      style={{
+                        bottom: 0,
+                        left: 0,
+                        width: "100%",
+                        maxHeight: "40px",
+                        overflow: "hidden",
+                        cursor: "pointer",
+                      }}
+                      onClick={() =>
+                        document.getElementById("profile-image-upload").click()
+                      }
+                    >
+                      <i className="bi bi-pencil-fill text-white"></i>
+                      <input
+                        type="file"
+                        id="profile-image-upload"
+                        accept="image/*"
+                        style={{ display: "none" }}
+                      />
+                    </span>
+                  </Form>
+                )}
+              </Formik>
             </div>
           </div>
         </div>

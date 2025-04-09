@@ -44,6 +44,18 @@ export default function MentorDashboard() {
   const [error, setError] = useState(null);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
   const [meetingToEdit, setMeetingToEdit] = useState(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1115);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1115);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Fetch mentor data and sessions
   useEffect(() => {
@@ -159,7 +171,9 @@ export default function MentorDashboard() {
 
   return (
     <div
-      className=" py-4 position-relative d-flex"
+      className={`py-4 position-relative d-flex ${
+        isMobile ? "container-fluid" : "container"
+      }`}
       style={{ minHeight: " 70vh", gap: "10px" }}
     >
       <ToastContainer position="bottom-right" autoClose={3000} />
