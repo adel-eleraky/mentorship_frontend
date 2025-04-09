@@ -77,6 +77,8 @@ export default function MentorDashboard() {
       if (response.data && response.data.data) {
         setScheduledMeetings(response.data.data);
         console.log(response.data.data);
+        console.log(scheduledMeetings);
+        updateSessionStatus(response.data.data);
       }
     } catch (error) {
       console.error("Error fetching mentor sessions:", error);
@@ -110,7 +112,6 @@ export default function MentorDashboard() {
       if (responseData && responseData.data) {
         // Refresh the sessions list instead of manually adding
         fetchMentorSessions();
-        // alert("Meeting scheduled successfully!");
         toast.success(
           meetingToEdit
             ? "Meeting updated successfully!"
@@ -136,32 +137,54 @@ export default function MentorDashboard() {
     try {
       setCreateMeetingLoading(true);
       setError(null);
-      // Create an instant session via API
-      // const response = await axios.post(
-      //   "http://localhost:3000/api/v1/sessions/instant",
-      //   {
-      //     title: "Instant Session",
-      //     description: "Instant mentoring session",
-      //     duration: 60, // Default duration in minutes
-      //   },
-      //   { withCredentials: true }
-      // );
-      // if (response.data && response.data.data) {
-      //   const meetingId = response.data.data.id || response.data.data._id;
       const meetingId = mentor._id;
-      // Navigate to meeting room
       window.open(`/meeting/${meetingId}`, "_blank");
-      // Refresh sessions list
       fetchMentorSessions();
-      // } else {
-      //   throw new Error("Failed to create instant meeting");
-      // }
     } catch (error) {
       console.error("Error creating instant meeting:", error);
       setError("Failed to create instant meeting. Please try again.");
       alert("Failed to create meeting room. Please try again.");
     } finally {
       setCreateMeetingLoading(false);
+    }
+  };
+  const updateSessionStatus = async (meetings = scheduledMeetings) => {
+    try {
+      const updatedMeetings = meetings.map((meeting) => {
+        const currentTime = new Date();
+        const meetingTime = new Date(meeting.schedule_time);
+        let status;
+        if (meetingTime > currentTime) {
+          status = "pending";
+        } else if (
+          meetingTime.getTime() + meeting.duration * 60000 <
+          currentTime.getTime()
+        ) {
+          status = "completed";
+        } else {
+          status = "active";
+        }
+
+        return { ...meeting, status };
+      });
+
+      console.log(updatedMeetings);
+      setScheduledMeetings(updatedMeetings);
+
+      // Update each session individually
+      for (const meeting of updatedMeetings) {
+        const response = await axios.put(
+          `http://localhost:3000/api/v1/mentors/sessions/${meeting._id}`,
+          { status: meeting.status },
+          { withCredentials: true }
+        );
+        console.log(
+          `Session ${meeting._id} updated with status:`,
+          response.data
+        );
+      }
+    } catch (updateError) {
+      console.error("Error updating session with status:", updateError);
     }
   };
 

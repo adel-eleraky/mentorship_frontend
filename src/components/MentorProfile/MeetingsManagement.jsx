@@ -285,16 +285,44 @@ const MeetingsManagement = ({
                         <i className="bi bi-camera-video-fill me-1"></i> Join
                       </button>
 
-                      {/* For recordings section, show direct link to first recording */}
+                      {/* Show dropdown for multiple recordings */}
                       {meeting.recordings && meeting.recordings.length > 0 && (
-                        <a
-                          href={meeting.recordings[0].url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="btn btn-outline-info"
-                        >
-                          <i className="bi bi-play-circle me-1"></i> Watch
-                        </a>
+                        <div className="dropdown">
+                          <button
+                            className="btn btn-outline-info dropdown-toggle"
+                            type="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                          >
+                            <i className="bi bi-play-circle me-1"></i>
+                            Watch ({meeting.recordings.length})
+                          </button>
+                          <ul className="dropdown-menu dropdown-menu-end">
+                            {meeting.recordings.map((recording, index) => (
+                              <li key={index}>
+                                <a
+                                  className="dropdown-item"
+                                  href={recording.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  Recording {index + 1}
+                                  {recording.start_time &&
+                                    recording.end_time && (
+                                      <span className="ms-2 text-muted small">
+                                        (
+                                        {formatDuration(
+                                          recording.start_time,
+                                          recording.end_time
+                                        )}
+                                        )
+                                      </span>
+                                    )}
+                                </a>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
                       )}
                     </div>
                   </div>
