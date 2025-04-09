@@ -48,9 +48,9 @@ const MeetingRoom = ({ recordings, refreshRecordings }) => {
   };
 
   return (
-    <section className="relative overflow-hidden pt-4 text-white">
-      <div className="relative flex items-center justify-center">
-        <div className="flex items-center container w-75">
+    <section className="relative overflow-hidden text-white">
+      <div className=" flex items-center justify-center h-100 w-100">
+        <div className="flex items-center container w-100">
           <CallLayout className=" " />
         </div>
         <div
@@ -60,7 +60,7 @@ const MeetingRoom = ({ recordings, refreshRecordings }) => {
           style={{ width: "300px", backgroundColor: "#19232d" }}
         >
           <CallParticipantsList
-            className="d-flex flex-column h-100"
+            className=" h-100"
             onClose={() => setShowParticipants(false)}
           />
         </div>
