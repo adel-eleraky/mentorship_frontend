@@ -91,6 +91,19 @@ function MentorProfile() {
 
   }, [id, user]);
 
+  const groupByDay = () => {
+    const grouped = {};
+    
+    mentor?.availability.forEach(slot => {
+      if (!grouped[slot.day]) {
+        grouped[slot.day] = [];
+      }
+      grouped[slot.day].push(slot);
+    });
+    
+    return Object.entries(grouped);
+  };
+
   return (
     <>
       <MentorInfo mentor={mentor} />
@@ -161,7 +174,7 @@ function MentorProfile() {
         </div>
 
         {/* Sessions List */}
-        <div className="p-4 rounded bg-light">
+        <div className="p-4 ">
           <div className="container py-4">
             <div className="row g-3">
               {sessions.map((session, index) => {
@@ -171,71 +184,7 @@ function MentorProfile() {
 
                 return (
                   <div className="col-md-4" key={index}>
-                    {/* <div className="card">
-                      <div className="card-header d-flex justify-content-between align-items-center py-2">
-                        <h4 className="card-title">{session.title}</h4>
-                        <span className="badges price-badge">${session.price}</span>
-                      </div>
-                      <div className="card-body">
-                        <div className="mb-2">
-                          <div className="info-label">Description</div>
-                          <div className="description-box">{session.description}</div>
-  
-                          <div className="session-categories d-flex justify-content-between align-items-center">
-                            <div className="mb-2">
-                              <div className="info-label">Duration:</div>
-                              <div className="icon-text mt-1">
-                                <i className="bi bi-clock" /> {session.duration} minutes
-                              </div>
-                            </div>
-  
-                            <div className="mb-2 mx-4">
-                              <div className="info-label">Date</div>
-                              <div className="icon-text">
-                                <i className="bi bi-calendar3" /> {formatDate(session.schedule_time)}
-                              </div>
-                            </div>
-                          </div>
-  
-                          <div className="session-categories d-flex justify-content-between align-items-center">
-                            <div className="mb-2">
-                              <div className="info-label">Time:</div>
-                              <div className="icon-text mt-1">
-                                <i className="bi bi-alarm" />
-                                {formatTime(session.duration)}
-                              </div>
-                            </div>
-  
-                            <div className="mb-2 mt-1 mx-4">
-                              {session.features && session.features.map((feature, index) => (
-                                <span key={index} className="badges features-badge me-1">
-                                  <i className={`bi bi-${feature.icon}`} /> {feature.name}
-                                </span>
-                              ))}
-                              {session.has_room ? (
-                                <span className="badges features-badge">
-                                  <i className="bi bi-chat-dots" /> Chat Room
-                                </span>
-                              ) : (
-                                <span className="badges features-nbadge">
-                                  <i className="bi bi-chat-dots" /> Chat Room
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-  
-                        <div className="session-footer second-color">
-                          <button
-                            className="btn booking w-100"
-                            disabled={isRegistered}
-                            onClick={() => makePayment(session._id)}
-                          >
-                            {isRegistered ? "Already registered" : "Register Now"}
-                          </button>
-                        </div>
-                      </div>
-                    </div> */}
+
                     <div class="session-card">
                       <div class="session-main-content">
                         <div class="session-header">
@@ -308,6 +257,28 @@ function MentorProfile() {
           </div>
         </div>
       </div>
+      {/* ============================ Availability =========================== */}
+      {/* <div className="container py-3 mb-4 mt-5">
+      <h3 className="mx-3 fw-medium text-primary">Availability</h3>
+      <div className="row">
+        {groupByDay().map(([day, slots], index) => (
+          <div className="col-md-4" key={index}>
+            <div className="card mb-3 shadow-sm">
+              <div className="card-body">
+                <h5 className="card-title">{day}</h5>
+                <div className="card-text">
+                  {slots.map((slot, slotIndex) => (
+                    <div key={slotIndex} className="mb-2">
+                      {slot.start_time} - {slot.end_time}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div> */}
 
       {/* ============================ Skills =========================== */}
       <div className="container py-3 mb-4 mt-5">
