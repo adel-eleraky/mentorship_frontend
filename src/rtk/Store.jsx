@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import roomReducer from "./features/RoomSlice";
+import chatReducer from "./features/chatSlice";
 import userReducer from "./features/userSlice";
 import mentorReducer from "./features/mentorSlice"; 
 import authReducer from "./features/authSlice";
@@ -9,7 +9,7 @@ import notificationReducer from "./features/notificationSlice";
 
 const Store = configureStore({
     reducer: {
-        room: roomReducer,
+        chat: chatReducer,
         user: userReducer,
         auth: authReducer,
         mentor: mentorReducer,
