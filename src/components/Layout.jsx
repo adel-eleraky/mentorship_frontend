@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect ,useState} from 'react'
 import NavBar from './NavBar/NavBar'
 import { Outlet } from 'react-router'
 import Footer from './Footer/Footer'
@@ -8,6 +8,8 @@ import Toast from './Toast'
 import { io } from 'socket.io-client'
 import { toast } from 'react-toastify'
 import { getUserNotifications } from '../rtk/features/notificationSlice'
+import Loader from './Loader/Loader';
+import { set } from 'react-hook-form'
 const socket = io('http://localhost:3000', {
     transports: ["websocket"], // Try forcing WebSocket transport
     withCredentials: true,
@@ -16,6 +18,7 @@ const socket = io('http://localhost:3000', {
 
 function Layout() {
 
+    const [loading,setLoading]=useState(true)
 
     const dispatch = useDispatch()
     const { user } = useSelector(state => state.auth)
@@ -23,6 +26,7 @@ function Layout() {
 
     useEffect(() => {
         dispatch(getLoggedInUser())
+        setLoading(false)
     }, [])
     
     useEffect(() => {
@@ -56,11 +60,18 @@ function Layout() {
 
     return (
         <>
-            <NavBar />
+          {loading?<Loader/>: 
+          <>
+          <NavBar />
             <Outlet />
             <Footer />
             <Toast />
+          
+          </>   
+            } 
         </>
+        
+       
     )
 }
 

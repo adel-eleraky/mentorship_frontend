@@ -9,6 +9,7 @@ function ReviewMentor({ mentor }) {
   const [feedback, setFeedback] = useState({ message: '', isError: false });
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
+console.log(mentor);
 
   const [formData, setFormData] = useState({
     user: user?._id || '',
@@ -35,7 +36,7 @@ function ReviewMentor({ mentor }) {
           `http://localhost:3000/api/v1/reviews/mentor/${mentor}`
         );
         setReviews(response.data.data);
-        console.log(response.data.data);
+        console.log("Reviews"+response.data.data);
   
         setLoading(false);
       } catch (err) {
@@ -122,9 +123,21 @@ function ReviewMentor({ mentor }) {
                 <div className="card-body pb-0">
                   <div className="row mb-1">
                     <div className="col">
+                      <div>
+                        
+                      </div>
                       <div className="d-flex justify-content-between align-items-start">
+                    
                         <div>
+                     
+                          
                           <h5 className="mb-0 second-color">
+                          <img
+                          src={`http://localhost:3000/img/users/${review.user?.image}`}
+                          alt={user?.name}
+                          className="border-4 border-white rounded-circle shadow-md object-cover bg-white me-2"
+                          style={{ width: '40px' }}
+                      />
                             {review.user.name}
                           </h5>
                           <p className="mb-0">{review.user.email}</p>

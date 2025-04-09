@@ -90,18 +90,17 @@ function MentorProfile() {
     dispatch(getUserSessions())
 
   }, [id, user]);
-
+  console.log(mentor);
+  
+  console.log(mentor?.availability
+  );
+  
   const groupByDay = () => {
-    const grouped = {};
-    
-    mentor?.availability.forEach(slot => {
-      if (!grouped[slot.day]) {
-        grouped[slot.day] = [];
-      }
-      grouped[slot.day].push(slot);
-    });
-    
-    return Object.entries(grouped);
+    if (typeof mentor?.availability !== "object" || Array.isArray(mentor.availability)) {
+      return [];
+    }
+  
+    return Object.entries(mentor.availability);
   };
 
   return (
@@ -258,27 +257,73 @@ function MentorProfile() {
         </div>
       </div>
       {/* ============================ Availability =========================== */}
-      {/* <div className="container py-3 mb-4 mt-5">
-      <h3 className="mx-3 fw-medium text-primary">Availability</h3>
-      <div className="row">
-        {groupByDay().map(([day, slots], index) => (
-          <div className="col-md-4" key={index}>
-            <div className="card mb-3 shadow-sm">
-              <div className="card-body">
-                <h5 className="card-title">{day}</h5>
-                <div className="card-text">
-                  {slots.map((slot, slotIndex) => (
-                    <div key={slotIndex} className="mb-2">
-                      {slot.start_time} - {slot.end_time}
+      <div className="container py-3 mb-4 mt-5 ">
+  <h3 className="mx-3 fw-medium  second-color mb-4 mt-2">Availability</h3>
+  <div className="row">
+    {groupByDay().length > 0 ? (
+      groupByDay().map(([day, times], index) => (
+        <div className="col-md-3" key={index}>
+          <div className=" mb-3 p-2">
+            <div className=" session-card availability">
+            <div class="session-header mb-2">
+              <span>{day}</span>
+              <span className="frist-color mx-2">
+                $100 / hour
+              </span>
+            </div>
+              
+              <h5 className="card-title "></h5>
+              <div className="">
+                <div>
+                {Array.isArray(times) && times.length > 0 ? (
+                  times.map((time, timeIndex) => (
+                    <div key={timeIndex} className="form-check mb-3">
+                      <input
+                        type="checkbox"
+                        className="form-check-input"
+                        id={`${day}-${timeIndex}`}
+                        name={`${day}`}
+                        value={time}
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor={`${day}-${timeIndex}`}
+                      >
+                        {time}
+                      </label>
+
+                      
+                      
+                      
                     </div>
-                  ))}
+                    
+                    
+                  ))
+                ) : (
+                  <div className="text-muted">No time slots</div>
+                )}
+
                 </div>
+                <button
+            className="btn edit-send"
+            data-bs-toggle="modal"
+            data-bs-target="#exampleModa2"
+          >
+            Session Request
+          </button>
+                
               </div>
             </div>
           </div>
-        ))}
-      </div>
-    </div> */}
+        </div>
+      ))
+    ) : (
+      <p className="text-muted mx-3">No availability data found.</p>
+    )}
+  </div>
+</div>
+
+
 
       {/* ============================ Skills =========================== */}
       <div className="container py-3 mb-4 mt-5">
