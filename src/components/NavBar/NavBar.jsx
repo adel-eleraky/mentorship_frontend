@@ -203,7 +203,7 @@ function NavBar() {
                           </NavLink>
                         </li>
                         <li>
-                          <NavLink className="dropdown-item" to={`/community/user/${user?._id}`}>
+                          <NavLink className="dropdown-item" to={`/community/user/${user?._id}/${user?.role}`}>
                             Community Profile
                           </NavLink>
                         </li>

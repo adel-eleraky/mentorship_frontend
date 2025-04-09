@@ -12,7 +12,7 @@ export default function CreatePostSection() {
     const dispatch = useDispatch()
 
     const handleCreatePost = () => {
-        dispatch(createPost(content))
+        dispatch(createPost({content}))
         setContent("")
         toast.success("Post created successfully", {
             position: "top-center",
@@ -44,22 +44,25 @@ export default function CreatePostSection() {
         
         // Close the modal
         document.getElementById("closeModalBtn").click()
-        
+
+        console.log("content" , modalContent)
+        console.log("image" ,selectedImage)
+        dispatch(createPost({content: modalContent , image: selectedImage}))
         // Reset form
         setModalContent("")
         setSelectedImage(null)
         setImagePreview(null)
         
-        toast.success("Post with image created successfully", {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-        });
+        // toast.success("Post with image created successfully", {
+        //     position: "top-center",
+        //     autoClose: 5000,
+        //     hideProgressBar: false,
+        //     closeOnClick: false,
+        //     pauseOnHover: true,
+        //     draggable: true,
+        //     progress: undefined,
+        //     theme: "light",
+        // });
     }
 
     return (

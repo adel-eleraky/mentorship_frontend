@@ -7,7 +7,7 @@ export default function PostsList({ posts }) {
     console.log(posts.comments?.comments?.content??"no comments")
 
     return (
-        <div className="container mt-4">
+        <div className="container">
             {posts.map((post) => (
                 <PostCard key={post.id} post={post} />
             ))}
