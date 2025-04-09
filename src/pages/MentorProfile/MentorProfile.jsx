@@ -19,9 +19,13 @@ function MentorProfile() {
   let { id } = useParams();
   const { sessions: userSessions } = useSelector(state => state.user)
   const { user } = useSelector(state => state.auth)
+  const [requestTime , setRequestTime] = useState("")
+  const [title , setTitle] = useState("")
+  const [description , setDescription] = useState("")
 
-  console.log("registered sessions ", userSessions)
-  console.log("mentor sessions ", sessions)
+  
+  // console.log("request time" , requestTime)
+
   const formatDate = (isoString) => {
     if (!isoString) return "";
     const date = new Date(isoString);
@@ -39,7 +43,7 @@ function MentorProfile() {
         `http://localhost:3000/api/v1/sessions/mentor/${id}`
       );
       setSessions(response.data.data);
-      console.log(response.data.data);
+      // console.log(response.data.data);
 
       setLoading(false);
     } catch (err) {
@@ -56,12 +60,12 @@ function MentorProfile() {
       setMentor(response.data.data);
       setSkills(response.data.data.skills || []);
 
-      console.log(response.data.data.skills);
-      console.log(response.data.data);
+      // console.log(response.data.data.skills);
+      // console.log(response.data.data);
 
       setLoading(false);
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       setLoading(false);
     }
   };
@@ -77,7 +81,7 @@ function MentorProfile() {
     );
     const { data: session } = await res.data;
 
-    console.log("session ", session);
+    // console.log("session ", session);
     const result = stripe.redirectToCheckout({
       sessionId: session.id,
     });
@@ -90,10 +94,9 @@ function MentorProfile() {
     dispatch(getUserSessions())
 
   }, [id, user]);
-  console.log(mentor);
+  // console.log(mentor);
   
-  console.log(mentor?.availability
-  );
+  // console.log(mentor?.availability);
   
   const groupByDay = () => {
     if (typeof mentor?.availability !== "object" || Array.isArray(mentor.availability)) {
@@ -102,6 +105,13 @@ function MentorProfile() {
   
     return Object.entries(mentor.availability);
   };
+
+  const handleRequestSession = async () => {
+    
+    const requestData = { mentor: mentor._id , user: user._id, title , description, requested_time: requestTime}
+
+    let { data } = await axios.post(`http://localhost:3000/api/v1/oneTo1sessions/request` , requestData )
+  }
 
   return (
     <>
@@ -132,15 +142,15 @@ function MentorProfile() {
                 <form className="row g-3 container">
                   <div className="col-md-6">
                     <label htmlFor="title2" className="form-label">Title</label>
-                    <input type="text" className="form-control" id="title2" />
+                    <input type="text" className="form-control" id="title2" onChange={(e) => setTitle(e.target.value)} />
                   </div>
 
                   <div className="mb-3">
                     <label htmlFor="discription" className="form-label">Description</label>
-                    <textarea className="form-control" id="discription" rows="6"></textarea>
+                    <textarea className="form-control" id="discription" rows="6" onChange={(e) => setDescription(e.target.value)}></textarea>
                   </div>
 
-                  <div className="col-md-6">
+                  {/* <div className="col-md-6">
                     <label htmlFor="duration" className="form-label">Duration</label>
                     <select className="form-select" id="duration">
                       <option value="1">30 minutes</option>
@@ -150,23 +160,25 @@ function MentorProfile() {
                       <option value="5">2.5 hours</option>
                       <option value="6">3 hours</option>
                     </select>
-                  </div>
+                  </div> */}
 
                   <div className="row g-3">
                     <div className="col-sm-6">
                       <label htmlFor="inputDate" className="form-label">Date</label>
-                      <input type="date" className="form-control" id="inputDate" />
+                      {/* <input type="date" className="form-control" id="inputDate" /> */}
+                      selected time: { requestTime.day + " , " + requestTime.time}
                     </div>
                     <div className="col-sm-6">
-                      <label htmlFor="inputTime" className="form-label">Time</label>
-                      <input type="time" className="form-control" id="inputTime" />
-                    </div>
+                      <label htmlFor="inputTime" className="form-label">Price: </label>
+                      {/* <input type="time" className="form-control" id="inputTime" /> */}
+                      ${mentor?.hour_price} 
+                      </div>
                   </div>
                 </form>
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" className="btn edit-send">Submit</button>
+                <button type="button" className="btn edit-send" onClick={handleRequestSession}>Submit</button>
               </div>
             </div>
           </div>
@@ -268,7 +280,7 @@ function MentorProfile() {
             <div class="session-header mb-2">
               <span>{day}</span>
               <span className="frist-color mx-2">
-                $100 / hour
+                ${mentor?.hour_price} / hour
               </span>
             </div>
               
@@ -277,13 +289,14 @@ function MentorProfile() {
                 <div>
                 {Array.isArray(times) && times.length > 0 ? (
                   times.map((time, timeIndex) => (
-                    <div key={timeIndex} className="form-check mb-3">
+                    <div key={timeIndex} className="form-check mb-3" onClick={() => setRequestTime({ day, time})}>
                       <input
                         type="checkbox"
                         className="form-check-input"
                         id={`${day}-${timeIndex}`}
                         name={`${day}`}
                         value={time}
+                        // onChange={(e) => setRequestTime(time)}
                       />
                       <label
                         className="form-check-label"
