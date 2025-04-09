@@ -16,6 +16,7 @@ import MeetingSetup from "../components/MeetingSetup";
 import MeetingRoom from "../components/MeetingRoom";
 import { useSelector, useDispatch } from "react-redux";
 import { getLoggedInUser } from "../rtk/features/authSlice";
+import Loader from "./../components/Loader/Loader";
 
 export const Meeting = () => {
   const { id } = useParams();
@@ -168,7 +169,7 @@ export const Meeting = () => {
     }
   }, [call]);
 
-  if (loading) return <div className="loading">Loading video call...</div>;
+  if (loading) return <Loader />;
   if (error) return <div className="error-container">{error}</div>;
   if (!client || !call)
     return (
