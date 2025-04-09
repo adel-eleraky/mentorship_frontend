@@ -1,17 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import axios from "axios";
 import './MentorInfo.css';
+import io from 'socket.io-client';
+import { useSelector } from 'react-redux';
+const socket = io('http://localhost:3000', {
+  transports: ["websocket"], // Try forcing WebSocket transport
+  withCredentials: true,
+});
 
 function MentorInfo({ mentor }) {
   const [showInput, setShowInput] = useState(false); // State to toggle input visibility
   const [message, setMessage] = useState(''); // State to store the message
-
+  const { user } = useSelector(state => state.auth)
   const handleButtonClick = () => {
     setShowInput(!showInput); // Toggle input visibility
   };
 
   const handleSendMessage = () => {
     console.log(`Message to ${mentor?.name}: ${message}`);
+    
+    const msgData = {
+      sender: user._id,
+      sender_role: user.role.charAt(0).toUpperCase() + user.role.slice(1),
+      receiver: mentor?._id,
+      content: message,
+      createdAt: new Date().toISOString()
+    };
+
+    socket.emit("send_private_msg" , msgData)
     // Add logic to send the message (e.g., API call)
     setMessage(''); // Clear the input field after sending
     setShowInput(false); // Hide the input field
