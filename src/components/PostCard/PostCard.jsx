@@ -159,6 +159,15 @@ export default function PostCard({ post }) {
 
                     </div>
                     <p>{post.content}</p>
+                    {post?.image && (
+                        <img
+                            src={`http://localhost:3000/img/users/${post?.image}`}
+                            className="img-fluid rounded"
+                            alt="Post Image"
+                            onError={() => setImageError(true)}
+                            style={{  width: "100%" , height: "400px"}}
+                        />
+                    )}
                     {!imageError && (
                         <img
                             src="/api/placeholder/800/500"
@@ -202,7 +211,7 @@ export default function PostCard({ post }) {
                                 <img
                                     src={`http://localhost:3000/img/users/${comment?.user?.image}`}
                                     alt={comment.user?.name || "User"}
-                                    className="profile-pic me-2"
+                                    className="profile-pic me-2 rounded-circle"
                                     style={{ width: 32, height: 32 }}
                                 />
                                 <div>
@@ -225,7 +234,7 @@ export default function PostCard({ post }) {
                             <img
                                 src={`http://localhost:3000/img/users/${user?.image}`}
                                 alt="Your profile"
-                                className="profile-pic me-2"
+                                className="profile-pic me-2 rounded-circle"
                                 style={{ width: 32, height: 32 }}
                             />
                             <input
