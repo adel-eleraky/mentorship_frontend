@@ -24,9 +24,22 @@ export const getRooms = createAsyncThunk("room/fetchAll", async (_, { rejectWith
 })
 
 
-export const getUserRooms = createAsyncThunk("room/fetchUserRooms", async (id, { rejectWithValue }) => {
+export const getUserRooms = createAsyncThunk("room/fetchUserRooms", async ({id , role}, { rejectWithValue }) => {
     try {
-        const { data } = await axios.get(`http://localhost:3000/api/v1/users/${id}/rooms`, { withCredentials: true});
+
+        role = role.toLowerCase() + "s"
+        const { data } = await axios.get(`http://localhost:3000/api/v1/${role}/${id}/rooms`, { withCredentials: true});
+        return data
+    } catch (error) {
+        return rejectWithValue(error?.response?.data)
+    }
+
+})
+
+
+export const getPrivateContacts = createAsyncThunk("chat/privateContacts", async (id, { rejectWithValue }) => {
+    try {
+        const { data } = await axios.get(`http://localhost:3000/api/v1/messages/privateContacts`, { withCredentials: true});
         return data
     } catch (error) {
         return rejectWithValue(error?.response?.data)
@@ -41,16 +54,20 @@ const initialState = {
     rooms: [],
     roomMessages: [],
     errors: "",
-    userRooms: []
+    userRooms: [],
+    privateContacts: []
 }
 
-const roomSlice = createSlice({
-    name: "room",
+const chatSlice = createSlice({
+    name: "chat",
     initialState,
     reducers: {
-        addMessage: (state, action) => {
+        addRoomMessage: (state, action) => {
             console.log(action)
             state.roomMessages.push(action.payload)
+        },
+        addPrivateMessage: (state, action)=> {
+            state.privateContacts.push(action.payload)
         }
     },
     extraReducers: (builder) => {
@@ -70,10 +87,15 @@ const roomSlice = createSlice({
                 state.message = action.payload.message
                 state.userRooms = action.payload.data
             })
+            .addCase(getPrivateContacts.fulfilled, (state, action) => {
+                state.status = action.payload.status
+                state.privateContacts = action.payload.data
+            })
+
             
     }
 })
 
 
-export default roomSlice.reducer
-export const { addMessage } = roomSlice.actions
+export default chatSlice.reducer
+export const { addRoomMessage, addPrivateMessage } = chatSlice.actions
