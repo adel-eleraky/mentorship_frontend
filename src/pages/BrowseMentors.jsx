@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchMentors } from '../rtk/features/mentorSlice';
 import MentorCard from '../components/MentorCardLarge/MentorCardLarge';
 import FilterSidebar from '../components/FilterSidebar/FilterSidebar';
-
+import Loader from '../components/Loader/Loader';
 export default function BrowseMentors() {
     const dispatch = useDispatch();
     const { mentors, loading, error } = useSelector(state => state.mentor);
@@ -12,10 +12,16 @@ export default function BrowseMentors() {
     const [selectedJobTitles, setSelectedJobTitles] = useState([]);
     const [selectedExperience, setSelectedExperience] = useState(25);
     const [priceRange, setPriceRange] = useState(250);
-    
+    const [currentPage, setCurrentPage] = useState(1);
+    const mentorsPerPage = 10;
+
     useEffect(() => {
         dispatch(fetchMentors());
     }, [dispatch]);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [search, selectedSkills, selectedJobTitles, selectedExperience, priceRange]);
 
     const parseExperience = (experience) => {
         if (!experience) return 0;
@@ -42,13 +48,21 @@ export default function BrowseMentors() {
         return matchesSearch && matchesSkills && matchesJobTitles && matchesExperience && matchesPrice;
     });
 
-    if (loading) {
-        return <div>Loading...</div>;
-    }
+    const indexOfLastMentor = currentPage * mentorsPerPage;
+    const indexOfFirstMentor = indexOfLastMentor - mentorsPerPage;
+    const currentMentors = filteredMentors.slice(indexOfFirstMentor, indexOfLastMentor);
+    const totalPages = Math.ceil(filteredMentors.length / mentorsPerPage);
 
-    if (error) {
-        return <div>Error: {error}</div>;
-    }
+    const handlePrev = () => {
+        if (currentPage > 1) setCurrentPage(currentPage - 1);
+    };
+
+    const handleNext = () => {
+        if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+    };
+
+    if (loading) return <> <Loader/>  </>;
+    if (error) return <div>Error: {error}</div>;
 
     return (
         <div className="container my-4">
@@ -70,10 +84,48 @@ export default function BrowseMentors() {
 
                 <div className="col-md-8">
                     <div className="d-flex flex-wrap gap-3">
-                        {filteredMentors.map((mentor) => (
+                        {currentMentors.map((mentor) => (
                             <MentorCard key={mentor._id} mentor={mentor} />
                         ))}
                     </div>
+
+                    {/* Styled Pagination */}
+                    {totalPages > 1 && (
+                        <div className="d-flex justify-content-center mt-4">
+                            <nav>
+                                <ul className="pagination">
+                                    <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                                        <button className="page-link me-1 second-color" onClick={handlePrev}>
+                                            Previous
+                                        </button>
+                                    </li>
+                                    {[...Array(totalPages)].map((_, index) => (
+                                        <li
+                                            key={index}
+                                            className={`page-item ${currentPage === index + 1 ? 'active' : ''}`}
+                                        >
+                                            <button
+                                                className="page-link me-1"
+                                                onClick={() => setCurrentPage(index + 1)}
+                                                style={{
+                                                    backgroundColor: currentPage === index + 1 ? '#118577' : 'transparent',
+                                                    color: currentPage === index + 1 ? '#fff' : '#118577',
+                                                    borderColor: '#118577'
+                                                }}
+                                            >
+                                                {index + 1}
+                                            </button>
+                                        </li>
+                                    ))}
+                                    <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                                        <button className="page-link me-1 second-color" onClick={handleNext}>
+                                            Next
+                                        </button>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

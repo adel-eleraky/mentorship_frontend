@@ -51,7 +51,6 @@ function App() {
   const location = useLocation();
   const hideNavFooter = location.pathname.startsWith("/meeting/");
   
-
   return (
     <Provider store={Store}>
       <Routes>
