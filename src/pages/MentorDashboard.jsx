@@ -6,7 +6,7 @@ import MeetingsManagement from "../components/MentorProfile/MeetingsManagement";
 import ScheduleModal from "../components/MentorProfile/ScheduleModal";
 import PersonalInfoSection from "../components/MentorProfile/PersonalInfoSection";
 import ScheduleSection from "../components/MentorProfile/ScheduleSection";
-import JoinRoomSection from "../components/MentorProfile/JoinRoomSection";
+import OneToOne from "../components/MentorProfile/OneToOne";
 import SettingsSection from "../components/MentorProfile/SettingsSection";
 import ProfileNavigation from "../components/MentorProfile/ProfileNavigation";
 import { ToastContainer, toast } from "react-toastify";
@@ -264,7 +264,7 @@ export default function MentorDashboard() {
           />
         )}
 
-        {activeSection === "joinRoom" && <JoinRoomSection />}
+        {activeSection === "oneToOne" && <OneToOne />}
         {activeSection === "changePassword" && (
           <ChangePassword person="mentors" />
         )}
