@@ -289,7 +289,7 @@ function MentorProfile() {
                 <div>
                 {Array.isArray(times) && times.length > 0 ? (
                   times.map((time, timeIndex) => (
-                    <div key={timeIndex} className="form-check mb-3" onClick={() => setRequestTime({ day, time})}>
+                    <div key={timeIndex} className="form-check mb-3" onClick={() => setRequestTime({ day, time: time.time})}>
                       <input
                         type="checkbox"
                         className="form-check-input"
@@ -302,7 +302,7 @@ function MentorProfile() {
                         className="form-check-label"
                         htmlFor={`${day}-${timeIndex}`}
                       >
-                        {time}
+                        {time.time}
                       </label>
 
                       
