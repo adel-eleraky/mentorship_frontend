@@ -2,23 +2,47 @@ import React, { useEffect, useState } from 'react';
 import axios from "axios";
 import './MentorInfo.css';
 import io from 'socket.io-client';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUserSessions } from '../../rtk/features/userSlice';
 const socket = io('http://localhost:3000', {
   transports: ["websocket"], // Try forcing WebSocket transport
   withCredentials: true,
 });
 
 function MentorInfo({ mentor }) {
+
+  const dispatch = useDispatch()
   const [showInput, setShowInput] = useState(false); // State to toggle input visibility
   const [message, setMessage] = useState(''); // State to store the message
   const { user } = useSelector(state => state.auth)
+  const { sessions } = useSelector((state) => state.user);
+  const [hasBooked, setHasBooked] = useState(false);
+
+
   const handleButtonClick = () => {
     setShowInput(!showInput); // Toggle input visibility
   };
 
+  useEffect(() => {
+    dispatch(getUserSessions());
+  }, [user]);
+
+  useEffect(() => {
+    if (user && sessions?.length > 0) {
+      const isBooked = sessions.some(
+        (session) =>
+          
+          session.session.mentor == mentor?._id &&
+          session.user?._id === user._id
+      );
+      setHasBooked(isBooked);
+    }
+  }, [user, mentor, sessions]);
+
+
   const handleSendMessage = () => {
     console.log(`Message to ${mentor?.name}: ${message}`);
-    
+
     const msgData = {
       sender: user._id,
       sender_role: user.role.charAt(0).toUpperCase() + user.role.slice(1),
@@ -27,7 +51,7 @@ function MentorInfo({ mentor }) {
       createdAt: new Date().toISOString()
     };
 
-    socket.emit("send_private_msg" , msgData)
+    socket.emit("send_private_msg", msgData)
     // Add logic to send the message (e.g., API call)
     setMessage(''); // Clear the input field after sending
     setShowInput(false); // Hide the input field
@@ -65,9 +89,12 @@ function MentorInfo({ mentor }) {
                   <i className="fas fa-clock mentor-info-icon frist-color"></i>
                   <span>{mentor?.status} this week</span>
                 </div>
+                {hasBooked && (
+                  
                 <button className="btn frist-color" onClick={handleButtonClick}>
                   <i className="fa-solid fa-comment"></i> Connect with {mentor?.name}
                 </button>
+                )}
                 {showInput && (
                   <div className="mt-3">
                     <input
