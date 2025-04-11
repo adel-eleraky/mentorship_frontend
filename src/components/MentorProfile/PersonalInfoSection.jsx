@@ -10,6 +10,7 @@ const PersonalInfoSection = ({ mentorData, message }) => {
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.mentor);
   const [activeTab, setActiveTab] = useState("basic");
+  console.log(mentorData);
 
   const validationSchema = Yup.object({
     name: Yup.string()
@@ -39,6 +40,14 @@ const PersonalInfoSection = ({ mentorData, message }) => {
       .max(500, "Bio cannot exceed 500 characters")
       .required("Bio is required"),
 
+    experience: Yup.string()
+      .min(20, "Experience must be at least 20 characters long")
+      .max(500, "Experience cannot exceed 500 characters"),
+
+    hour_price: Yup.number()
+      .min(5, "Hourly rate cannot be less than $5")
+      .required("Hourly rate is required"),
+
     skills: Yup.array()
       .of(Yup.string().trim().required("skills cannot be empty"))
       .min(1, "At least one skills is required")
@@ -49,6 +58,8 @@ const PersonalInfoSection = ({ mentorData, message }) => {
     name: mentorData.name || "",
     title: mentorData.title || "",
     bio: mentorData.bio || "",
+    experience: mentorData.experience || "",
+    hour_price: mentorData.hour_price || 5,
     skills: mentorData.skills || [],
     email: mentorData.email || "",
     phone: mentorData.phone || "",
@@ -99,7 +110,7 @@ const PersonalInfoSection = ({ mentorData, message }) => {
                   maxHeight: "120px",
                   objectFit: "cover",
                   border: "5px solid white",
-                  marginBottom:"4px",
+                  marginBottom: "4px",
                   transition: "transform 0.3s ease",
                 }}
                 onMouseOver={(e) => (e.target.style.transform = "scale(1.05)")}
@@ -119,7 +130,7 @@ const PersonalInfoSection = ({ mentorData, message }) => {
                         bottom: 0,
                         left: 0,
                         width: "100%",
-                        backgroundColor:"#118577",
+                        backgroundColor: "#118577",
                         maxHeight: "40px",
                         overflow: "hidden",
                         cursor: "pointer",
@@ -163,7 +174,6 @@ const PersonalInfoSection = ({ mentorData, message }) => {
                 onMouseEnter={(e) => {
                   if (activeTab !== "basic") {
                     e.currentTarget.style.backgroundColor = "#118577";
-
                   }
                 }}
                 onMouseLeave={(e) => {
@@ -292,6 +302,28 @@ const PersonalInfoSection = ({ mentorData, message }) => {
                         />
                       </div>
                     </div>
+
+                    <div className="col-md-6">
+                      <div className="form-floating mb-3">
+                        <Field
+                          type="number"
+                          className="form-control"
+                          id="hour_price"
+                          name="hour_price"
+                          placeholder="Enter your hourly rate"
+                          min="5"
+                        />
+                        <label htmlFor="hour_price">
+                          <i className="bi bi-currency-dollar frist-color me-2"></i>
+                          Hourly Rate (USD)
+                        </label>
+                        <ErrorMessage
+                          name="hour_price"
+                          component="div"
+                          className="text-danger mt-1 small"
+                        />
+                      </div>
+                    </div>
                   </div>
 
                   <div className="form-floating mb-4">
@@ -325,6 +357,40 @@ const PersonalInfoSection = ({ mentorData, message }) => {
                       </small>
                     </div>
                   </div>
+
+                  <div className="form-floating mb-4">
+                    <Field
+                      as="textarea"
+                      className="form-control"
+                      id="experience"
+                      name="experience"
+                      style={{ height: "150px" }}
+                      placeholder="Describe your professional experience"
+                    />
+                    <label htmlFor="experience">
+                      <i className="bi bi-briefcase-fill text-success me-2"></i>
+                      Professional Experience
+                    </label>
+                    <div className="d-flex justify-content-between mt-1">
+                      <ErrorMessage
+                        name="experience"
+                        component="div"
+                        className="text-danger small"
+                      />
+                      <small className="second-color">
+                        <span
+                          className={
+                            values.experience?.length > 400
+                              ? "text-warning"
+                              : ""
+                          }
+                        >
+                          {values.experience?.length || 0}
+                        </span>
+                        /500 characters
+                      </small>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Skills Tab */}
@@ -333,7 +399,10 @@ const PersonalInfoSection = ({ mentorData, message }) => {
                   style={{ padding: "20px" }}
                 >
                   <div className="mb-4">
-                    <label htmlFor="skills" className="form-label fw-bold mb-3 second-color">
+                    <label
+                      htmlFor="skills"
+                      className="form-label fw-bold mb-3 second-color"
+                    >
                       <i className="bi bi-lightbulb-fill frist-color me-2"></i>
                       Areas of Expertise
                     </label>
@@ -374,7 +443,10 @@ const PersonalInfoSection = ({ mentorData, message }) => {
                             <span
                               key={index}
                               className="badge bg- py-2 px-2 fs-8 shadow-sm"
-                              style={{ transition: "all 0.2s ease",backgroundColor:"#118577" }}
+                              style={{
+                                transition: "all 0.2s ease",
+                                backgroundColor: "#118577",
+                              }}
                             >
                               {item}
                               <button
@@ -472,7 +544,7 @@ const PersonalInfoSection = ({ mentorData, message }) => {
                       className="btn btn-outline-secondary text-white  px-4 py-2"
                       style={{
                         transition: "all 0.2s ease",
-                        backgroundColor:"#118577",
+                        backgroundColor: "#118577",
                         boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
                       }}
                       onMouseOver={(e) =>
@@ -519,8 +591,8 @@ const PersonalInfoSection = ({ mentorData, message }) => {
                       style={{
                         transition: "all 0.2s ease",
                         boxShadow: "0 4px 6px rgba(25, 135, 84, 0.2)",
-                        backgroundColor:"#118577",
-                        color:"white"
+                        backgroundColor: "#118577",
+                        color: "white",
                       }}
                       onMouseOver={(e) =>
                         !loading &&

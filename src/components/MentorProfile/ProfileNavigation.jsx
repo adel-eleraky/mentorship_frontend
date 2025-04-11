@@ -32,7 +32,7 @@ const sections = [
     ],
   },
   { id: "schedule", label: "Schedule", icon: "bi-calendar-week" },
-  { id: "joinRoom", label: "Join Room", icon: "bi-camera-video" },
+  { id: "oneToOne", label: "One To One", icon: "bi-camera-video" },
   { id: "changePassword", label: "Change Password", icon: "bi-lock" },
   { id: "settings", label: "Settings", icon: "bi-gear" },
 ];
@@ -116,9 +116,9 @@ const ProfileNavigation = ({ activeSection, setActiveSection }) => {
                   "&.Mui-selected": {
                     backgroundColor: "#ffffff33",
                     borderLeft: "1px solid #ffffff",
-                    color:"#ffffff",
+                    color: "#ffffff",
                     "&:hover": {
-                      backgroundColor:" #ffffff33",
+                      backgroundColor: " #ffffff33",
                     },
                   },
                   "&:hover": {
