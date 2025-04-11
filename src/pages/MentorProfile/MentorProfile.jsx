@@ -7,6 +7,9 @@ import ReviewMentor from "../../components/ReviewMentor/ReviewMentor";
 import MentorInfo from "../../components/MentorInfo/MentorInfo";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserSessions } from "../../rtk/features/userSlice";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+
 
 function MentorProfile() {
   const dispatch = useDispatch()
@@ -94,9 +97,7 @@ function MentorProfile() {
     dispatch(getUserSessions())
 
   }, [id, user]);
-  // console.log(mentor);
-  
-  // console.log(mentor?.availability);
+
   
   const groupByDay = () => {
     if (typeof mentor?.availability !== "object" || Array.isArray(mentor.availability)) {
@@ -106,13 +107,56 @@ function MentorProfile() {
     return Object.entries(mentor.availability);
   };
 
-  const handleRequestSession = async () => {
+  // const handleRequestSession = async () => {
     
-    const requestData = { mentor: mentor._id , user: user._id, title , description, requested_time: requestTime}
+  //   const requestData = { mentor: mentor._id , user: user._id, title , description, requested_time: requestTime}
+  //   let { data } = await axios.post(`http://localhost:3000/api/v1/oneTo1sessions/request` , requestData )
+  // }
+  const sessionRequestSchema = Yup.object().shape({
+    title: Yup.string()
+      .required("Title is required")
+      .min(5, "Title must be at least 5 characters"),
+    description: Yup.string()
+      .required("Description is required")
+      .min(16, "Description must be at least 16 characters")
+  });
 
-    let { data } = await axios.post(`http://localhost:3000/api/v1/oneTo1sessions/request` , requestData )
-  }
+  // Initial form values
+  const initialValues = {
+    title: "",
+    description: ""
+  };
 
+
+
+  const handleRequestSession = async (values, { resetForm }) => {
+    const requestData = { 
+      mentor: mentor._id, 
+      user: user._id, 
+      title: values.title, 
+      description: values.description, 
+      requested_time:{ day: requestTime.day, time: requestTime.time.time }  
+    };
+    
+    try {
+      let { data } = await axios.post(`http://localhost:3000/api/v1/oneTo1sessions/request`, requestData);
+      
+      // Close modal after successful submission
+      const modalElement = document.getElementById("exampleModa2");
+      const modalInstance = bootstrap.Modal.getInstance(modalElement);
+      if (modalInstance) {
+        modalInstance.hide();
+      }
+      
+      // Reset form
+      resetForm();
+    } catch (error) {
+      console.error("Error submitting request:", error);
+    }
+  };
+
+
+ 
   return (
     <>
       <MentorInfo mentor={mentor} />
@@ -120,14 +164,8 @@ function MentorProfile() {
       {/* ============================ Sessions =========================== */}
       <div className="container py-3 mb-4 mt-5">
         <div className="d-flex justify-content-between">
-          <h3 className="mx-3">Sessions</h3>
-          <button
-            className="btn edit-send"
-            data-bs-toggle="modal"
-            data-bs-target="#exampleModa2"
-          >
-            Session Request
-          </button>
+          <h3 className="mx-3 second-color">Sessions</h3>
+        
         </div>
 
         {/* Session Request Modal */}
@@ -135,54 +173,73 @@ function MentorProfile() {
           <div className="modal-dialog modal-xl">
             <div className="modal-content">
               <div className="modal-header">
-                <h1 className="modal-title fs-5" id="exampleModalLabel">Request a Session</h1>
+                <h1 className="modal-title fs-5 second-color" id="exampleModalLabel ">Request One Hour Session</h1>
                 <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
               </div>
               <div className="modal-body container">
-                <form className="row g-3 container">
-                  <div className="col-md-6">
-                    <label htmlFor="title2" className="form-label">Title</label>
-                    <input type="text" className="form-control" id="title2" onChange={(e) => setTitle(e.target.value)} />
-                  </div>
-
-                  <div className="mb-3">
-                    <label htmlFor="discription" className="form-label">Description</label>
-                    <textarea className="form-control" id="discription" rows="6" onChange={(e) => setDescription(e.target.value)}></textarea>
-                  </div>
-
-                  {/* <div className="col-md-6">
-                    <label htmlFor="duration" className="form-label">Duration</label>
-                    <select className="form-select" id="duration">
-                      <option value="1">30 minutes</option>
-                      <option value="2">1 hour</option>
-                      <option value="3">1.5 hour</option>
-                      <option value="4">2 hours</option>
-                      <option value="5">2.5 hours</option>
-                      <option value="6">3 hours</option>
-                    </select>
-                  </div> */}
-
-                  <div className="row g-3">
-                    <div className="col-sm-6">
-                      <label htmlFor="inputDate" className="form-label">Date</label>
-                      {/* <input type="date" className="form-control" id="inputDate" /> */}
-                      selected time: { requestTime.day + " , " + requestTime.time}
-                    </div>
-                    <div className="col-sm-6">
-                      <label htmlFor="inputTime" className="form-label">Price: </label>
-                      {/* <input type="time" className="form-control" id="inputTime" /> */}
-                      ${mentor?.hour_price} 
+                <Formik
+                  initialValues={initialValues}
+                  validationSchema={sessionRequestSchema}
+                  onSubmit={handleRequestSession}
+                >
+                  {({ isSubmitting, errors, touched }) => (
+                    <Form className="row g-3 container">
+                      <div className="col-md-6">
+                        <label htmlFor="title" className="form-label second-color">Title</label>
+                        <Field
+                          type="text"
+                          id="title"
+                          name="title"
+                          className={`form-control ${errors.title && touched.title ? 'is-invalid' : ''}`}
+                        />
+                        <ErrorMessage
+                          name="title"
+                          component="div"
+                          className="invalid-feedback"
+                        />
                       </div>
-                  </div>
-                </form>
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" className="btn edit-send" onClick={handleRequestSession}>Submit</button>
+
+                      <div className="mb-3">
+                        <label htmlFor="description" className="form-label second-color">Description</label>
+                        <Field
+                          as="textarea"
+                          id="description"
+                          name="description"
+                          rows="6"
+                          className={`form-control ${errors.description && touched.description ? 'is-invalid' : ''}`}
+                        />
+                        <ErrorMessage
+                          name="description"
+                          component="div"
+                          className="invalid-feedback"
+                        />
+                      </div>
+
+                      <div className="row g-3">
+                        <div className="col-sm-6">
+                          <label className="form-label second-color">Selected time:</label>
+                          <div><i className="bi bi-clock me-1"></i> { requestTime.day ?  requestTime.day + " , " + requestTime?.time?.time : "No time selected" }</div>
+                        </div>
+                        <div className="col-sm-6">
+                          <label className="form-label second-color">Price: </label>
+                          <span className="frist-color">${mentor?.hour_price}</span>
+                        </div>
+                      </div>
+                      
+                      <div className="modal-footer">
+                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" className="btn edit-send" disabled={isSubmitting}>
+                          {isSubmitting ? 'Submitting...' : 'Submit'}
+                        </button>
+                      </div>
+                    </Form>
+                  )}
+                </Formik>
               </div>
             </div>
           </div>
         </div>
+
 
         {/* Sessions List */}
         <div className="p-4 ">
@@ -289,20 +346,44 @@ function MentorProfile() {
                 <div>
                 {Array.isArray(times) && times.length > 0 ? (
                   times.map((time, timeIndex) => (
-                    <div key={timeIndex} className="form-check mb-3" onClick={() => setRequestTime({ day, time})}>
+                    <div 
+                    className="d-flex align-items-center p-2 rounded mb-2"
+                    style={{ 
+                      backgroundColor: 
+                        requestTime?.day === day && requestTime?.time?.time === time.time 
+                          ? '#e8f5f3' 
+                          : 'transparent',
+                      border: '1px solid #dee2e6',
+                      transition: 'all 0.2s ease'
+                      
+                    }}
+                    key={timeIndex} 
+                    // onClick={() => handleTimeSelect(day, time)}
+
+                    // className="form-check mb-3" 
+                    onClick={() => setRequestTime({ day, time})}
+                      data-bs-toggle="modal"
+                      data-bs-target="#exampleModa2"
+                    
+                    >
+                      
                       <input
                         type="checkbox"
-                        className="form-check-input"
+                        className="form-check-input "
                         id={`${day}-${timeIndex}`}
                         name={`${day}`}
                         value={time}
+                        style={{ cursor: 'pointer' }}
+                        checked={requestTime?.day === day && requestTime?.time?.time === time.time}
+
                         // onChange={(e) => setRequestTime(time)}
                       />
                       <label
                         className="form-check-label"
                         htmlFor={`${day}-${timeIndex}`}
+                        style={{ cursor: 'pointer' }}
                       >
-                        {time}
+                        <i className="bi bi-clock me-1"></i> {time.time}
                       </label>
 
                       
@@ -317,13 +398,13 @@ function MentorProfile() {
                 )}
 
                 </div>
-                <button
+                {/* <button
             className="btn edit-send"
             data-bs-toggle="modal"
             data-bs-target="#exampleModa2"
           >
             Session Request
-          </button>
+          </button> */}
                 
               </div>
             </div>

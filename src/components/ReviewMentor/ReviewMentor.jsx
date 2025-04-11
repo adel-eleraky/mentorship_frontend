@@ -160,9 +160,9 @@ function ReviewMentor({ mentor }) {
                               className="border-4 border-white rounded-circle shadow-md object-cover bg-white me-2"
                               style={{ width: '40px' }}
                             />
-                            {review.user.name}
+                            {review?.user?.name}
                           </h5>
-                          <p className="mb-0">{review.user.email}</p>
+                          <p className="mb-0">{review?.user?.email}</p>
                           <div className=" mb-0">
                             {[...Array(review.rating)].map((_, i) => (
                               <i
@@ -172,7 +172,7 @@ function ReviewMentor({ mentor }) {
                             ))}
                             <span className="text-muted">
                               {" "}
-                              {review.rating} out of 5 stars{" "}
+                              {review?.rating} out of 5 stars{" "}
                             </span>
                           </div>
                         </div>
@@ -181,7 +181,7 @@ function ReviewMentor({ mentor }) {
                   </div>
 
                   <div className="d-flex ">
-                    <p className="card-text ms-0 mx-3">{review.content}</p>
+                    <p className="card-text ms-0 mx-3">{review?.content}</p>
                     <span className="text-muted">
                       {formatDate(review?.createdAt)} at   <span className='second-color'>{formatTime(review?.createdAt)}</span>
                     </span>

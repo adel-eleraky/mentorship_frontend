@@ -256,3 +256,7 @@
 }
 
 /* =================== */
+.form-check-input[type=checkbox]:checked {
+  border: none;
+  display: none;
+}
