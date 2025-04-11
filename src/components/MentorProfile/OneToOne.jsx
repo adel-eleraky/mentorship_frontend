@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ResponsiveDialog from "../../utils/ResponsiveDialog.jsx";
+import "./OneToOne.css";
 
 const OneToOne = () => {
   const [requests, setRequests] = useState([]);
@@ -110,9 +111,66 @@ const OneToOne = () => {
         return "bg-success";
       case "rejected":
         return "bg-danger";
+      case "completed":
+        return "bg-info";
       default:
         return "bg-secondary";
     }
+  };
+
+  const handleJoinMeeting = (meeting) => {
+    const meetingTime = new Date(
+      meeting.requested_time?.date || meeting.createdAt
+    );
+    const currentTime = new Date();
+
+    // Check if meeting time is within 15 minutes of scheduled time (either before or after)
+    const timeDiff = Math.abs(meetingTime - currentTime) / (1000 * 60); // difference in minutes
+
+    if (meeting.status === "active" || timeDiff <= 15) {
+      // If meeting is active or within the time window, join it
+      window.open(`/meeting/${meeting._id}`, "_blank");
+    } else {
+      // Calculate time remaining
+      const timeRemaining = formatTimeRemaining(meetingTime, currentTime);
+
+      setDialogOpen(true);
+      setDialogTitle("");
+      setAgreeText("");
+      setDisagreeText("Close");
+      setContent(
+        `This session is scheduled for ${
+          meeting.requested_time?.day || "N/A"
+        } at ${
+          meeting.requested_time?.time || "N/A"
+        }.\n\n${timeRemaining}\n\nYou can join the meeting 15 minutes before the scheduled time.`
+      );
+    }
+  };
+
+  // Helper function to format time remaining message
+  const formatTimeRemaining = (meetingTime, currentTime) => {
+    if (meetingTime < currentTime) {
+      return "This meeting has already passed.";
+    }
+
+    const diffMs = meetingTime - currentTime;
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const diffHrs = Math.floor(
+      (diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+    );
+    const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+
+    let timeMessage = "Time remaining: ";
+    if (diffDays > 0) {
+      timeMessage += `${diffDays} day${diffDays > 1 ? "s" : ""}, `;
+    }
+    if (diffHrs > 0 || diffDays > 0) {
+      timeMessage += `${diffHrs} hour${diffHrs > 1 ? "s" : ""}, `;
+    }
+    timeMessage += `${diffMins} minute${diffMins > 1 ? "s" : ""}`;
+
+    return timeMessage;
   };
 
   const filteredRequests =
@@ -130,54 +188,29 @@ const OneToOne = () => {
         }}
       >
         <h2 className="card-title">One to One Sessions</h2>
-        <div className="row align-items-center">
-          <div className="col-lg-8 col-md-7">
+        <div className="row mb-3">
+          <div className="col-12">
             <p className="text-muted lead mb-0">Dashboard / One-to-One</p>
           </div>
-          <div className="col-lg-4 col-md-5 text-md-end mt-4 mt-md-0">
-            <div className="btn-group" role="group">
-              <button
-                type="button"
-                className={`btn ${
-                  statusFilter === "all" ? "btn-primary" : "btn-outline-primary"
-                }`}
-                onClick={() => setStatusFilter("all")}
-              >
-                All
-              </button>
-              <button
-                type="button"
-                className={`btn ${
-                  statusFilter === "pending"
-                    ? "btn-primary"
-                    : "btn-outline-primary"
-                }`}
-                onClick={() => setStatusFilter("pending")}
-              >
-                Pending
-              </button>
-              <button
-                type="button"
-                className={`btn ${
-                  statusFilter === "accepted"
-                    ? "btn-primary"
-                    : "btn-outline-primary"
-                }`}
-                onClick={() => setStatusFilter("accepted")}
-              >
-                Accepted
-              </button>
-              <button
-                type="button"
-                className={`btn ${
-                  statusFilter === "rejected"
-                    ? "btn-primary"
-                    : "btn-outline-primary"
-                }`}
-                onClick={() => setStatusFilter("rejected")}
-              >
-                Rejected
-              </button>
+        </div>
+
+        <div className="row">
+          <div className="col-12">
+            <div className="filter-buttons">
+              {["all", "pending", "accepted", "completed", "rejected"].map(
+                (status) => (
+                  <button
+                    key={status}
+                    type="button"
+                    className={`filter-btn ${
+                      statusFilter === status ? "active" : ""
+                    }`}
+                    onClick={() => setStatusFilter(status)}
+                  >
+                    {status.charAt(0).toUpperCase() + status.slice(1)}
+                  </button>
+                )
+              )}
             </div>
           </div>
         </div>
@@ -280,15 +313,68 @@ const OneToOne = () => {
                         <div className="d-flex justify-content-center">
                           <button
                             className="btn bg-second-color"
-                            onClick={() => {
-                              /* Handle scheduling or communication */
-                            }}
+                            onClick={() => handleJoinMeeting(request)}
                           >
-                            <i className="bi bi-calendar-plus me-1"></i>{" "}
-                            Schedule
+                            <i className="bi bi-camera-video-fill me-1"></i>{" "}
+                            Join Meeting
                           </button>
                         </div>
                       )}
+                      {request.status === "completed" &&
+                        request.recordings &&
+                        request.recordings.length > 0 && (
+                          <div className="d-flex justify-content-center">
+                            <div className="dropdown w-100">
+                              <button
+                                className="btn btn-outline-info dropdown-toggle w-100"
+                                type="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                              >
+                                <i className="bi bi-play-circle me-1"></i>
+                                Watch Recordings ({request.recordings.length})
+                              </button>
+                              <ul className="dropdown-menu dropdown-menu-end w-100">
+                                {request.recordings.map((recording, index) => (
+                                  <li key={index}>
+                                    <a
+                                      className="dropdown-item"
+                                      href={recording.url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      Recording {index + 1}
+                                      {recording.start_time &&
+                                        recording.end_time && (
+                                          <span className="ms-2 text-muted small">
+                                            (
+                                            {formatDuration(
+                                              recording.start_time,
+                                              recording.end_time
+                                            )}
+                                            )
+                                          </span>
+                                        )}
+                                    </a>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+                        )}
+                      {request.status === "completed" &&
+                        (!request.recordings ||
+                          request.recordings.length === 0) && (
+                          <div className="d-flex justify-content-center">
+                            <button
+                              className="btn btn-outline-secondary"
+                              disabled
+                            >
+                              <i className="bi bi-camera-video-off me-1"></i> No
+                              Recordings Available
+                            </button>
+                          </div>
+                        )}
                     </div>
                   </div>
                 </div>
