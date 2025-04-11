@@ -194,10 +194,10 @@ export default function MentorDashboard() {
 
   return (
     <div
-      className={`py-4 position-relative d-flex ${
-        isMobile ? "container-fluid" : "container"
+      className={`py-2 position-relative d-flex ${
+        isMobile ? "container-fluid" : "container-fluid"
       }`}
-      style={{ minHeight: " 70vh", gap: "10px" }}
+      style={{ minHeight: " 70vh", gap: "0px" }}
     >
       <ToastContainer position="bottom-right" autoClose={3000} />
 

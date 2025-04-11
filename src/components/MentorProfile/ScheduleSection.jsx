@@ -2,9 +2,28 @@ import React from "react";
 
 const ScheduleSection = ({ onStartInstantMeeting, onShowScheduleModal }) => {
   return (
-    <div className="card">
+    <>
+      <div
+            className="profile-header mb-2 p-3 bg-gradient rounded-1 "
+            style={{
+              background: "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)",
+              borderBottom: "3px solid white",
+            }}
+          >
+            <div className="row align-items-center">
+              <div className="col-lg-8 col-md-7">
+                <h2 className="display-6 fw-bold  second-color mb-3">
+                Schedule     Meeting           </h2>
+                <p className="text-muted lead mb-0">
+                Dashboard / <span className="frist-color ">Schedule Meeting</span>
+                </p>
+              </div>
+              <div className="col-lg-4 col-md-5 text-md-end mt-4 mt-md-0">
+              </div>
+            </div>
+          </div>
+      <div className="card-border">
       <div className="card-body">
-        <h2 className="card-title">Schedule Management</h2>
         <div className="row mb-4 ">
           {/* Instant Meeting Card */}
           <div className="col-md-6 mb-3">
@@ -44,6 +63,8 @@ const ScheduleSection = ({ onStartInstantMeeting, onShowScheduleModal }) => {
         </div>
       </div>
     </div>
+    </>
+  
   );
 };
 

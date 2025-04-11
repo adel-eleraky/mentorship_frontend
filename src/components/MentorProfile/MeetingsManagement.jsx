@@ -156,12 +156,31 @@ const MeetingsManagement = ({
   };
 
   return (
-    <div className="card">
-      <div className="card-body">
-        <div className="d-flex justify-content-between align-items-center mb-4">
-          <h2 className="card-title mb-0">{title}</h2>
-          <ToastContainer position="bottom-right" autoClose={3000} />
-        </div>
+
+    <>
+      <div
+            className="profile-header mb-2 p-3 bg-gradient rounded-1 "
+            style={{
+              background: "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)",
+              borderBottom: "3px solid white",
+            }}
+          >
+            <div className="row align-items-center">
+              <div className="col-lg-8 col-md-7">
+                <h2 className="display-6 fw-bold  second-color mb-3">
+                {title}
+                </h2>
+                <p className="text-muted lead mb-0">
+                Dashboard / Meetings / <span className="frist-color ">{title} </span>
+                </p>
+              </div>
+              <div className="col-lg-4 col-md-5 text-md-end mt-4 mt-md-0">
+              </div>
+            </div>
+          </div>
+    <div className=" card-border">
+      <div className="card-body ">
+ 
 
         {error && (
           <div className="alert alert-danger" role="alert">
@@ -242,15 +261,15 @@ const MeetingsManagement = ({
                     </div>
                   </div>
                   <div className="card-body">
-                    <h5 className="card-title mb-3">{meeting.title}</h5>
+                    <h5 className="card-title mb-3 second-color">{meeting.title}</h5>
 
                     <div className="d-flex align-items-center mb-2">
-                      <i className="bi bi-calendar-date text-primary me-2"></i>
+                      <i className="bi bi-calendar-date frist-color me-2"></i>
                       <span>{formatDate(meeting.schedule_time)}</span>
                     </div>
 
                     <div className="d-flex align-items-center mb-2">
-                      <i className="bi bi-clock text-primary me-2"></i>
+                      <i className="bi bi-clock frist-color me-2"></i>
                       <span>{meeting.duration} minutes</span>
                     </div>
 
@@ -279,7 +298,7 @@ const MeetingsManagement = ({
                   <div className="card-footer bg-transparent border-top-0">
                     <div className="d-flex justify-content-between">
                       <button
-                        className="btn btn-primary"
+                        className="btn  bg-second-color"
                         onClick={() => handleJoinMeeting(meeting)}
                       >
                         <i className="bi bi-camera-video-fill me-1"></i> Join
@@ -342,6 +361,10 @@ const MeetingsManagement = ({
         disagreeText={disagreeText}
       />
     </div>
+    
+    
+    </>
+    
   );
 };
 

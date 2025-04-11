@@ -82,14 +82,14 @@ const ProfileNavigation = ({ activeSection, setActiveSection }) => {
           bottom: "0",
           height: "100%",
           borderRight: "1px solid rgba(0, 0, 0, 0.12)",
-          backgroundColor: "#f8f9fa",
+          backgroundColor: "#118577",
         },
       }}
     >
       <Toolbar
         sx={{
           minHeight: "48px !important",
-          backgroundColor: "#198754",
+          backgroundColor: "#118577",
           display: "flex",
           justifyContent: "flex-end",
           padding: "0 8px",
@@ -114,14 +114,15 @@ const ProfileNavigation = ({ activeSection, setActiveSection }) => {
                 onClick={() => handleSectionClick(section.id)}
                 sx={{
                   "&.Mui-selected": {
-                    backgroundColor: "#e8f5e9",
-                    borderLeft: "4px solid #198754",
+                    backgroundColor: "#ffffff33",
+                    borderLeft: "1px solid #ffffff",
+                    color:"#ffffff",
                     "&:hover": {
-                      backgroundColor: "#333433",
+                      backgroundColor:" #ffffff33",
                     },
                   },
                   "&:hover": {
-                    backgroundColor: "#cad0ca",
+                    backgroundColor: " #ffffff33",
                   },
                 }}
               >
@@ -130,8 +131,8 @@ const ProfileNavigation = ({ activeSection, setActiveSection }) => {
                     color:
                       activeSection === section.id ||
                       expandedSection === section.id
-                        ? "#198754"
-                        : "#757575",
+                        ? "#ffffff"
+                        : "#ffffff",
                     minWidth: "40px",
                   }}
                 >
@@ -150,8 +151,8 @@ const ProfileNavigation = ({ activeSection, setActiveSection }) => {
                         color:
                           activeSection === section.id ||
                           expandedSection === section.id
-                            ? "#198754"
-                            : "#424242",
+                            ? "#ffffff"
+                            : "#ffffff",
                       },
                     }}
                   />
@@ -183,14 +184,14 @@ const ProfileNavigation = ({ activeSection, setActiveSection }) => {
                       sx={{
                         pl: 4,
                         "&.Mui-selected": {
-                          backgroundColor: "#e8f5e9",
-                          borderLeft: "4px solid #198754",
+                          backgroundColor: "#ffffff33",
+                          borderLeft: "1px solid #ffffff",
                           "&:hover": {
-                            backgroundColor: "#333433",
+                            backgroundColor: "#ffffff33",
                           },
                         },
                         "&:hover": {
-                          backgroundColor: "#cad0ca",
+                          backgroundColor: "#ffffff33",
                         },
                       }}
                     >
@@ -198,8 +199,8 @@ const ProfileNavigation = ({ activeSection, setActiveSection }) => {
                         sx={{
                           color:
                             activeSection === subSection.id
-                              ? "#198754"
-                              : "#757575",
+                              ? "#ffffff"
+                              : "#ffffff",
                           minWidth: "40px",
                         }}
                       >
@@ -215,8 +216,8 @@ const ProfileNavigation = ({ activeSection, setActiveSection }) => {
                                 : "normal",
                             color:
                               activeSection === subSection.id
-                                ? "#198754"
-                                : "#424242",
+                                ? "#ffffff"
+                                : "#ffffff",
                           },
                         }}
                       />

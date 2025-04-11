@@ -67,15 +67,15 @@ const PersonalInfoSection = ({ mentorData, message }) => {
   return (
     <div className="personal-info-container">
       <div
-        className="profile-header mb-4 p-5 bg-gradient rounded-4 shadow"
+        className="profile-header mb-4 p-3 bg-gradient rounded-1 "
         style={{
           background: "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)",
-          borderBottom: "3px solid #198754",
+          borderBottom: "3px solid white",
         }}
       >
         <div className="row align-items-center">
           <div className="col-lg-8 col-md-7">
-            <h2 className="display-6 fw-bold text-success mb-3">
+            <h2 className="display-6 fw-bold  second-color mb-3">
               Personal Information
             </h2>
             <p className="text-muted lead mb-0">
@@ -99,6 +99,7 @@ const PersonalInfoSection = ({ mentorData, message }) => {
                   maxHeight: "120px",
                   objectFit: "cover",
                   border: "5px solid white",
+                  marginBottom:"4px",
                   transition: "transform 0.3s ease",
                 }}
                 onMouseOver={(e) => (e.target.style.transform = "scale(1.05)")}
@@ -113,11 +114,12 @@ const PersonalInfoSection = ({ mentorData, message }) => {
                 {({ setFieldValue, errors, touched }) => (
                   <Form encType="multipart/form-data">
                     <span
-                      className="position-absolute bg-success border border-white shadow d-flex align-items-center justify-content-center"
+                      className="position-absolute mt-2 border border-white shadow d-flex align-items-center justify-content-center"
                       style={{
                         bottom: 0,
                         left: 0,
                         width: "100%",
+                        backgroundColor:"#118577",
                         maxHeight: "40px",
                         overflow: "hidden",
                         cursor: "pointer",
@@ -142,25 +144,26 @@ const PersonalInfoSection = ({ mentorData, message }) => {
         </div>
       </div>
 
-      <div className="card border-0 shadow-sm rounded-3 overflow-hidden">
-        <div className="card-header bg-white p-0 border-bottom-0">
+      <div className="card border-0 card-border  overflow-hidden">
+        <div className="card-header bg-white card-border p-0 border-bottom-0">
           <ul className="nav nav-pills nav-fill p-2">
             <li className="nav-item mx-1">
               <button
                 className={`nav-link px-1 py-2 ${
                   activeTab === "basic"
-                    ? "active bg-success text-white"
-                    : "text-dark border border-secondary"
+                    ? "active bg-second-color text-white"
+                    : " text-black border border-secondary"
                 }`}
                 style={{
                   backgroundColor:
-                    activeTab === "basic" ? "#198754" : "#f8f9fa",
+                    activeTab === "basic" ? "#118577" : "#f8f9fa",
                   transition: "all 0.3s ease",
                 }}
                 onClick={() => setActiveTab("basic")}
                 onMouseEnter={(e) => {
                   if (activeTab !== "basic") {
-                    e.currentTarget.style.backgroundColor = "#e2e6ea";
+                    e.currentTarget.style.backgroundColor = "#118577";
+
                   }
                 }}
                 onMouseLeave={(e) => {
@@ -177,12 +180,12 @@ const PersonalInfoSection = ({ mentorData, message }) => {
               <button
                 className={`nav-link px-1 py-2 ${
                   activeTab === "skills"
-                    ? "active bg-success text-white"
+                    ? "active  text-white"
                     : "text-dark border border-secondary"
                 }`}
                 style={{
                   backgroundColor:
-                    activeTab === "skills" ? "#198754" : "#f8f9fa",
+                    activeTab === "skills" ? "#118577" : "#f8f9fa",
                   transition: "all 0.3s ease",
                 }}
                 onClick={() => setActiveTab("skills")}
@@ -205,12 +208,12 @@ const PersonalInfoSection = ({ mentorData, message }) => {
               <button
                 className={`nav-link px-1 py-2 ${
                   activeTab === "contact"
-                    ? "active bg-success text-white"
+                    ? "active  text-white"
                     : "text-dark border border-secondary"
                 }`}
                 style={{
                   backgroundColor:
-                    activeTab === "contact" ? "#198754" : "#f8f9fa",
+                    activeTab === "contact" ? "#118577" : "#f8f9fa",
                   transition: "all 0.3s ease",
                 }}
                 onClick={() => setActiveTab("contact")}
@@ -258,7 +261,7 @@ const PersonalInfoSection = ({ mentorData, message }) => {
                           placeholder="Enter your full name"
                         />
                         <label htmlFor="name">
-                          <i className="bi bi-person text-success me-2"></i>Full
+                          <i className="bi bi-person frist-color me-2"></i>Full
                           Name
                         </label>
                         <ErrorMessage
@@ -269,8 +272,8 @@ const PersonalInfoSection = ({ mentorData, message }) => {
                       </div>
                     </div>
 
-                    <div className="col-md-6">
-                      <div className="form-floating mb-3">
+                    <div className="col-md-6 ">
+                      <div className="form-floating  mb-3">
                         <Field
                           type="text"
                           className="form-control"
@@ -278,8 +281,8 @@ const PersonalInfoSection = ({ mentorData, message }) => {
                           name="title"
                           placeholder="e.g. Senior Software Engineer"
                         />
-                        <label htmlFor="title">
-                          <i className="bi bi-briefcase text-success me-2"></i>
+                        <label htmlFor="title" className="second-color">
+                          <i className="bi bi-briefcase frist-color me-2"></i>
                           Professional Title
                         </label>
                         <ErrorMessage
@@ -310,7 +313,7 @@ const PersonalInfoSection = ({ mentorData, message }) => {
                         component="div"
                         className="text-danger small"
                       />
-                      <small className="text-muted">
+                      <small className=" second-color">
                         <span
                           className={
                             values.bio?.length > 400 ? "text-warning" : ""
@@ -330,12 +333,12 @@ const PersonalInfoSection = ({ mentorData, message }) => {
                   style={{ padding: "20px" }}
                 >
                   <div className="mb-4">
-                    <label htmlFor="skills" className="form-label fw-bold mb-3">
-                      <i className="bi bi-lightbulb-fill text-success me-2"></i>
+                    <label htmlFor="skills" className="form-label fw-bold mb-3 second-color">
+                      <i className="bi bi-lightbulb-fill frist-color me-2"></i>
                       Areas of Expertise
                     </label>
                     <div className="input-group mb-3 shadow-sm">
-                      <span className="input-group-text bg-success text-white">
+                      <span className="input-group-text bg-frist-color text-white">
                         <i className="bi bi-plus-lg"></i>
                       </span>
                       <input
@@ -356,7 +359,7 @@ const PersonalInfoSection = ({ mentorData, message }) => {
                       />
                     </div>
 
-                    <div className="skills-container p-4 border rounded-3 bg-light shadow-sm">
+                    <div className="skills-container p-4 border rounded-2 bg-light shadow-sm">
                       {values.skills.length === 0 ? (
                         <div className="text-center py-4">
                           <i className="bi bi-lightbulb text-muted fs-1 mb-3"></i>
@@ -370,8 +373,8 @@ const PersonalInfoSection = ({ mentorData, message }) => {
                           {values.skills.map((item, index) => (
                             <span
                               key={index}
-                              className="badge bg-success py-2 px-3 fs-6 shadow-sm"
-                              style={{ transition: "all 0.2s ease" }}
+                              className="badge bg- py-2 px-2 fs-8 shadow-sm"
+                              style={{ transition: "all 0.2s ease",backgroundColor:"#118577" }}
                             >
                               {item}
                               <button
@@ -466,16 +469,17 @@ const PersonalInfoSection = ({ mentorData, message }) => {
                   {activeTab !== "basic" && (
                     <button
                       type="button"
-                      className="btn btn-outline-secondary rounded-pill px-4 py-2"
+                      className="btn btn-outline-secondary text-white  px-4 py-2"
                       style={{
                         transition: "all 0.2s ease",
+                        backgroundColor:"#118577",
                         boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
                       }}
                       onMouseOver={(e) =>
-                        (e.currentTarget.style.backgroundColor = "#f8f9fa")
+                        (e.currentTarget.style.backgroundColor = "#118577")
                       }
                       onMouseOut={(e) =>
-                        (e.currentTarget.style.backgroundColor = "")
+                        (e.currentTarget.style.backgroundColor = "#118577")
                       }
                       onClick={() =>
                         setActiveTab(
@@ -490,9 +494,10 @@ const PersonalInfoSection = ({ mentorData, message }) => {
                   {activeTab !== "contact" ? (
                     <button
                       type="button"
-                      className="btn btn-success rounded-pill px-4 py-2 ms-auto"
+                      className="btn btn-success  px-4 py-2 ms-auto"
                       style={{
                         transition: "all 0.2s ease",
+                        backgroundColor: "#118577",
                         boxShadow: "0 4px 6px rgba(25, 135, 84, 0.2)",
                       }}
                       onMouseOver={(e) =>
@@ -510,10 +515,12 @@ const PersonalInfoSection = ({ mentorData, message }) => {
                   ) : (
                     <button
                       type="submit"
-                      className="btn btn-success rounded-pill px-5 py-2 ms-auto"
+                      className="btn btn-   px-5 py-2 ms-auto"
                       style={{
                         transition: "all 0.2s ease",
                         boxShadow: "0 4px 6px rgba(25, 135, 84, 0.2)",
+                        backgroundColor:"#118577",
+                        color:"white"
                       }}
                       onMouseOver={(e) =>
                         !loading &&
@@ -525,7 +532,7 @@ const PersonalInfoSection = ({ mentorData, message }) => {
                       {loading ? (
                         <>
                           <span
-                            className="spinner-border spinner-border-sm me-2"
+                            className="spinner-border bg-frist-color spinner-border-sm me-2"
                             role="status"
                             aria-hidden="true"
                           ></span>
