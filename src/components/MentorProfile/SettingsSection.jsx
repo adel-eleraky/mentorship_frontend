@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { setMentorAvailability } from "../../rtk/features/mentorSlice";
+import { styled } from "@mui/material";
 
 const SettingsSection = () => {
 
@@ -126,14 +127,9 @@ const SettingsSection = () => {
         }}
       >
         <div className="d-flex align-items-center py-2">
-          <img
-            src={profileImage}
-            alt="Mentor Profile"
-            className="rounded-circle border border-3 border-white shadow-sm"
-            style={{ width: "60px", height: "60px", objectFit: "cover" }}
-          />
-          <div className="ms-3 text-white">
-            <h4 className="mb-0">Set Your Mentoring Schedule</h4>
+      
+          <div className="ms-3 ">
+            <h3 className="mb-0 second-color">Set Your Mentoring Schedule</h3>
             <p className="mb-0 opacity-75">
               Let students know when you're available
             </p>
@@ -141,14 +137,14 @@ const SettingsSection = () => {
         </div>
       </div>
 
-      <div className="card-body p-4">
-        <div className="alert alert-info d-flex" role="alert">
+      <div className="card-body card-border p-4">
+        {/* <div className="alert alert-info d-flex" role="alert">
           <i className="fas fa-info-circle me-2 mt-1"></i>
           <div>
             Select your availability for next week. Students will only be able
             to book appointments during these times.
           </div>
-        </div>
+        </div> */}
 
         <form onSubmit={handleSubmit}>
           <div className="row g-4">
@@ -157,20 +153,20 @@ const SettingsSection = () => {
                 <div
                   className={`card h-100 ${
                     availability[day].isAvailable
-                      ? "border-primary"
+                      ? "card-bacpro"
                       : "border-light"
                   }`}
                 >
                   <div className="card-body">
                     <div className="form-check form-switch d-flex justify-content-between align-items-center mb-3">
                       <label
-                        className="form-check-label fw-bold fs-5"
+                        className="form-check-label fw-bold fs-5 second-color"
                         htmlFor={`available-${day}`}
                       >
                         <i
                           className={`far ${
                             availability[day].isAvailable
-                              ? "fa-calendar-check text-primary"
+                              ? "fa-calendar-check second-color"
                               : "fa-calendar"
                           } me-2`}
                         ></i>
@@ -192,11 +188,11 @@ const SettingsSection = () => {
                           <div key={`${day}-${slot}`} className="col-md-4">
                             <div
                               className={`
-                                time-slot p-2 rounded text-center
+                                time-slot p-2  text-center
                                 ${
                                   availability[day].slots[slot]
-                                    ? "bg-primary text-white"
-                                    : "bg-light"
+                                    ? "bg-frist-color text-white"
+                                    : "bg-light  second-color"
                                 }
                                 cursor-pointer transition-all hover-shadow
                               `}

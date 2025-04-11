@@ -67,10 +67,31 @@ export default function ChangePassword({ person }) {
   };
 
   return (
-    <div className="card">
+    <>
+         <div
+            className="profile-header mb-1 p-3 bg-gradient rounded-1 "
+            style={{
+              background: "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)",
+              borderBottom: "3px solid white",
+            }}
+          >
+            <div className="row align-items-center">
+              <div className="col-lg-8 col-md-7">
+                <h2 className="display-6 fw-bold  second-color mb-3">
+                Change Password
+                </h2>
+                <p className="text-muted lead mb-0">
+                Dashboard / <span className="frist-color ">Change Password </span>
+                </p>
+              </div>
+              <div className="col-lg-4 col-md-5 text-md-end mt-4 mt-md-0">
+              </div>
+            </div>
+          </div>
+
+        <div className=" card-border ">
       <div className="card-body">
-        <h2 className="card-title mb-4">Change Password</h2>
-        <ToastContainer position="bottom-right" autoClose={3000} />
+      
 
         <Formik
           initialValues={initialValues}
@@ -80,7 +101,7 @@ export default function ChangePassword({ person }) {
           {({ isSubmitting, errors, touched }) => (
             <Form>
               <div className="mb-3">
-                <label htmlFor="oldPassword" className="form-label">
+                <label htmlFor="oldPassword" className="form-label second-color">
                   Current Password
                 </label>
                 <Field
@@ -101,7 +122,7 @@ export default function ChangePassword({ person }) {
               </div>
 
               <div className="mb-3">
-                <label htmlFor="newPassword" className="form-label">
+                <label htmlFor="newPassword" className="form-label second-color">
                   New Password
                 </label>
                 <Field
@@ -122,7 +143,7 @@ export default function ChangePassword({ person }) {
               </div>
 
               <div className="mb-3">
-                <label htmlFor="confirmedPassword" className="form-label">
+                <label htmlFor="confirmedPassword" className="form-label second-color">
                   Confirm New Password
                 </label>
                 <Field
@@ -144,7 +165,7 @@ export default function ChangePassword({ person }) {
 
               <button
                 type="submit"
-                className="btn btn-primary"
+                className="btn  bg-second-color"
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -165,5 +186,7 @@ export default function ChangePassword({ person }) {
         </Formik>
       </div>
     </div>
+    </>
+
   );
 }

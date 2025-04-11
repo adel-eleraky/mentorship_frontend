@@ -32,6 +32,19 @@ a {
 .second-color {
   color: #172E59;
 }
+.bg-frist-color {
+  background-color: #118577;
+} 
+.bg-second-color {
+  background-color:  #172E59;
+  color: #ffffff;
+
+} 
+.bg-second-color:hover {
+  background-color:  #172E59;
+  color: #ffffff;
+  
+} 
 
 .card-bacpro {
   background: linear-gradient(#ffffff, #ffffff) padding-box,
@@ -46,4 +59,10 @@ a {
 }
 .notification-badge::after {
   display: none;
+}
+
+
+.card-border{
+  box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset;
+  border-radius: 5px;
 }
