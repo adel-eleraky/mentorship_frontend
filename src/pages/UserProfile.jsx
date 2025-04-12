@@ -12,6 +12,10 @@ import MeetingsManagement from "./../components/UserProfile/MeetingsManagement";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserSessions } from "../rtk/features/userSlice";
 import ChangePassword from "../components/MentorProfile/ChangePassword";
+import OneToOne from "../components/UserProfile/OneToOne";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 
 function UserProfile() {
   const navigate = useNavigate();
@@ -23,42 +27,53 @@ function UserProfile() {
   const [activeSection, setActiveSection] = useState("personal");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [scheduledMeetings, setScheduledMeetings] = useState([]);
+  const [sessionsLoading, setSessionsLoading] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1115);
 
   useEffect(() => {
-    dispatch(getUserSessions());
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1115);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Handle input changes
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setUserData({
-      ...mentorData,
-      [name]: value,
-    });
-  };
+  useEffect(() => {
+    fetchUserSessions();
+  }, [dispatch]);
 
-  // Handle expertise tags
-  const handleExpertiseChange = (e) => {
-    if (e.key === "Enter" && e.target.value) {
-      const newExpertise = e.target.value.trim();
-      if (!userData.expertise.includes(newExpertise)) {
-        setUserData({
-          ...userData,
-          expertise: [...userData.expertise, newExpertise],
+  const fetchUserSessions = async () => {
+    try {
+      setSessionsLoading(true);
+      setError(null);
+      await dispatch(getUserSessions())
+        .unwrap()
+        .then((response) => {
+          if (response) {
+            console.log("User sessions:", response.data);
+            setScheduledMeetings(response.data);
+          }
+        })
+        .catch((error) => {
+          console.error("Error in getUserSessions:", error);
+          setError("Failed to load your sessions. Please try again later.");
         });
-      }
-      e.target.value = "";
+    } catch (error) {
+      console.error("Error fetching user sessions:", error);
+      setError(
+        "Failed to load your scheduled sessions. Please try again later."
+      );
+    } finally {
+      setSessionsLoading(false);
     }
   };
 
-  // Remove expertise tag
-  const removeExpertise = (index) => {
-    const updatedExpertise = [...userData.expertise];
-    updatedExpertise.splice(index, 1);
-    setUserData({
-      ...userData,
-      expertise: updatedExpertise,
-    });
+  const handleJoinMeeting = (meetingId) => {
+    window.open(`/meeting/${meetingId}`, "_blank");
   };
 
   if (loading) {
@@ -67,29 +82,75 @@ function UserProfile() {
 
   return (
     <div
-      className=" py-4 position-relative d-flex"
-      style={{ minHeight: " 70vh", gap: "10px" }}
+      className={`py-2 position-relative d-flex ${
+        isMobile ? "container-fluid" : "container-fluid"
+      }`}
+      style={{ minHeight: " 70vh", gap: "0px" }}
     >
+      <ToastContainer position="bottom-right" autoClose={3000} />
+
       <ProfileNavigation
         activeSection={activeSection}
         setActiveSection={setActiveSection}
       />
-      <div className="m-auto w-100 pe-3">
-        <h1 className="mb-4">User Profile</h1>
+      <div className="mx-auto w-100 pe-3">
         {activeSection === "personal" && (
-          <PersonalInfoSection
-            userData={user}
-            handleInputChange={handleInputChange}
-            handleExpertiseChange={handleExpertiseChange}
-            removeExpertise={removeExpertise}
+          <PersonalInfoSection userData={user} />
+        )}
+
+        {activeSection === "upcoming" && (
+          <MeetingsManagement
+            scheduledMeetings={scheduledMeetings.filter(
+              (meeting) => new Date(meeting.session.schedule_time) > new Date()
+            )}
+            loading={sessionsLoading}
+            error={error}
+            onRefresh={fetchUserSessions}
+            onJoinMeeting={handleJoinMeeting}
+            title="Upcoming Meetings"
           />
         )}
 
-        {activeSection === "sessions" && (
-          <MeetingsManagement scheduledMeetings={sessions} error={error} />
+        {activeSection === "previous" && (
+          <MeetingsManagement
+            scheduledMeetings={scheduledMeetings.filter(
+              (meeting) => new Date(meeting.session.schedule_time) < new Date()
+            )}
+            loading={sessionsLoading}
+            error={error}
+            onRefresh={fetchUserSessions}
+            title="Previous Meetings"
+            isPast={true}
+          />
         )}
+
+        {activeSection === "recordings" && (
+          <MeetingsManagement
+            scheduledMeetings={scheduledMeetings.filter(
+              (meeting) =>
+                meeting.session.recordings &&
+                meeting.session.recordings.length > 0
+            )}
+            loading={sessionsLoading}
+            error={error}
+            onRefresh={fetchUserSessions}
+            title="Meeting Recordings"
+            showRecordings={true}
+          />
+        )}
+
+        {activeSection === "oneToOne" && <OneToOne />}
         {activeSection === "changePassword" && (
           <ChangePassword person="users" />
+        )}
+        {activeSection === "settings" && (
+          <div className="card">
+            <div className="card-body">
+              <h2 className="card-title">Settings</h2>
+              <p className="text-muted">Manage your account settings</p>
+              {/* Settings content will go here */}
+            </div>
+          </div>
         )}
       </div>
     </div>
