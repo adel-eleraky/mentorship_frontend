@@ -20,6 +20,8 @@ import {
   Radio,
   RadioGroup
 } from "@mui/material";
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useAuthentication } from "../../Context/AuthContext";
 import { useDispatch, useSelector } from "react-redux";
@@ -129,22 +131,41 @@ export default function Register() {
   };
 
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth=""
+    sx={{
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      minHeight: "100vh", // 
+      background: "linear-gradient(#ffffff 0%, #8DD2D2 40%)",
+
+    }}>
 
       {registerStatus != "success" ?
 
         <Box
           sx={{
-            mt: 4,
-            mb: 4,
+            mt: 1,
+            mb: 1,
             p: 4,
-            boxShadow: 3,
-            borderRadius: 2,
+            boxShadow: 2,
+            borderRadius: 1,
+            bgcolor: "background.paper",
+       
+            
+          }}
+           maxWidth="sm"
+    
+        >
+          <Typography variant="h3" align="left" 
+          gutterBottom
+          sx={{
+           
+            color: "#172E59",
             bgcolor: "background.paper",
           }}
-        >
-          <Typography variant="h4" align="center" gutterBottom>
-            Register
+          >
+            Register :
           </Typography>
 
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -157,6 +178,42 @@ export default function Register() {
                   {...register("name")}
                   error={Boolean(errors.name)}
                   helperText={errors.name?.message}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": {
+                        borderColor: "#172E59",
+                        // border:"1px solid #172E59",
+                        boxShadow:"none !important",
+
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "#172E59", 
+                        boxShadow:"none !important",
+
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#172E59",
+                        boxShadow:"none !important",
+                        outline:"none !important",
+
+                        
+                      },
+                    },
+                    "& label": {
+                      color: "#172E59",
+                      fontSize:"16px",
+                      boxShadow:"none !important",
+
+
+                    },
+                    "& label.Mui-focused": {
+                      color: "#172E59",
+                      fontSize:"18px",
+                      fontWeight:"bold",
+                      boxShadow:"none !important",
+
+                    },
+                  }}
                 />
               </Grid>
 
@@ -169,6 +226,42 @@ export default function Register() {
                   {...register("email")}
                   error={Boolean(errors.email) || Boolean(serverErrors?.email)}
                   helperText={errors.email?.message ?? serverErrors?.email}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": {
+                        borderColor: "#172E59",
+                        // border:"1px solid #172E59",
+                        boxShadow:"none !important",
+
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "#172E59", 
+                        boxShadow:"none !important",
+
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#172E59",
+                        boxShadow:"none !important",
+                        outline:"none !important",
+
+                        
+                      },
+                    },
+                    "& label": {
+                      color: "#172E59",
+                      fontSize:"14px",
+                      boxShadow:"none !important",
+
+
+                    },
+                    "& label.Mui-focused": {
+                      color: "#172E59",
+                      fontSize:"16px",
+                      fontWeight:"bold",
+                      boxShadow:"none !important",
+
+                    },
+                  }}
                 />
               </Grid>
 
@@ -180,6 +273,42 @@ export default function Register() {
                   {...register("phone")}
                   error={Boolean(errors.phone) || Boolean(serverErrors?.phone)}
                   helperText={errors.phone?.message ?? serverErrors?.phone}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": {
+                        borderColor: "#172E59",
+                        // border:"1px solid #172E59",
+                        boxShadow:"none !important",
+
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "#172E59", 
+                        boxShadow:"none !important",
+
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#172E59",
+                        boxShadow:"none !important",
+                        outline:"none !important",
+
+                        
+                      },
+                    },
+                    "& label": {
+                      color: "#172E59",
+                      fontSize:"16px",
+                      boxShadow:"none !important",
+
+
+                    },
+                    "& label.Mui-focused": {
+                      color: "#172E59",
+                      fontSize:"18px",
+                      fontWeight:"bold",
+                      boxShadow:"none !important",
+
+                    },
+                  }}
                 />
               </Grid>
 
@@ -192,6 +321,42 @@ export default function Register() {
                   {...register("password")}
                   error={Boolean(errors.password)}
                   helperText={errors.password?.message}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": {
+                        borderColor: "#172E59",
+                        // border:"1px solid #172E59",
+                        boxShadow:"none !important",
+
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "#172E59", 
+                        boxShadow:"none !important",
+
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#172E59",
+                        boxShadow:"none !important",
+                        outline:"none !important",
+
+                        
+                      },
+                    },
+                    "& label": {
+                      color: "#172E59",
+                      fontSize:"16px",
+                      boxShadow:"none !important",
+
+
+                    },
+                    "& label.Mui-focused": {
+                      color: "#172E59",
+                      fontSize:"18px",
+                      fontWeight:"bold",
+                      boxShadow:"none !important",
+
+                    },
+                  }}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
@@ -216,6 +381,42 @@ export default function Register() {
                   {...register("confirmedPassword")}
                   error={Boolean(errors.confirmedPassword)}
                   helperText={errors.confirmedPassword?.message}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": {
+                        borderColor: "#172E59",
+                        // border:"1px solid #172E59",
+                        boxShadow:"none !important",
+
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "#172E59", 
+                        boxShadow:"none !important",
+
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#172E59",
+                        boxShadow:"none !important",
+                        outline:"none !important",
+
+                        
+                      },
+                    },
+                    "& label": {
+                      color: "#172E59",
+                      fontSize:"16px",
+                      boxShadow:"none !important",
+
+
+                    },
+                    "& label.Mui-focused": {
+                      color: "#172E59",
+                      fontSize:"18px",
+                      fontWeight:"bold",
+                      boxShadow:"none !important",
+
+                    },
+                  }}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
@@ -238,10 +439,19 @@ export default function Register() {
                   <FormControlLabel
                     control={<Radio {...register("role")} value="User" />}
                     label="User"
+                    sx={{
+                      fontSize: '14px',
+                      textTransform: 'none',
+                      color: '#172E59'}}
+                    
                   />
                   <FormControlLabel
                     control={<Radio {...register("role")} value="Mentor" />}
                     label="Mentor"
+                    sx={{
+                      fontSize: '14px',
+                      textTransform: 'none',
+                      color: '#172E59'}}
                   />
                 </RadioGroup>
               </Grid>
@@ -250,6 +460,10 @@ export default function Register() {
                 <FormControlLabel
                   control={<Checkbox required />}
                   label="I agree to the terms and conditions"
+                  sx={{
+                    fontSize: '14px',
+                    textTransform: 'none',
+                    color: '#118577'}}
                 />
               </Grid>
 
@@ -262,15 +476,30 @@ export default function Register() {
 
               {/* Submit Button */}
               <Grid item xs={12}>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  color="success"
-                  disabled={loading}
-                >
-                  {loading ? <CircularProgress size={24} color="inherit" /> : "Register"}
-                </Button>
+              <Button
+  type="submit"
+  fullWidth
+  variant="contained"
+  color="success"
+  disabled={loading}
+  sx={{
+    fontSize: '16px',
+    padding: '10px',
+    borderRadius: '3px',
+    boxShadow: 3,
+    transition: '0.3s',
+    textTransform: 'none',
+    backgroundColor: '#172E59',
+    '&:hover': {
+      backgroundColor: '#172E59',
+      boxShadow: 6,
+    },
+  }}
+  startIcon={!loading && <PersonAddIcon />}
+>
+  {loading ? <CircularProgress size={24} color="inherit" /> : "Register"}
+</Button>
+
               </Grid>
             </Grid>
           </form>

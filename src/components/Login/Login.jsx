@@ -83,19 +83,37 @@ function Login() {
   };
 
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth=""
+    sx={{
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      minHeight: "100vh", // 
+      background: "linear-gradient(#ffffff 0%, #8DD2D2 40%)",
+
+    }}
+     >
       <Box
         sx={{
           mt: 4,
           mb: 4,
           p: 4,
-          boxShadow: 3,
-          borderRadius: 2,
+          boxShadow: 2,
+          borderRadius: 1,
           bgcolor: "background.paper"
         }}
+        maxWidth="sm"
+
       >
-        <Typography variant="h4" align="center" gutterBottom>
-          Login
+        <Typography variant="h3" align="left" gutterBottom
+           sx={{
+           
+            color: "#172E59",
+            bgcolor: "background.paper",
+          }}
+          
+        >
+          Login :
         </Typography>
 
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -113,6 +131,42 @@ function Login() {
                 helperText={
                   errors.email?.message ?? serverErrors?.email
                 }
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: "#172E59",
+                      // border:"1px solid #172E59",
+                      boxShadow:"none !important",
+
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "#172E59", 
+                      boxShadow:"none !important",
+
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#172E59",
+                      boxShadow:"none !important",
+                      outline:"none !important",
+
+                      
+                    },
+                  },
+                  "& label": {
+                    color: "#172E59",
+                    fontSize:"16px",
+                    boxShadow:"none !important",
+
+
+                  },
+                  "& label.Mui-focused": {
+                    color: "#172E59",
+                    fontSize:"18px",
+                    fontWeight:"bold",
+                    boxShadow:"none !important",
+
+                  },
+                }}
               />
             </Grid>
 
@@ -129,6 +183,42 @@ function Login() {
                 helperText={
                   errors.password?.message ?? serverErrors?.password
                 }
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: "#172E59",
+                      // border:"1px solid #172E59",
+                      boxShadow:"none !important",
+
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "#172E59", 
+                      boxShadow:"none !important",
+
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#172E59",
+                      boxShadow:"none !important",
+                      outline:"none !important",
+
+                      
+                    },
+                  },
+                  "& label": {
+                    color: "#172E59",
+                    fontSize:"16px",
+                    boxShadow:"none !important",
+
+
+                  },
+                  "& label.Mui-focused": {
+                    color: "#172E59",
+                    fontSize:"18px",
+                    fontWeight:"bold",
+                    boxShadow:"none !important",
+
+                  },
+                }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
@@ -210,6 +300,19 @@ function Login() {
                 variant="contained"
                 color="success"
                 disabled={loading}
+                sx={{
+                  fontSize: '16px',
+                  padding: '10px',
+                  borderRadius: '3px',
+                  boxShadow: 3,
+                  transition: '0.3s',
+                  textTransform: 'none',
+                  backgroundColor: '#172E59',
+                  '&:hover': {
+                    backgroundColor: '#172E59',
+                    boxShadow: 6,
+                  },
+                }}
               >
                 {loading ? <CircularProgress size={24} color="inherit" /> : "Login"}
               </Button>

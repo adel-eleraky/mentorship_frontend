@@ -197,7 +197,7 @@ function ReviewMentor({ mentor }) {
 
 
       <div className="container mb-4">
-        {user && hasBooked && (
+        {user && hasBooked && user._id !== mentor && (
           <div className="">
             <form onSubmit={handleSubmit}>
               <div className='revcon '>
