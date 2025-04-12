@@ -218,7 +218,7 @@ function MentorProfile() {
                       <div className="row g-3">
                         <div className="col-sm-6">
                           <label className="form-label second-color">Selected time:</label>
-                          <div><i className="bi bi-clock me-1"></i> { requestTime.day ?  requestTime.day + " , " + requestTime?.time?.time : "No time selected" }</div>
+                          <div><i className="bi bi-clock me-1"></i> Next { requestTime.day ?  requestTime.day + " , " + requestTime?.time?.time : "No time selected" }</div>
                         </div>
                         <div className="col-sm-6">
                           <label className="form-label second-color">Price: </label>
