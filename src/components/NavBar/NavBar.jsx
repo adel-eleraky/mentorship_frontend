@@ -169,68 +169,74 @@ function NavBar() {
                       <li>
                         <hr className="dropdown-divider" />
                       </li>
-                      {notifications.length != 0 &&
-                        [...notifications]?.reverse().map((notify) => {
-                          return (
-                            <>
-                              <li
-                                className="dropdown-item"
-                                style={{ whiteSpace: "normal" }}
-                              >
-                                <input
-                                  type="checkbox"
-                                  className="form-check-input me-2"
-                                  checked={notify.isRead}
-                                  onChange={() => {
-                                    dispatch(markNotificationRead(notify?._id));
-                                    console.log(
-                                      `Marking notification ${notify?._id} as read`
-                                    );
-                                  }}
-                                />
-                                {notify?.type === "comment" && (
-                                  <i
-                                    className="fas fa-comment-alt"
-                                    style={{
-                                      color: "#4CAF50",
-                                      marginRight: "8px",
+                      <div
+                        style={{
+                          maxHeight: "500px", // adjust as needed
+                          overflowY: "auto",
+                          paddingRight: "8px", // optional: to prevent content being hidden under scrollbar
+                        }}
+                      >
+                        {notifications.length !== 0 &&
+                          [...notifications]?.reverse().map((notify) => {
+                            return (
+                              <React.Fragment key={notify._id}>
+                                <li
+                                  className="dropdown-item"
+                                  style={{ whiteSpace: "normal" }}
+                                >
+                                  <input
+                                    type="checkbox"
+                                    className="form-check-input me-2"
+                                    checked={notify.isRead}
+                                    onChange={() => {
+                                      dispatch(
+                                        markNotificationRead(notify?._id)
+                                      );
                                     }}
-                                  ></i>
-                                )}
-                                {notify?.type === "like" && (
-                                  <i
-                                    className="fas fa-thumbs-up"
-                                    style={{
-                                      color: "#2196F3",
-                                      marginRight: "8px",
-                                    }}
-                                  ></i>
-                                )}
-                                {notify?.type === "booking" && (
-                                  <i
-                                    className="fas fa-calendar-check"
-                                    style={{
-                                      color: "#FF9800",
-                                      marginRight: "8px",
-                                    }}
-                                  ></i>
-                                )}
-                                {notify?.type === "message" && (
-                                  <i
-                                    className="fas fa-envelope"
-                                    style={{
-                                      color: "#FF5722",
-                                      marginRight: "8px",
-                                    }}
-                                  ></i>
-                                )}
-
-                                {notify?.message}
-                              </li>
-                              <hr />
-                            </>
-                          );
-                        })}
+                                  />
+                                  {notify?.type === "comment" && (
+                                    <i
+                                      className="fas fa-comment-alt"
+                                      style={{
+                                        color: "#4CAF50",
+                                        marginRight: "8px",
+                                      }}
+                                    ></i>
+                                  )}
+                                  {notify?.type === "like" && (
+                                    <i
+                                      className="fas fa-thumbs-up"
+                                      style={{
+                                        color: "#2196F3",
+                                        marginRight: "8px",
+                                      }}
+                                    ></i>
+                                  )}
+                                  {notify?.type === "booking" && (
+                                    <i
+                                      className="fas fa-calendar-check"
+                                      style={{
+                                        color: "#FF9800",
+                                        marginRight: "8px",
+                                      }}
+                                    ></i>
+                                  )}
+                                  {notify?.type === "message" && (
+                                    <i
+                                      className="fas fa-envelope"
+                                      style={{
+                                        color: "#FF5722",
+                                        marginRight: "8px",
+                                      }}
+                                    ></i>
+                                  )}
+                                  {notify?.message}
+                                </li>
+                                <hr />
+                              </React.Fragment>
+                            );
+                          })}
+                      </div>
 
                       {/* <li>
                           <NavLink className="dropdown-item text-primary text-center" to="/notifications">
