@@ -7,6 +7,7 @@ import {
   ListItemIcon,
   ListItemText,
   IconButton,
+  Collapse,
   Toolbar,
   useMediaQuery,
   useTheme,
@@ -20,8 +21,19 @@ const sections = [
     label: "Personal Information",
     icon: "bi-person-lines-fill",
   },
-  { id: "sessions", label: "Sessions", icon: "bi-calendar-event" },
+  {
+    id: "meetings",
+    label: "Meetings",
+    icon: "bi-calendar-event",
+    subSections: [
+      { id: "upcoming", label: "Upcoming", icon: "bi-calendar-plus" },
+      { id: "previous", label: "Previous", icon: "bi-calendar-check" },
+      { id: "recordings", label: "Recordings", icon: "bi-camera-video" },
+    ],
+  },
+  { id: "oneToOne", label: "One To One", icon: "bi-camera-video" },
   { id: "changePassword", label: "Change Password", icon: "bi-lock" },
+  // { id: "settings", label: "Settings", icon: "bi-gear" },
 ];
 
 const ProfileNavigation = ({ activeSection, setActiveSection }) => {
@@ -29,6 +41,7 @@ const ProfileNavigation = ({ activeSection, setActiveSection }) => {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const isBelow800px = useMediaQuery("(max-width:800px)");
   const [open, setOpen] = useState(!isBelow800px);
+  const [expandedSection, setExpandedSection] = useState(null);
 
   // Update drawer state when screen size changes
   useEffect(() => {
@@ -37,6 +50,14 @@ const ProfileNavigation = ({ activeSection, setActiveSection }) => {
 
   const toggleDrawer = () => {
     setOpen(!open);
+  };
+
+  const handleSectionClick = (sectionId) => {
+    if (sectionId === "meetings") {
+      setExpandedSection(expandedSection === "meetings" ? null : "meetings");
+    } else {
+      setActiveSection(sectionId);
+    }
   };
 
   return (
@@ -60,7 +81,7 @@ const ProfileNavigation = ({ activeSection, setActiveSection }) => {
           bottom: "0",
           height: "100%",
           borderRight: "1px solid rgba(0, 0, 0, 0.12)",
-          backgroundColor: "#f8f9fa",
+          backgroundColor: "#198754",
         },
       }}
     >
@@ -83,46 +104,128 @@ const ProfileNavigation = ({ activeSection, setActiveSection }) => {
       </Toolbar>
       <List>
         {sections.map((section) => (
-          <ListItem key={section.id} disablePadding>
-            <ListItemButton
-              selected={activeSection === section.id}
-              onClick={() => setActiveSection(section.id)}
-              sx={{
-                "&.Mui-selected": {
-                  backgroundColor: "#e8f5e9",
-                  borderLeft: "4px solid #198754",
-                  "&:hover": {
-                    backgroundColor: "#333433",
-                  },
-                },
-                "&:hover": {
-                  backgroundColor: "#cad0ca",
-                },
-              }}
-            >
-              <ListItemIcon
+          <React.Fragment key={section.id}>
+            <ListItem disablePadding>
+              <ListItemButton
+                selected={
+                  activeSection === section.id || expandedSection === section.id
+                }
+                onClick={() => handleSectionClick(section.id)}
                 sx={{
-                  color: activeSection === section.id ? "#198754" : "#757575",
-                  minWidth: "40px",
+                  "&.Mui-selected": {
+                    backgroundColor: "#ffffff33",
+                    borderLeft: "1px solid #ffffff",
+                    color: "#ffffff",
+                    "&:hover": {
+                      backgroundColor: " #ffffff33",
+                    },
+                  },
+                  "&:hover": {
+                    backgroundColor: " #ffffff33",
+                  },
                 }}
               >
-                <i className={`bi ${section.icon} fs-5`}></i>
-              </ListItemIcon>
-              {open && (
-                <ListItemText
-                  primary={section.label}
+                <ListItemIcon
                   sx={{
-                    "& .MuiTypography-root": {
-                      fontWeight:
-                        activeSection === section.id ? "bold" : "normal",
-                      color:
-                        activeSection === section.id ? "#198754" : "#424242",
-                    },
+                    color:
+                      activeSection === section.id ||
+                      expandedSection === section.id
+                        ? "#ffffff"
+                        : "#ffffff",
+                    minWidth: "40px",
                   }}
-                />
-              )}
-            </ListItemButton>
-          </ListItem>
+                >
+                  <i className={`bi ${section.icon} fs-5`}></i>
+                </ListItemIcon>
+                {open && (
+                  <ListItemText
+                    primary={section.label}
+                    sx={{
+                      "& .MuiTypography-root": {
+                        fontWeight:
+                          activeSection === section.id ||
+                          expandedSection === section.id
+                            ? "bold"
+                            : "normal",
+                        color:
+                          activeSection === section.id ||
+                          expandedSection === section.id
+                            ? "#ffffff"
+                            : "#ffffff",
+                      },
+                    }}
+                  />
+                )}
+                {open && section.subSections && (
+                  <i
+                    className={`bi ${
+                      expandedSection === section.id
+                        ? "bi-chevron-down"
+                        : "bi-chevron-right"
+                    }`}
+                  ></i>
+                )}
+              </ListItemButton>
+            </ListItem>
+
+            {section.subSections && (
+              <Collapse
+                in={expandedSection === section.id && open}
+                timeout="auto"
+                unmountOnExit
+              >
+                <List component="div" disablePadding>
+                  {section.subSections.map((subSection) => (
+                    <ListItemButton
+                      key={subSection.id}
+                      selected={activeSection === subSection.id}
+                      onClick={() => setActiveSection(subSection.id)}
+                      sx={{
+                        pl: 4,
+                        "&.Mui-selected": {
+                          backgroundColor: "#ffffff33",
+                          borderLeft: "1px solid #ffffff",
+                          "&:hover": {
+                            backgroundColor: "#ffffff33",
+                          },
+                        },
+                        "&:hover": {
+                          backgroundColor: "#ffffff33",
+                        },
+                      }}
+                    >
+                      <ListItemIcon
+                        sx={{
+                          color:
+                            activeSection === subSection.id
+                              ? "#ffffff"
+                              : "#ffffff",
+                          minWidth: "40px",
+                        }}
+                      >
+                        <i className={`bi ${subSection.icon} fs-5`}></i>
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={subSection.label}
+                        sx={{
+                          "& .MuiTypography-root": {
+                            fontWeight:
+                              activeSection === subSection.id
+                                ? "bold"
+                                : "normal",
+                            color:
+                              activeSection === subSection.id
+                                ? "#ffffff"
+                                : "#ffffff",
+                          },
+                        }}
+                      />
+                    </ListItemButton>
+                  ))}
+                </List>
+              </Collapse>
+            )}
+          </React.Fragment>
         ))}
       </List>
     </Drawer>
