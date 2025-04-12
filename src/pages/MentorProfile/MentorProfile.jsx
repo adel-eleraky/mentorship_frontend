@@ -22,11 +22,11 @@ function MentorProfile() {
   let { id } = useParams();
   const { sessions: userSessions } = useSelector(state => state.user)
   const { user } = useSelector(state => state.auth)
-  const [requestTime , setRequestTime] = useState("")
-  const [title , setTitle] = useState("")
-  const [description , setDescription] = useState("")
+  const [requestTime, setRequestTime] = useState("")
+  const [title, setTitle] = useState("")
+  const [description, setDescription] = useState("")
 
-  
+
   // console.log("request time" , requestTime)
 
   const formatDate = (isoString) => {
@@ -98,17 +98,17 @@ function MentorProfile() {
 
   }, [id, user]);
 
-  
+
   const groupByDay = () => {
     if (typeof mentor?.availability !== "object" || Array.isArray(mentor.availability)) {
       return [];
     }
-  
+
     return Object.entries(mentor.availability);
   };
 
   // const handleRequestSession = async () => {
-    
+
   //   const requestData = { mentor: mentor._id , user: user._id, title , description, requested_time: requestTime}
   //   let { data } = await axios.post(`http://localhost:3000/api/v1/oneTo1sessions/request` , requestData )
   // }
@@ -130,24 +130,24 @@ function MentorProfile() {
 
 
   const handleRequestSession = async (values, { resetForm }) => {
-    const requestData = { 
-      mentor: mentor._id, 
-      user: user._id, 
-      title: values.title, 
-      description: values.description, 
-      requested_time:{ day: requestTime.day, time: requestTime.time.time }  
+    const requestData = {
+      mentor: mentor._id,
+      user: user._id,
+      title: values.title,
+      description: values.description,
+      requested_time: { day: requestTime.day, time: requestTime.time.time }
     };
-    
+
     try {
       let { data } = await axios.post(`http://localhost:3000/api/v1/oneTo1sessions/request`, requestData);
-      
+
       // Close modal after successful submission
       const modalElement = document.getElementById("exampleModa2");
       const modalInstance = bootstrap.Modal.getInstance(modalElement);
       if (modalInstance) {
         modalInstance.hide();
       }
-      
+
       // Reset form
       resetForm();
     } catch (error) {
@@ -156,7 +156,7 @@ function MentorProfile() {
   };
 
 
- 
+
   return (
     <>
       <MentorInfo mentor={mentor} />
@@ -165,7 +165,7 @@ function MentorProfile() {
       <div className="container py-3 mb-4 mt-5">
         <div className="d-flex justify-content-between">
           <h3 className="mx-3 second-color">Sessions</h3>
-        
+
         </div>
 
         {/* Session Request Modal */}
@@ -218,14 +218,14 @@ function MentorProfile() {
                       <div className="row g-3">
                         <div className="col-sm-6">
                           <label className="form-label second-color">Selected time:</label>
-                          <div><i className="bi bi-clock me-1"></i> Next { requestTime.day ?  requestTime.day + " , " + requestTime?.time?.time : "No time selected" }</div>
+                          <div><i className="bi bi-clock me-1"></i> Next {requestTime.day ? requestTime.day + " , " + requestTime?.time?.time : "No time selected"}</div>
                         </div>
                         <div className="col-sm-6">
                           <label className="form-label second-color">Price: </label>
                           <span className="frist-color">${mentor?.hour_price}</span>
                         </div>
                       </div>
-                      
+
                       <div className="modal-footer">
                         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="submit" className="btn edit-send" disabled={isSubmitting}>
@@ -308,7 +308,7 @@ function MentorProfile() {
                           className="btn booking w-100"
                           disabled={isRegistered}
                           onClick={() => {
-                            if(!user) {
+                            if (!user) {
                               return navigate("/login")
                             }
                             makePayment(session._id)
@@ -327,95 +327,98 @@ function MentorProfile() {
       </div>
       {/* ============================ Availability =========================== */}
       <div className="container py-3 mb-4 mt-5 ">
-  <h3 className="mx-3 fw-medium  second-color mb-4 mt-2">Availability</h3>
-  <div className="row">
-    {groupByDay().length > 0 ? (
-      groupByDay().map(([day, times], index) => (
-        <div className="col-md-3" key={index}>
-          <div className=" mb-3 p-2">
-            <div className=" session-card availability">
-            <div class="session-header mb-2">
-              <span>{day}</span>
-              <span className="frist-color mx-2">
-                ${mentor?.hour_price} / hour
-              </span>
-            </div>
-              
-              <h5 className="card-title "></h5>
-              <div className="">
-                <div>
-                {Array.isArray(times) && times.length > 0 ? (
-                  times.map((time, timeIndex) => (
-                    <div 
-                    className="d-flex align-items-center p-2 rounded mb-2"
-                    style={{ 
-                      backgroundColor: 
-                        requestTime?.day === day && requestTime?.time?.time === time.time 
-                          ? '#e8f5f3' 
-                          : 'transparent',
-                      border: '1px solid #dee2e6',
-                      transition: 'all 0.2s ease'
-                      
-                    }}
-                    key={timeIndex} 
-                    // onClick={() => handleTimeSelect(day, time)}
-
-                    // className="form-check mb-3" 
-                    onClick={() => setRequestTime({ day, time})}
-                      data-bs-toggle="modal"
-                      data-bs-target="#exampleModa2"
-                    
-                    >
-                      
-                      <input
-                        type="checkbox"
-                        className="form-check-input "
-                        id={`${day}-${timeIndex}`}
-                        name={`${day}`}
-                        value={time}
-                        style={{ cursor: 'pointer' }}
-                        checked={requestTime?.day === day && requestTime?.time?.time === time.time}
-
-                        // onChange={(e) => setRequestTime(time)}
-                      />
-                      <label
-                        className="form-check-label"
-                        htmlFor={`${day}-${timeIndex}`}
-                        style={{ cursor: 'pointer' }}
-                      >
-                        <i className="bi bi-clock me-1"></i> {time.time}
-                      </label>
-
-                      
-                      
-                      
+        <h3 className="mx-3 fw-medium  second-color mb-4 mt-2">Availability</h3>
+        <div className="row">
+          {groupByDay().length > 0 ? (
+            groupByDay().map(([day, times], index) => (
+              <div className="col-md-3" key={index}>
+                <div className=" mb-3 p-2">
+                  <div className=" session-card availability">
+                    <div class="session-header mb-2">
+                      <span>{day}</span>
+                      <span className="frist-color mx-2">
+                        ${mentor?.hour_price} / hour
+                      </span>
                     </div>
-                    
-                    
-                  ))
-                ) : (
-                  <div className="text-muted">No time slots</div>
-                )}
 
-                </div>
-                {/* <button
+                    <h5 className="card-title "></h5>
+                    <div className="">
+                      <div>
+                        {Array.isArray(times) && times.length > 0 ? (
+                          times.map((time, timeIndex) => (
+                            
+                            <div style={{ display: time?.status == "booked" ? "none" : "block"}}>
+
+                              <div
+                                className="d-flex align-items-center p-2 rounded mb-2"
+                                style={{
+                                  backgroundColor:
+                                    requestTime?.day === day && requestTime?.time?.time === time.time
+                                      ? '#e8f5f3'
+                                      : 'transparent',
+                                  border: '1px solid #dee2e6',
+                                  transition: 'all 0.2s ease',
+                                }}
+                                key={timeIndex}
+                                // onClick={() => handleTimeSelect(day, time)}
+
+                                // className="form-check mb-3" 
+                                onClick={() => setRequestTime({ day, time })}
+                                data-bs-toggle="modal"
+                                data-bs-target="#exampleModa2"
+
+                              >
+
+                                <input
+                                  type="checkbox"
+                                  className="form-check-input "
+                                  id={`${day}-${timeIndex}`}
+                                  name={`${day}`}
+                                  value={time}
+                                  style={{ cursor: 'pointer' }}
+                                  checked={requestTime?.day === day && requestTime?.time?.time === time.time}
+
+                                // onChange={(e) => setRequestTime(time)}
+                                />
+                                <label
+                                  className="form-check-label"
+                                  htmlFor={`${day}-${timeIndex}`}
+                                  style={{ cursor: 'pointer' }}
+                                >
+                                  <i className="bi bi-clock me-1"></i> {time.time}
+                                </label>
+
+
+
+
+                              </div>
+                            </div>
+
+
+                          ))
+                        ) : (
+                          <div className="text-muted">No time slots</div>
+                        )}
+
+                      </div>
+                      {/* <button
             className="btn edit-send"
             data-bs-toggle="modal"
             data-bs-target="#exampleModa2"
           >
             Session Request
           </button> */}
-                
+
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            ))
+          ) : (
+            <p className="text-muted mx-3">No availability data found.</p>
+          )}
         </div>
-      ))
-    ) : (
-      <p className="text-muted mx-3">No availability data found.</p>
-    )}
-  </div>
-</div>
+      </div>
 
 
 

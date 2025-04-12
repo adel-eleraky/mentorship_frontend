@@ -32,7 +32,7 @@ function MentorInfo({ mentor }) {
       const isBooked = sessions.some(
         (session) =>
           
-          session.session.mentor == mentor?._id &&
+          session.session?.mentor == mentor?._id &&
           session.user?._id === user._id
       );
       setHasBooked(isBooked);
