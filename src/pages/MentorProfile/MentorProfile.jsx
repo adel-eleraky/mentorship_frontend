@@ -10,22 +10,20 @@ import { getUserSessions } from "../../rtk/features/userSlice";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
-
 function MentorProfile() {
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [skills, setSkills] = useState([]);
   const [skill, setSkill] = useState("");
   const [mentor, setMentor] = useState(null);
   const [loading, setLoading] = useState(true);
   const [sessions, setSessions] = useState([]);
   let { id } = useParams();
-  const { sessions: userSessions } = useSelector(state => state.user)
-  const { user } = useSelector(state => state.auth)
-  const [requestTime, setRequestTime] = useState("")
-  const [title, setTitle] = useState("")
-  const [description, setDescription] = useState("")
-
+  const { sessions: userSessions } = useSelector((state) => state.user);
+  const { user } = useSelector((state) => state.auth);
+  const [requestTime, setRequestTime] = useState("");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
 
   // console.log("request time" , requestTime)
 
@@ -50,7 +48,6 @@ function MentorProfile() {
       // console.log(sessions?.price);
 
       console.log(sessions?.status);
-
 
       setLoading(false);
     } catch (err) {
@@ -98,13 +95,14 @@ function MentorProfile() {
     fetchSessions();
     fetchMentor();
 
-    dispatch(getUserSessions())
-
+    dispatch(getUserSessions());
   }, [id, user]);
 
-
   const groupByDay = () => {
-    if (typeof mentor?.availability !== "object" || Array.isArray(mentor.availability)) {
+    if (
+      typeof mentor?.availability !== "object" ||
+      Array.isArray(mentor.availability)
+    ) {
       return [];
     }
 
@@ -118,31 +116,31 @@ function MentorProfile() {
   // }
   const sessionRequestSchema = Yup.object().shape({
     title: Yup.string()
-  .min(5, "Title must be at least 5 characters")
-  .matches(
-    /^[A-Za-z]{3}[A-Za-z0-9+#-. ]*$/, 
-    "Title must start with at least 3 letters and contain only letters, numbers, spaces, +, #, ."
-  )
-  .matches(
-    /^(?=(?:.*[A-Za-z]){2,})[A-Za-z0-9+#-. ]+$/, 
-    "Title must contain at least 2 letters and only letters, numbers, spaces, +, #, ."
-  )
-  .required("Title is required")
-    ,
+      .min(5, "Title must be at least 5 characters")
+      .matches(
+        /^[A-Za-z]{3}[A-Za-z0-9+#-. ]*$/,
+        "Title must start with at least 3 letters and contain only letters, numbers, spaces, +, #, ."
+      )
+      .matches(
+        /^(?=(?:.*[A-Za-z]){2,})[A-Za-z0-9+#-. ]+$/,
+        "Title must contain at least 2 letters and only letters, numbers, spaces, +, #, ."
+      )
+      .required("Title is required"),
     description: Yup.string()
       .required("Description is required")
       .min(20, "Description must be at least 20 characters long")
       .max(500, "Description must be at most 500 characters")
-      .matches(/^[A-Za-z]{5}/, "Description must start with at least 5 letters"),
+      .matches(
+        /^[A-Za-z]{5}/,
+        "Description must start with at least 5 letters"
+      ),
   });
 
   // Initial form values
   const initialValues = {
     title: "",
-    description: ""
+    description: "",
   };
-
-
 
   const handleRequestSession = async (values, { resetForm }) => {
     const requestData = {
@@ -150,11 +148,14 @@ function MentorProfile() {
       user: user._id,
       title: values.title,
       description: values.description,
-      requested_time: { day: requestTime.day, time: requestTime.time.time }
+      requested_time: { day: requestTime.day, time: requestTime.time.time },
     };
 
     try {
-      let { data } = await axios.post(`http://localhost:3000/api/v1/oneTo1sessions/request`, requestData);
+      let { data } = await axios.post(
+        `http://localhost:3000/api/v1/oneTo1sessions/request`,
+        requestData
+      );
 
       // Close modal after successful submission
       const modalElement = document.getElementById("exampleModa2");
@@ -170,8 +171,6 @@ function MentorProfile() {
     }
   };
 
-
-
   return (
     <>
       <MentorInfo mentor={mentor} skills={skills} />
@@ -180,16 +179,31 @@ function MentorProfile() {
       <div className="container py-3 mb-4 mt-5">
         <div className="d-flex justify-content-between">
           <h3 className="mx-3 second-color">Sessions</h3>
-
         </div>
 
         {/* Session Request Modal */}
-        <div className="modal fade" id="exampleModa2" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div
+          className="modal fade"
+          id="exampleModa2"
+          tabIndex={-1}
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
           <div className="modal-dialog modal-xl">
             <div className="modal-content">
               <div className="modal-header">
-                <h1 className="modal-title fs-5 second-color" id="exampleModalLabel ">Request One Hour Session</h1>
-                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+                <h1
+                  className="modal-title fs-5 second-color"
+                  id="exampleModalLabel "
+                >
+                  Request One Hour Session
+                </h1>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                />
               </div>
               <div className="modal-body container">
                 <Formik
@@ -200,12 +214,19 @@ function MentorProfile() {
                   {({ isSubmitting, errors, touched }) => (
                     <Form className="row g-3 container">
                       <div className="col-md-6">
-                        <label htmlFor="title" className="form-label second-color">Title</label>
+                        <label
+                          htmlFor="title"
+                          className="form-label second-color"
+                        >
+                          Title
+                        </label>
                         <Field
                           type="text"
                           id="title"
                           name="title"
-                          className={`form-control ${errors.title && touched.title ? 'is-invalid' : ''}`}
+                          className={`form-control ${
+                            errors.title && touched.title ? "is-invalid" : ""
+                          }`}
                         />
                         <ErrorMessage
                           name="title"
@@ -215,13 +236,22 @@ function MentorProfile() {
                       </div>
 
                       <div className="mb-3">
-                        <label htmlFor="description" className="form-label second-color">Description</label>
+                        <label
+                          htmlFor="description"
+                          className="form-label second-color"
+                        >
+                          Description
+                        </label>
                         <Field
                           as="textarea"
                           id="description"
                           name="description"
                           rows="6"
-                          className={`form-control ${errors.description && touched.description ? 'is-invalid' : ''}`}
+                          className={`form-control ${
+                            errors.description && touched.description
+                              ? "is-invalid"
+                              : ""
+                          }`}
                         />
                         <ErrorMessage
                           name="description"
@@ -232,19 +262,42 @@ function MentorProfile() {
 
                       <div className="row g-3">
                         <div className="col-sm-6">
-                          <label className="form-label second-color">Selected time:</label>
-                          <div><i className="bi bi-clock me-1"></i> Next {requestTime.day ? requestTime.day + " , " + requestTime?.time?.time : "No time selected"}</div>
+                          <label className="form-label second-color">
+                            Selected time:
+                          </label>
+                          <div>
+                            <i className="bi bi-clock me-1"></i> Next{" "}
+                            {requestTime.day
+                              ? requestTime.day +
+                                " , " +
+                                requestTime?.time?.time
+                              : "No time selected"}
+                          </div>
                         </div>
                         <div className="col-sm-6">
-                          <label className="form-label second-color">Price: </label>
-                          <span className="frist-color">${mentor?.hour_price}</span>
+                          <label className="form-label second-color">
+                            Price:{" "}
+                          </label>
+                          <span className="frist-color">
+                            ${mentor?.hour_price}
+                          </span>
                         </div>
                       </div>
 
                       <div className="modal-footer">
-                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" className="btn edit-send" disabled={isSubmitting}>
-                          {isSubmitting ? 'Submitting...' : 'Submit'}
+                        <button
+                          type="button"
+                          className="btn btn-secondary"
+                          data-bs-dismiss="modal"
+                        >
+                          Close
+                        </button>
+                        <button
+                          type="submit"
+                          className="btn edit-send"
+                          disabled={isSubmitting}
+                        >
+                          {isSubmitting ? "Submitting..." : "Submit"}
                         </button>
                       </div>
                     </Form>
@@ -255,19 +308,26 @@ function MentorProfile() {
           </div>
         </div>
 
-
         {/* Sessions List */}
         <div className="p-4 ">
           <div className="container py-4">
             <div className="row g-3">
               {sessions.map((session, index) => {
                 const isRegistered = userSessions.some(
-                  reg => reg.session?._id === session?._id && reg.user?._id === user?._id
+                  (reg) =>
+                    reg.session?._id === session?._id &&
+                    reg.user?._id === user?._id
                 );
 
                 return (
-                  <div className="col-lg-4 col-md-6 " key={index} style={{ display: session?.status == "completed" ? "none" : "block" }}>
-
+                  <div
+                    className="col-lg-4 col-md-6 "
+                    key={index}
+                    style={{
+                      display:
+                        session?.status == "completed" ? "none" : "block",
+                    }}
+                  >
                     <div class="session-card">
                       <div class="session-main-content">
                         <div class="session-header">
@@ -303,38 +363,47 @@ function MentorProfile() {
                               <i className="bi bi-alarm" />
                               {formatTime(session?.schedule_time)}
                               {/* {extractTime(session?.schedule_time)} */}
-
                             </div>
                           </div>
 
                           <div className="mb-2 mt-1 mx-4">
-                            {session.features && session.features.map((feature, index) => (
-                              <span key={index} className="badges features-badge me-1">
-                                <i className={`bi bi-${feature.icon}`} /> {feature.name}
+                            {session.features &&
+                              session.features.map((feature, index) => (
+                                <span
+                                  key={index}
+                                  className="badges features-badge me-1"
+                                >
+                                  <i className={`bi bi-${feature.icon}`} />{" "}
+                                  {feature.name}
+                                </span>
+                              ))}
+                            {session.has_room ? (
+                              <span className="badges features-badge">
+                                <i className="bi bi-chat-dots" /> Chat Room
                               </span>
-                            ))}
-                            {session.has_room ? <span className="badges features-badge">
-                              <i className="bi bi-chat-dots" />  Chat Room
-                            </span> : <span className="badges features-nbadge">
-                              <i className="bi bi-chat-dots" /> Chat Room
-                            </span>}
+                            ) : (
+                              <span className="badges features-nbadge">
+                                <i className="bi bi-chat-dots" /> Chat Room
+                              </span>
+                            )}
                           </div>
                         </div>
                       </div>
                       <div class="session-footer second-color">
                         {user && user.role != "Mentor" && (
-
                           <button
                             className="btn booking w-100"
                             disabled={isRegistered}
                             onClick={() => {
                               if (!user) {
-                                return navigate("/login")
+                                return navigate("/login");
                               }
-                              makePayment(session._id)
+                              makePayment(session._id);
                             }}
                           >
-                            {isRegistered ? "Already registered" : "Register Now"}
+                            {isRegistered
+                              ? "Already registered"
+                              : "Register Now"}
                           </button>
                         )}
                       </div>
@@ -348,9 +417,10 @@ function MentorProfile() {
       </div>
       {/* ============================ Availability =========================== */}
       {user && user?.role != "Mentor" && (
-
         <div className="container py-3 mb-4 mt-5 ">
-          <h3 className="mx-3 fw-medium  second-color mb-4 mt-2">Availability</h3>
+          <h3 className="mx-3 fw-medium  second-color mb-4 mt-2">
+            Availability
+          </h3>
           <div className="row">
             {groupByDay().length > 0 ? (
               groupByDay().map(([day, times], index) => (
@@ -369,60 +439,59 @@ function MentorProfile() {
                         <div>
                           {Array.isArray(times) && times.length > 0 ? (
                             times.map((time, timeIndex) => (
-
-                              <div style={{ display: time?.status == "booked" ? "none" : "block" }}>
-
+                              <div
+                                style={{
+                                  display:
+                                    time?.status == "booked" ? "none" : "block",
+                                }}
+                              >
                                 <div
                                   className="d-flex align-items-center p-2 rounded mb-2"
                                   style={{
                                     backgroundColor:
-                                      requestTime?.day === day && requestTime?.time?.time === time.time
-                                        ? '#e8f5f3'
-                                        : 'transparent',
-                                    border: '1px solid #dee2e6',
-                                    transition: 'all 0.2s ease',
+                                      requestTime?.day === day &&
+                                      requestTime?.time?.time === time.time
+                                        ? "#e8f5f3"
+                                        : "transparent",
+                                    border: "1px solid #dee2e6",
+                                    transition: "all 0.2s ease",
                                   }}
                                   key={timeIndex}
                                   // onClick={() => handleTimeSelect(day, time)}
 
-                                  // className="form-check mb-3" 
+                                  // className="form-check mb-3"
                                   onClick={() => setRequestTime({ day, time })}
                                   data-bs-toggle="modal"
                                   data-bs-target="#exampleModa2"
-
                                 >
-
                                   <input
                                     type="checkbox"
                                     className="form-check-input "
                                     id={`${day}-${timeIndex}`}
                                     name={`${day}`}
                                     value={time}
-                                    style={{ cursor: 'pointer' }}
-                                    checked={requestTime?.day === day && requestTime?.time?.time === time.time}
+                                    style={{ cursor: "pointer" }}
+                                    checked={
+                                      requestTime?.day === day &&
+                                      requestTime?.time?.time === time.time
+                                    }
 
-                                  // onChange={(e) => setRequestTime(time)}
+                                    // onChange={(e) => setRequestTime(time)}
                                   />
                                   <label
                                     className="form-check-label"
                                     htmlFor={`${day}-${timeIndex}`}
-                                    style={{ cursor: 'pointer' }}
+                                    style={{ cursor: "pointer" }}
                                   >
-                                    <i className="bi bi-clock me-1"></i> {time.time}
+                                    <i className="bi bi-clock me-1"></i>{" "}
+                                    {time.time}
                                   </label>
-
-
-
-
                                 </div>
                               </div>
-
-
                             ))
                           ) : (
                             <div className="text-muted">No time slots</div>
                           )}
-
                         </div>
                         {/* <button
             className="btn edit-send"
@@ -431,7 +500,6 @@ function MentorProfile() {
           >
             Session Request
           </button> */}
-
                       </div>
                     </div>
                   </div>
@@ -444,8 +512,6 @@ function MentorProfile() {
         </div>
       )}
 
-
-
       {/* ============================ Skills =========================== */}
       <div className="container py-3 mb-4 mt-5">
         <h3 className="mx-3 fw-medium second-color">Skills :</h3>
@@ -454,8 +520,6 @@ function MentorProfile() {
             <span key={index} className="list-skills px-3 py-2 inline-block">
               {s}
             </span>
-
-
           ))}
         </div>
       </div>
@@ -465,8 +529,7 @@ function MentorProfile() {
         <ReviewMentor mentor={mentor?._id} />
       </div>
     </>
-  )
+  );
 }
 
-
-export default MentorProfile
+export default MentorProfile;
