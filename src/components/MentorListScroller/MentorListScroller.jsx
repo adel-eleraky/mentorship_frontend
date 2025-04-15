@@ -89,7 +89,7 @@ export default function MentorListScroller() {
                     >
                         {mentors.map((mentor) => (
                             <div key={mentor._id} className="mb-3">
-                                <Link style={{textDecoration: 'none'}} to={'/mentorprofile'}>
+                                <Link style={{textDecoration: 'none'}} to={`/mentorprofile/${mentor._id}`}>
                                     <MentorCard mentor={mentor} />
                                 </Link>
                             </div>

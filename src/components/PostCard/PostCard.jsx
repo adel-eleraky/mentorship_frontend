@@ -17,7 +17,7 @@ export default function PostCard({ post }) {
 
     const postId = post?._id;
     const isUserPost = post?.user?._id === user?._id;
-    const hasLiked = post?.reactions?.likes?.some((like) => like?.user._id === user?._id);
+    const hasLiked = post?.reactions?.likes?.some((like) => like?.user?._id === user?._id);
 
     const toggleComments = () => {
         setShowComments((prev) => !prev);

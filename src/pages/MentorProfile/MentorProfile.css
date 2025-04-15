@@ -169,10 +169,10 @@
     padding-right: 1rem;
     padding-top: .375rem;
     padding-bottom: .375rem;
-    margin-bottom: .5rem;
-    margin-right: .25rem;
+    margin-bottom: 1.5rem;
+    margin-right: 1.25rem;
     cursor: pointer;
-    white-space: nowrap;
+    /* white-space: nowrap; */
     border-radius: 100px;
     background-color: rgb(243 244 246 / 1);
     font-weight: 500;
@@ -180,6 +180,7 @@
     transition-property: all;
     transition-timing-function: cubic-bezier(0.4,0,0.2,1);
     transition-duration: 150ms;
+    display: inline-block;
 
   }
 .skill{
@@ -198,14 +199,19 @@
 
 /* ===========================section===== */
 .session-card {
-  width: 380px;
-  height: 350px;
+  max-width: 100%;
+  width: 23.75rem;
+  /* height: auto; */
+  height: auto;
+  min-height: 21.875rem; /* 350px */
+  max-height: 25.875rem; /* 414px */
   padding: 20px;
   color: black;
   background: linear-gradient(#ffffff, #f8f8f8) padding-box,
               linear-gradient(145deg, transparent 35%,#118577, #172E59) border-box;
   border: 2px solid transparent;
   border-radius: 8px;
+  margin-top: 5px;
   display: flex;
   flex-direction: column;
   cursor: pointer;
@@ -251,7 +257,13 @@
 
 .availability{
   width: 280px;
-  height: 250px;
+  height: 15.625rem;
+  max-width: 100%;
+  width: 23.75rem;
+  /* height: auto; */
+  height: auto;
+  min-height: 15.625rem; /* 350px */
+  max-height: 25.875rem; /* 414px */
 
 }
 

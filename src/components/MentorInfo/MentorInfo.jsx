@@ -9,7 +9,7 @@ const socket = io('http://localhost:3000', {
   withCredentials: true,
 });
 
-function MentorInfo({ mentor }) {
+function MentorInfo({ mentor, skills }) {
 
   const dispatch = useDispatch()
   const [showInput, setShowInput] = useState(false); // State to toggle input visibility
@@ -18,9 +18,10 @@ function MentorInfo({ mentor }) {
   const { sessions } = useSelector((state) => state.user);
   const [hasBooked, setHasBooked] = useState(false);
 
+console.log(skills);
 
   const handleButtonClick = () => {
-    setShowInput(!showInput); // Toggle input visibility
+    setShowInput(!showInput);
   };
 
   useEffect(() => {
@@ -38,6 +39,9 @@ function MentorInfo({ mentor }) {
       setHasBooked(isBooked);
     }
   }, [user, mentor, sessions]);
+  const displayedSkills = skills ? skills.slice(0, 5) : [];
+  // Check if there are more skills than we're displaying
+  const hasMoreSkills = skills ? skills.length > 5 : false;
 
 
   const handleSendMessage = () => {
@@ -115,12 +119,14 @@ function MentorInfo({ mentor }) {
               <div className="skills-section">
                 <h4 className="second-color">Skills</h4>
                 <div className="mt-3">
-                  <span className="mentor-skill-badge list-skills">Machine Learning</span>
-                  <span className="mentor-skill-badge list-skills">Data Science</span>
-                  <span className="mentor-skill-badge list-skills">Product Market Fit</span>
-                  <span className="mentor-skill-badge list-skills">PhD Supervision</span>
-                  <span className="mentor-skill-badge list-skills">Deep Learning</span>
-                  <span className="more-skills">+ more</span>
+                  {displayedSkills.map((skill, index) => (
+                    <span key={index} className="mentor-skill-badge list-skills">
+                      {skill}
+                    </span>
+                  ))}
+                  {hasMoreSkills && (
+                    <span className="more-skills">+ more</span>
+                  )}
                 </div>
               </div>
             </div>

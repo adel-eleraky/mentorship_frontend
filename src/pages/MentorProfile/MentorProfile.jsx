@@ -46,7 +46,11 @@ function MentorProfile() {
         `http://localhost:3000/api/v1/sessions/mentor/${id}`
       );
       setSessions(response.data.data);
-      // console.log(response.data.data);
+      console.log(response.data.data);
+      // console.log(sessions?.price);
+
+      console.log(sessions?.status);
+      
 
       setLoading(false);
     } catch (err) {
@@ -159,7 +163,7 @@ function MentorProfile() {
 
   return (
     <>
-      <MentorInfo mentor={mentor} />
+      <MentorInfo mentor={mentor} skills={skills} />
 
       {/* ============================ Sessions =========================== */}
       <div className="container py-3 mb-4 mt-5">
@@ -251,7 +255,7 @@ function MentorProfile() {
                 );
 
                 return (
-                  <div className="col-md-4" key={index}>
+                  <div className="col-lg-4 col-md-6 " key={index} style={{ display: session?.status == "completed" ? "none" : "block"}}>
 
                     <div class="session-card">
                       <div class="session-main-content">
@@ -262,6 +266,7 @@ function MentorProfile() {
                           </span>
                         </div>
                         <p class="session-heading"> {session?.description}</p>
+                        {/* <p>{session?.status}</p> */}
 
                         <div class="session-categories d-flex jastify-content-between align-items-center">
                           <div className="mb-2">
@@ -285,7 +290,9 @@ function MentorProfile() {
                             <div className="info-label">Time:</div>
                             <div className="icon-text mt-1">
                               <i className="bi bi-alarm" />
-                              {formatTime(session?.duration)}
+                              {formatTime(session?.schedule_time)}
+                              {/* {extractTime(session?.schedule_time)} */}
+
                             </div>
                           </div>
 
@@ -331,7 +338,7 @@ function MentorProfile() {
         <div className="row">
           {groupByDay().length > 0 ? (
             groupByDay().map(([day, times], index) => (
-              <div className="col-md-3" key={index}>
+              <div className="col-md-6 col-lg-3" key={index}>
                 <div className=" mb-3 p-2">
                   <div className=" session-card availability">
                     <div class="session-header mb-2">
@@ -425,18 +432,20 @@ function MentorProfile() {
       {/* ============================ Skills =========================== */}
       <div className="container py-3 mb-4 mt-5">
         <h3 className="mx-3 fw-medium second-color">Skills :</h3>
-        <div className="p-4 rounded">
+        <div className="p-4  rounded">
           {skills.map((s, index) => (
-            <span key={index} className="list-skills">
+                <span key={index} className="list-skills px-3 py-2 inline-block">
               {s}
             </span>
+
+          
           ))}
         </div>
       </div>
 
       {/* ============================ ReviewMentor =========================== */}
       <div>
-        <ReviewMentor mentor={mentor?._id} />
+        <ReviewMentor mentor={mentor?._id}  />
       </div>
     </>
   )
