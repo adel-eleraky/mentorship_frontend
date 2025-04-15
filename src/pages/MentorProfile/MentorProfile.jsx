@@ -50,7 +50,7 @@ function MentorProfile() {
       // console.log(sessions?.price);
 
       console.log(sessions?.status);
-      
+
 
       setLoading(false);
     } catch (err) {
@@ -118,11 +118,22 @@ function MentorProfile() {
   // }
   const sessionRequestSchema = Yup.object().shape({
     title: Yup.string()
-      .required("Title is required")
-      .min(5, "Title must be at least 5 characters"),
+  .min(5, "Title must be at least 5 characters")
+  .matches(
+    /^[A-Za-z]{3}[A-Za-z0-9+#-. ]*$/, 
+    "Title must start with at least 3 letters and contain only letters, numbers, spaces, +, #, ."
+  )
+  .matches(
+    /^(?=(?:.*[A-Za-z]){2,})[A-Za-z0-9+#-. ]+$/, 
+    "Title must contain at least 2 letters and only letters, numbers, spaces, +, #, ."
+  )
+  .required("Title is required")
+    ,
     description: Yup.string()
       .required("Description is required")
-      .min(16, "Description must be at least 16 characters")
+      .min(20, "Description must be at least 20 characters long")
+      .max(500, "Description must be at most 500 characters")
+      .matches(/^[A-Za-z]{5}/, "Description must start with at least 5 letters"),
   });
 
   // Initial form values
@@ -255,7 +266,7 @@ function MentorProfile() {
                 );
 
                 return (
-                  <div className="col-lg-4 col-md-6 " key={index} style={{ display: session?.status == "completed" ? "none" : "block"}}>
+                  <div className="col-lg-4 col-md-6 " key={index} style={{ display: session?.status == "completed" ? "none" : "block" }}>
 
                     <div class="session-card">
                       <div class="session-main-content">
@@ -311,18 +322,21 @@ function MentorProfile() {
                         </div>
                       </div>
                       <div class="session-footer second-color">
-                        <button
-                          className="btn booking w-100"
-                          disabled={isRegistered}
-                          onClick={() => {
-                            if (!user) {
-                              return navigate("/login")
-                            }
-                            makePayment(session._id)
-                          }}
-                        >
-                          {isRegistered ? "Already registered" : "Register Now"}
-                        </button>
+                        {user && user.role != "Mentor" && (
+
+                          <button
+                            className="btn booking w-100"
+                            disabled={isRegistered}
+                            onClick={() => {
+                              if (!user) {
+                                return navigate("/login")
+                              }
+                              makePayment(session._id)
+                            }}
+                          >
+                            {isRegistered ? "Already registered" : "Register Now"}
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -333,82 +347,84 @@ function MentorProfile() {
         </div>
       </div>
       {/* ============================ Availability =========================== */}
-      <div className="container py-3 mb-4 mt-5 ">
-        <h3 className="mx-3 fw-medium  second-color mb-4 mt-2">Availability</h3>
-        <div className="row">
-          {groupByDay().length > 0 ? (
-            groupByDay().map(([day, times], index) => (
-              <div className="col-md-6 col-lg-3" key={index}>
-                <div className=" mb-3 p-2">
-                  <div className=" session-card availability">
-                    <div class="session-header mb-2">
-                      <span>{day}</span>
-                      <span className="frist-color mx-2">
-                        ${mentor?.hour_price} / hour
-                      </span>
-                    </div>
+      {user && user?.role != "Mentor" && (
 
-                    <h5 className="card-title "></h5>
-                    <div className="">
-                      <div>
-                        {Array.isArray(times) && times.length > 0 ? (
-                          times.map((time, timeIndex) => (
-                            
-                            <div style={{ display: time?.status == "booked" ? "none" : "block"}}>
-
-                              <div
-                                className="d-flex align-items-center p-2 rounded mb-2"
-                                style={{
-                                  backgroundColor:
-                                    requestTime?.day === day && requestTime?.time?.time === time.time
-                                      ? '#e8f5f3'
-                                      : 'transparent',
-                                  border: '1px solid #dee2e6',
-                                  transition: 'all 0.2s ease',
-                                }}
-                                key={timeIndex}
-                                // onClick={() => handleTimeSelect(day, time)}
-
-                                // className="form-check mb-3" 
-                                onClick={() => setRequestTime({ day, time })}
-                                data-bs-toggle="modal"
-                                data-bs-target="#exampleModa2"
-
-                              >
-
-                                <input
-                                  type="checkbox"
-                                  className="form-check-input "
-                                  id={`${day}-${timeIndex}`}
-                                  name={`${day}`}
-                                  value={time}
-                                  style={{ cursor: 'pointer' }}
-                                  checked={requestTime?.day === day && requestTime?.time?.time === time.time}
-
-                                // onChange={(e) => setRequestTime(time)}
-                                />
-                                <label
-                                  className="form-check-label"
-                                  htmlFor={`${day}-${timeIndex}`}
-                                  style={{ cursor: 'pointer' }}
-                                >
-                                  <i className="bi bi-clock me-1"></i> {time.time}
-                                </label>
-
-
-
-
-                              </div>
-                            </div>
-
-
-                          ))
-                        ) : (
-                          <div className="text-muted">No time slots</div>
-                        )}
-
+        <div className="container py-3 mb-4 mt-5 ">
+          <h3 className="mx-3 fw-medium  second-color mb-4 mt-2">Availability</h3>
+          <div className="row">
+            {groupByDay().length > 0 ? (
+              groupByDay().map(([day, times], index) => (
+                <div className="col-md-6 col-lg-3" key={index}>
+                  <div className=" mb-3 p-2">
+                    <div className=" session-card availability">
+                      <div class="session-header mb-2">
+                        <span>{day}</span>
+                        <span className="frist-color mx-2">
+                          ${mentor?.hour_price} / hour
+                        </span>
                       </div>
-                      {/* <button
+
+                      <h5 className="card-title "></h5>
+                      <div className="">
+                        <div>
+                          {Array.isArray(times) && times.length > 0 ? (
+                            times.map((time, timeIndex) => (
+
+                              <div style={{ display: time?.status == "booked" ? "none" : "block" }}>
+
+                                <div
+                                  className="d-flex align-items-center p-2 rounded mb-2"
+                                  style={{
+                                    backgroundColor:
+                                      requestTime?.day === day && requestTime?.time?.time === time.time
+                                        ? '#e8f5f3'
+                                        : 'transparent',
+                                    border: '1px solid #dee2e6',
+                                    transition: 'all 0.2s ease',
+                                  }}
+                                  key={timeIndex}
+                                  // onClick={() => handleTimeSelect(day, time)}
+
+                                  // className="form-check mb-3" 
+                                  onClick={() => setRequestTime({ day, time })}
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#exampleModa2"
+
+                                >
+
+                                  <input
+                                    type="checkbox"
+                                    className="form-check-input "
+                                    id={`${day}-${timeIndex}`}
+                                    name={`${day}`}
+                                    value={time}
+                                    style={{ cursor: 'pointer' }}
+                                    checked={requestTime?.day === day && requestTime?.time?.time === time.time}
+
+                                  // onChange={(e) => setRequestTime(time)}
+                                  />
+                                  <label
+                                    className="form-check-label"
+                                    htmlFor={`${day}-${timeIndex}`}
+                                    style={{ cursor: 'pointer' }}
+                                  >
+                                    <i className="bi bi-clock me-1"></i> {time.time}
+                                  </label>
+
+
+
+
+                                </div>
+                              </div>
+
+
+                            ))
+                          ) : (
+                            <div className="text-muted">No time slots</div>
+                          )}
+
+                        </div>
+                        {/* <button
             className="btn edit-send"
             data-bs-toggle="modal"
             data-bs-target="#exampleModa2"
@@ -416,16 +432,17 @@ function MentorProfile() {
             Session Request
           </button> */}
 
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))
-          ) : (
-            <p className="text-muted mx-3">No availability data found.</p>
-          )}
+              ))
+            ) : (
+              <p className="text-muted mx-3">No availability data found.</p>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
 
 
@@ -434,18 +451,18 @@ function MentorProfile() {
         <h3 className="mx-3 fw-medium second-color">Skills :</h3>
         <div className="p-4  rounded">
           {skills.map((s, index) => (
-                <span key={index} className="list-skills px-3 py-2 inline-block">
+            <span key={index} className="list-skills px-3 py-2 inline-block">
               {s}
             </span>
 
-          
+
           ))}
         </div>
       </div>
 
       {/* ============================ ReviewMentor =========================== */}
       <div>
-        <ReviewMentor mentor={mentor?._id}  />
+        <ReviewMentor mentor={mentor?._id} />
       </div>
     </>
   )

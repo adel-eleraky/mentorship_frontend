@@ -24,107 +24,57 @@ const PersonalInfoSection = ({
   const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    // if (image) {
-    // toast.success(`Image updated successfully`, {
-    //   position: "top-center",
-    //   autoClose: 5000,
-    //   hideProgressBar: false,
-    //   closeOnClick: false,
-    //   pauseOnHover: true,
-    //   draggable: true,
-    //   progress: undefined,
-    //   theme: "light",
-    // });
-    // }
 
     dispatch(getLoggedInUser())
   }, [imageLoading]);
 
-  // if (status == "success" && updateMessage) {
-  //   toast.success(`${updateMessage}`, {
-  //     position: "top-center",
-  //     autoClose: 5000,
-  //     hideProgressBar: false,
-  //     closeOnClick: false,
-  //     pauseOnHover: true,
-  //     draggable: true,
-  //     progress: undefined,
-  //     theme: "light",
-  //   });
-  // }
 
-  // useEffect(() => {
-  //   if (status == "success" && updateMessage) {
-  //     toast.success(`${updateMessage}`, {
-  //       position: "top-center",
-  //       autoClose: 5000,
-  //       hideProgressBar: false,
-  //       closeOnClick: false,
-  //       pauseOnHover: true,
-  //       draggable: true,
-  //       progress: undefined,
-  //       theme: "light",
-  //     });
-  //   }
-
-  //   if (status == "fail" && errors) {
-  //     toast.error(`${updateMessage}`, {
-  //       position: "top-center",
-  //       autoClose: 5000,
-  //       hideProgressBar: false,
-  //       closeOnClick: false,
-  //       pauseOnHover: true,
-  //       draggable: true,
-  //       progress: undefined,
-  //       theme: "light",
-  //     });
-  //   }
-  // }, [status, updateMessage])
-  // if (status == "fail" && errors) {
-  //   toast.error(`${updateMessage}`, {
-  //     position: "top-center",
-  //     autoClose: 5000,
-  //     hideProgressBar: false,
-  //     closeOnClick: false,
-  //     pauseOnHover: true,
-  //     draggable: true,
-  //     progress: undefined,
-  //     theme: "light",
-  //   });
-  // }
 
   const validationSchema = Yup.object({
     name: Yup.string()
       .min(3, "Username must be at least 3 characters long")
       .max(30, "Username cannot exceed 30 characters")
       .matches(
-        /^[a-zA-Z0-9_ ]+$/,
-        "Username can only contain letters, numbers, and underscores"
+        /^[a-zA-Z_ ]+[a-zA-Z]$/,
+        "Username can only contain letters, underscores, spaces, and must end with a letter"
       )
       .required("Full Name is required"),
 
     email: Yup.string()
-      .email("Please enter a valid email address (e.g., user@example.com)")
-      .required("Email is required"),
+      .required("Email is required")
+      .matches(
+        /^(?![0-9]+$)[a-zA-Z0-9_.]+@[a-zA-Z]+\.(com|org|net|io|edu)$/i,
+        "Email must have letters, numbers, or dots before @, only letters after @, and end with .com, .org, .net, .io, or .edu"
+      ),
 
     phone: Yup.string()
+      .matches(
+        /^(010|011|012|015)[0-9]{8}$/,
+        "Phone number must start with 010, 011, 012, or 015 and be 11 digits long"
+      )
       .length(11, "Phone number must be 11 characters long")
       .required("Phone number is required"),
 
     title: Yup.string()
       .min(3, "Title must be at least 3 characters long")
       .max(30, "Title cannot exceed 30 characters")
-      .required("Professional Title is required"),
+      .matches(/^[A-Za-z][A-Za-z0-9 ]*$/, "Title must start with a letter and can only contain letters, numbers, and spaces")
+      .required("Professional Title is required")
+    ,
 
     about: Yup.string()
       .min(20, "About must be at least 20 characters long")
-      .max(500, "About cannot exceed 500 characters")
-      .required("About is required"),
+      .max(500, "About must be at most 500 characters")
+      .matches(/^[A-Za-z]{5}/, "About must start with at least 5 letters"),
 
-    skills: Yup.array()
-      .of(Yup.string().trim().required("Skill cannot be empty"))
+      skills: Yup.array()
+      .of(
+        Yup.string()
+          .matches(/^[A-Za-z][A-Za-z0-9+#. ]*$/, "Skills must start with a letter and only contain letters, numbers, spaces, and specific symbols (+, #, .)")
+          .required()
+      )
       .min(1, "At least one skill is required")
-      .required("Skills are required"),
+      .required("Skills are required")
   });
 
   const initialValues = {
@@ -182,7 +132,7 @@ const PersonalInfoSection = ({
     // setImage(res.data.data.image);
   };
 
-  console.log(imageLoading , imageMessage);
+  console.log(imageLoading, imageMessage);
   return (
     <div className="card">
       <div className="card-body">
@@ -195,7 +145,7 @@ const PersonalInfoSection = ({
           style={{ width: "100px" }}
         />
         {!imageLoading && imageMessage && (
-          <div className="alert alert-success mt-3" style={{ width: "fit-content"}}>{imageMessage}</div>
+          <div className="alert alert-success mt-3" style={{ width: "fit-content" }}>{imageMessage}</div>
         )}
 
         <div className="mb-3">
@@ -326,6 +276,11 @@ const PersonalInfoSection = ({
                     }
                   }}
                 />
+                <ErrorMessage
+                  name="skills"
+                  component="div"
+                  className="text-danger"
+                />
                 <div className="mt-2">
                   {values.skills.map((item, index) => (
                     <span key={index} className="badge bg-primary me-2 mb-2">
@@ -401,7 +356,7 @@ const PersonalInfoSection = ({
           )}
         </Formik>
         {!updateLoading && updateMessage && (
-          <div className="alert alert-success mt-3" style={{ width: "fit-content"}}>{updateMessage}</div>
+          <div className="alert alert-success mt-3" style={{ width: "fit-content" }}>{updateMessage}</div>
         )}
       </div>
     </div>
