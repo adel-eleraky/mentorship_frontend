@@ -101,7 +101,7 @@ function UserProfile() {
         {activeSection === "upcoming" && (
           <MeetingsManagement
             scheduledMeetings={scheduledMeetings.filter(
-              (meeting) => new Date(meeting.session.schedule_time) > new Date()
+              (meeting) => new Date(meeting?.session?.schedule_time) > new Date()
             )}
             loading={sessionsLoading}
             error={error}
@@ -114,7 +114,7 @@ function UserProfile() {
         {activeSection === "previous" && (
           <MeetingsManagement
             scheduledMeetings={scheduledMeetings.filter(
-              (meeting) => new Date(meeting.session.schedule_time) < new Date()
+              (meeting) => new Date(meeting?.session?.schedule_time) < new Date()
             )}
             loading={sessionsLoading}
             error={error}
@@ -128,8 +128,8 @@ function UserProfile() {
           <MeetingsManagement
             scheduledMeetings={scheduledMeetings.filter(
               (meeting) =>
-                meeting.session.recordings &&
-                meeting.session.recordings.length > 0
+                meeting?.session?.recordings &&
+                meeting?.session?.recordings.length > 0
             )}
             loading={sessionsLoading}
             error={error}
