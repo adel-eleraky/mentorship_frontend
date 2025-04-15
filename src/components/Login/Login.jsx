@@ -23,8 +23,11 @@ import { loginUser } from "../../rtk/features/authSlice";
 // Validation schema
 const validationSchema = Yup.object().shape({
   email: Yup.string()
-    .email("Invalid email address")
-    .required("Email is required"),
+  .required("Email is required")
+  .matches(
+    /^[a-zA-Z0-9_.]+@[a-zA-Z]+\.(com|org|net|io|edu)$/i,
+    "Email must have letters, numbers, or dots before @, only letters after @, and end with .com, .org, .net, .io, or .edu"
+  ),
   password: Yup.string()
     .required("Password is required")
     .min(8, "At least 8 characters long")
