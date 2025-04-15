@@ -3,9 +3,6 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { toast } from "react-toastify";
-// MUI components
 import {
   TextField,
   Button,
@@ -18,21 +15,16 @@ import {
   Checkbox,
   FormControlLabel,
   CircularProgress,
-  Radio,
-  RadioGroup,
-  FormControl,
-  FormLabel
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-// Redux + Thunks
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../rtk/features/authSlice";
 
+// Validation schema
 const validationSchema = Yup.object().shape({
   email: Yup.string()
     .email("Invalid email address")
     .required("Email is required"),
-
   password: Yup.string()
     .required("Password is required")
     .min(8, "At least 8 characters long")
@@ -41,58 +33,87 @@ const validationSchema = Yup.object().shape({
     .matches(/[A-Z]/, "Must contain at least one uppercase letter")
     .matches(/\d/, "Must contain at least one number")
     .matches(/[@$!%*?&]/, "Must contain at least one special character"),
-
-  // ✅ Require role to be either 'User' or 'Mentor'
   role: Yup.string()
     .required("Please select a role")
-    .oneOf(["User", "Mentor"], "Role must be 'User' or 'Mentor'")
+    .oneOf(["User", "Mentor"], "Role must be 'User' or 'Mentor'"),
 });
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  const [selectedRole, setSelectedRole] = useState("User");
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  // Redux state
   const { user, loading, errors: serverErrors } = useSelector((state) => state.auth);
 
-  // If user is already logged in, redirect them
-  if (user) {
-    if (user.role === "mentor") return navigate("/mentor");
-    if (user.role === "user") return navigate("/user");
-  }
-
-  // React Hook Form setup
   const {
     register,
     handleSubmit,
-    formState: { errors }
+    setValue,
+    formState: { errors },
   } = useForm({
     mode: "onChange",
     resolver: yupResolver(validationSchema),
     defaultValues: {
       email: "",
       password: "",
-      role: ""
-    }
+      role: "User",
+    },
   });
 
-  // Submit handler
-  const onSubmit = (values) => {
-    dispatch(loginUser(values));
+  useEffect(() => {
+    setValue("role", selectedRole);
+  }, [selectedRole, setValue]);
+
+  if (user) {
+    if (user.role === "mentor") return navigate("/mentor");
+    if (user.role === "user") return navigate("/user");
+  }
+
+  const onSubmit = (data) => {
+    dispatch(loginUser(data));
+  };
+
+  const inputStyles = {
+    "& .MuiOutlinedInput-root": {
+      borderRadius: "8px",
+      backgroundColor: "#fff",
+      transition: "0.3s",
+      "& fieldset": {
+        borderColor: "#ccc",
+        transition: "0.3s",
+      },
+      "&:hover fieldset": {
+        borderColor: "#118577",
+      },
+      "&.Mui-focused fieldset": {
+        borderColor: "#172E59",
+        boxShadow: "0 0 0 2px rgba(23, 46, 89, 0.2)",
+      },
+    },
+    "& input": {
+      padding: "12px",
+      fontSize: "16px",
+    },
+  };
+
+  const labelStyle = {
+    color: "#172E59",
+    fontSize: "16px",
+    fontWeight: "bold",
+    marginBottom: "5px",
   };
 
   return (
-    <Container maxWidth=""
-    sx={{
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      minHeight: "100vh", // 
-      background: "linear-gradient(#ffffff 0%, #8DD2D2 40%)",
-
-    }}
-     >
+    <Container
+      maxWidth=""
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        background: "linear-gradient(#ffffff 0%, #8DD2D2 40%)",
+      }}
+    >
       <Box
         sx={{
           mt: 4,
@@ -100,125 +121,75 @@ function Login() {
           p: 4,
           boxShadow: 2,
           borderRadius: 1,
-          bgcolor: "background.paper"
+          bgcolor: "background.paper",
         }}
         maxWidth="sm"
-
       >
-        <Typography variant="h3" align="left" gutterBottom
-           sx={{
-           
-            color: "#172E59",
-            bgcolor: "background.paper",
-          }}
-          
+        {/* <Typography
+          variant="h3"
+          align="left"
+          gutterBottom
+          sx={{ color: "#172E59" }}
         >
           Login :
-        </Typography>
+        </Typography> */}
+
+        {/* Role Selector Tabs */}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-evenly",
+            borderBottom: "2px solid #ccc",
+            mb: 3,
+          }}
+        >
+          {["User", "Mentor"].map((role) => (
+            <Box
+              key={role}
+              onClick={() => {
+                setSelectedRole(role);
+                setValue("role", role);
+              }}
+              sx={{
+                cursor: "pointer",
+                padding: "10px 25px",
+                fontWeight: "bold",
+                borderBottom: selectedRole === role ? "3px solid #118577" : "3px solid transparent",
+                color: selectedRole === role ? "#172E59" : "#aaa",
+                fontSize: "16px",
+                transition: "0.3s",
+              }}
+            >
+              {role === "User" ? "I'm a User" : "I'm a Mentor"}
+            </Box>
+          ))}
+        </Box>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Grid container spacing={2}>
-            {/* Email Field */}
+          <Grid container spacing={3}>
+            {/* Email */}
             <Grid item xs={12}>
+              <Typography sx={labelStyle}>Email Address</Typography>
               <TextField
                 fullWidth
-                label="Email Address"
                 type="email"
                 {...register("email")}
-                error={
-                  Boolean(errors.email) || Boolean(serverErrors?.email)
-                }
-                helperText={
-                  errors.email?.message ?? serverErrors?.email
-                }
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": {
-                      borderColor: "#172E59",
-                      // border:"1px solid #172E59",
-                      boxShadow:"none !important",
-
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "#172E59", 
-                      boxShadow:"none !important",
-
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#172E59",
-                      boxShadow:"none !important",
-                      outline:"none !important",
-
-                      
-                    },
-                  },
-                  "& label": {
-                    color: "#172E59",
-                    fontSize:"16px",
-                    boxShadow:"none !important",
-
-
-                  },
-                  "& label.Mui-focused": {
-                    color: "#172E59",
-                    fontSize:"18px",
-                    fontWeight:"bold",
-                    boxShadow:"none !important",
-
-                  },
-                }}
+                error={Boolean(errors.email) || Boolean(serverErrors?.email)}
+                helperText={errors.email?.message ?? serverErrors?.email}
+                sx={inputStyles}
               />
             </Grid>
 
-            {/* Password Field */}
+            {/* Password */}
             <Grid item xs={12}>
+              <Typography sx={labelStyle}>Password</Typography>
               <TextField
                 fullWidth
-                label="Password"
                 type={showPassword ? "text" : "password"}
                 {...register("password")}
-                error={
-                  Boolean(errors.password) || Boolean(serverErrors?.password)
-                }
-                helperText={
-                  errors.password?.message ?? serverErrors?.password
-                }
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": {
-                      borderColor: "#172E59",
-                      // border:"1px solid #172E59",
-                      boxShadow:"none !important",
-
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "#172E59", 
-                      boxShadow:"none !important",
-
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#172E59",
-                      boxShadow:"none !important",
-                      outline:"none !important",
-
-                      
-                    },
-                  },
-                  "& label": {
-                    color: "#172E59",
-                    fontSize:"16px",
-                    boxShadow:"none !important",
-
-
-                  },
-                  "& label.Mui-focused": {
-                    color: "#172E59",
-                    fontSize:"18px",
-                    fontWeight:"bold",
-                    boxShadow:"none !important",
-
-                  },
-                }}
+                error={Boolean(errors.password) || Boolean(serverErrors?.password)}
+                helperText={errors.password?.message ?? serverErrors?.password}
+                sx={inputStyles}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
@@ -229,39 +200,21 @@ function Login() {
                         {showPassword ? <VisibilityOff /> : <Visibility />}
                       </IconButton>
                     </InputAdornment>
-                  )
+                  ),
                 }}
               />
             </Grid>
 
-            {/* Role (User or Mentor) - Required */}
-            <Grid item xs={12}>
-              <FormControl component="fieldset">
-                <FormLabel component="legend">Login as</FormLabel>
-                <RadioGroup row>
-                  <FormControlLabel
-                    control={<Radio {...register("role")} value="User" />}
-                    label="User"
-                  />
-                  <FormControlLabel
-                    control={<Radio {...register("role")} value="Mentor" />}
-                    label="Mentor"
-                  />
-                </RadioGroup>
-              </FormControl>
-              {/* Show Yup error if no role selected */}
-              {errors.role && (
+            {/* Hidden Role Field (synced with role toggle) */}
+            <input type="hidden" {...register("role")} value={selectedRole} />
+
+            {errors.role && (
+              <Grid item xs={12}>
                 <Typography color="error" variant="body2">
                   {errors.role.message}
                 </Typography>
-              )}
-              {/* Potential server error about role (less common) */}
-              {serverErrors?.role && (
-                <Typography color="error" variant="body2">
-                  {serverErrors.role}
-                </Typography>
-              )}
-            </Grid>
+              </Grid>
+            )}
 
             {/* Remember Me */}
             <Grid item xs={12}>
@@ -271,7 +224,7 @@ function Login() {
               />
             </Grid>
 
-            {/* OPTIONAL: A top-level server error (e.g., "Please confirm your email") */}
+            {/* Top-Level Server Error */}
             {serverErrors?.message && (
               <Grid item xs={12}>
                 <Typography color="error" align="center">
@@ -280,6 +233,7 @@ function Login() {
               </Grid>
             )}
 
+            {/* Forgot Password */}
             <Grid item xs={12}>
               <Typography align="center" variant="body2">
                 <Button
@@ -298,18 +252,16 @@ function Login() {
                 type="submit"
                 fullWidth
                 variant="contained"
-                color="success"
                 disabled={loading}
                 sx={{
-                  fontSize: '16px',
-                  padding: '10px',
-                  borderRadius: '3px',
+                  fontSize: "16px",
+                  padding: "10px",
+                  borderRadius: "3px",
                   boxShadow: 3,
-                  transition: '0.3s',
-                  textTransform: 'none',
-                  backgroundColor: '#172E59',
-                  '&:hover': {
-                    backgroundColor: '#172E59',
+                  textTransform: "none",
+                  backgroundColor: "#172E59",
+                  "&:hover": {
+                    backgroundColor: "#172E59",
                     boxShadow: 6,
                   },
                 }}
@@ -318,7 +270,7 @@ function Login() {
               </Button>
             </Grid>
 
-            {/* Don't have an account? Sign Up */}
+            {/* Register Link */}
             <Grid item xs={12}>
               <Typography align="center" variant="body2">
                 Don't have an account?{" "}

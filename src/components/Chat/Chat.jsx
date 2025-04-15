@@ -197,6 +197,7 @@ function Chat() {
                     .filter(msg => msg.sender._id !== user._id ? msg.sender : msg.receiver) // pick the correct contact
                     .map(msg => {
                       const contact = msg.sender._id === user._id ? msg.receiver : msg.sender;
+                      console.log("role" ,msg.sender_role)
                       return [contact._id, contact]; // use _id as key for uniqueness
                     })
                 ).values()].map(contact => (
@@ -206,6 +207,7 @@ function Chat() {
                     onClick={() => setSelectedContact(contact)}
                   >
                     <span className="room-name">{contact.name}</span>
+                    {/* <span> role: {contact.sender_role} </span> */}
                   </button>
                 ))
               ) : (
@@ -330,7 +332,7 @@ function Chat() {
                       {privateMessages.map((msg, index) => (
                         <div
                           key={index}
-                          className={`d-flex mb-3 ${msg.sender_role === "Mentor" ? 'flex-row-reverse' : 'flex-row'}`}
+                          className={`d-flex mb-3 ${msg.sender_role === "Mentor" || msg.sender_role == "Admin" ? 'flex-row-reverse' : 'flex-row'}`}
                         >
                           <img
                             src={msg.sender.image
@@ -346,14 +348,14 @@ function Chat() {
                               height: "50px",
                               objectFit: 'cover',
                               borderRadius: '50%',
-                              marginLeft: msg.sender_role === "Mentor" ? '10px' : '0',
+                              marginLeft: msg.sender_role === "Mentor" || msg.sender_role === "Admin" ? '10px' : '0',
                               marginRight: msg.sender_role !== "Mentor" ? '10px' : '0'
                             }}
                             className='img-fluid sender_img'
                             alt={`${msg.sender.name}'s avatar`}
                           />
                           <div
-                            className={`message ${msg.sender_role === "Mentor" ? 'outgoing' : 'incoming'}`}
+                            className={`message ${msg.sender_role === "Mentor" || msg.sender_role === "Admin" ? 'outgoing' : 'incoming'}`}
                           >
                             <div className="message-header d-flex justify-content-between gap-5">
                               <strong>{msg.sender.name}</strong>

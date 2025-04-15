@@ -14,7 +14,7 @@ function CommunityUserProfile() {
 
   const { id, role } = useParams()
   const dispatch = useDispatch()
-  const { userPosts , loading , userProfile} = useSelector(state => state.post)
+  const { userPosts , loading , userProfile, updateLoading} = useSelector(state => state.post)
   const { user: authUser } = useSelector(state => state.auth)
   const { user } = useSelector(state => state.user)
   const { mentor } = useSelector(state => state.mentor)
@@ -49,7 +49,7 @@ function CommunityUserProfile() {
     // fetchUserPosts().then((data) => {
     //   setPosts(data.data)
     // })
-  }, [id ,role , loading])
+  }, [id ,role , loading, updateLoading])
 
   return (
     <>
