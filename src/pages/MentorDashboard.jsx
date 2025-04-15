@@ -261,6 +261,7 @@ export default function MentorDashboard() {
           <ScheduleSection
             onStartInstantMeeting={handleStartInstantMeeting}
             onShowScheduleModal={handleShowScheduleModal}
+            setActiveSection={setActiveSection}
           />
         )}
 
@@ -268,7 +269,9 @@ export default function MentorDashboard() {
         {activeSection === "changePassword" && (
           <ChangePassword person="mentors" />
         )}
-        {activeSection === "settings" && <SettingsSection />}
+        {activeSection === "settings" && (
+          <SettingsSection setActiveSection={setActiveSection} />
+        )}
         <ScheduleModal
           show={showScheduleModal}
           mentorId={mentor?._id}

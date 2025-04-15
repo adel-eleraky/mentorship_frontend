@@ -56,28 +56,37 @@ export const getMentorSessions = createAsyncThunk(
   }
 );
 
-
-export const getMentor = createAsyncThunk("mentor/getMentor", async (id, { rejectWithValue }) => {
-  try {
-    const { data } = await axios.get(`http://localhost:3000/api/v1/mentors/${id}`, { withCredentials: true });
-    return data
-  } catch (error) {
-    return rejectWithValue(error?.response?.data)
+export const getMentor = createAsyncThunk(
+  "mentor/getMentor",
+  async (id, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.get(
+        `http://localhost:3000/api/v1/mentors/${id}`,
+        { withCredentials: true }
+      );
+      return data;
+    } catch (error) {
+      return rejectWithValue(error?.response?.data);
+    }
   }
+);
 
-})
-
-
-
-export const setMentorAvailability = createAsyncThunk("mentor/Availability ", async (availability, { rejectWithValue }) => {
-  try {
-    const { data } = await axios.post(`http://localhost:3000/api/v1/mentors/availability `, {availability} ,  { withCredentials: true });
-    return data
-  } catch (error) {
-    return rejectWithValue(error?.response?.data)
+export const setMentorAvailability = createAsyncThunk(
+  "mentor/Availability ",
+  async (availability, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.post(
+        `http://localhost:3000/api/v1/mentors/availability `,
+        { availability },
+        { withCredentials: true }
+      );
+      console.log(data);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error?.response?.data);
+    }
   }
-
-})
+);
 
 const initialState = {
   loading: false,
@@ -87,7 +96,7 @@ const initialState = {
   mentors: [],
   sessions: [],
   errors: null,
-  Availability: {}
+  Availability: {},
 };
 
 const mentorSlice = createSlice({
@@ -150,11 +159,11 @@ const mentorSlice = createSlice({
         state.errors = action.payload;
       })
       .addCase(getMentor.fulfilled, (state, action) => {
-        state.mentor = action.payload.data
+        state.mentor = action.payload.data;
       })
       .addCase(setMentorAvailability.fulfilled, (state, action) => {
-        console.log("set availabil" , action.payload.data)
-        state.Availability = action.payload.data.availability
+        console.log("set availabil", action.payload.data);
+        state.Availability = action.payload.data.availability;
       });
   },
 });
