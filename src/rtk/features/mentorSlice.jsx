@@ -71,25 +71,29 @@ export const getMentor = createAsyncThunk(
   }
 );
 
-export const uploadImage = createAsyncThunk("mentor/uploadImage", async (values, { rejectWithValue }) => {
-  try {
-    const formData = new FormData();
-    formData.append("image", values.image);
+export const uploadImage = createAsyncThunk(
+  "mentor/uploadImage",
+  async (values, { rejectWithValue }) => {
+    try {
+      const formData = new FormData();
+      formData.append("image", values.image);
 
-    const { data } = await axios.put(`http://localhost:3000/api/v1/mentors/upload`, formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        withCredentials: true,
-      });
-    return data
-  } catch (error) {
-    return rejectWithValue(error?.response?.data)
+      const { data } = await axios.put(
+        `http://localhost:3000/api/v1/mentors/upload`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          withCredentials: true,
+        }
+      );
+      return data;
+    } catch (error) {
+      return rejectWithValue(error?.response?.data);
+    }
   }
-
-})
-
+);
 
 export const setMentorAvailability = createAsyncThunk(
   "mentor/Availability ",
@@ -118,8 +122,7 @@ const initialState = {
   errors: null,
   Availability: {},
   imageLoading: false,
-  imageMessage: ""
-,
+  imageMessage: "",
 };
 
 const mentorSlice = createSlice({
@@ -185,15 +188,19 @@ const mentorSlice = createSlice({
         state.mentor = action.payload.data;
       })
       .addCase(setMentorAvailability.fulfilled, (state, action) => {
-        state.Availability = action.payload.data.availability
+        state.Availability = action.payload.data.availability;
       })
       .addCase(uploadImage.pending, (state, action) => {
-        state.imageLoading = true
+        state.imageLoading = true;
+      })
+      .addCase(uploadImage.rejected, (state, action) => {
+        state.imageLoading = false;
+        state.imageMessage = action.payload;
       })
       .addCase(uploadImage.fulfilled, (state, action) => {
-        state.imageLoading = false
-        state.mentor = action.payload.data
-        state.imageMessage = action.payload.message
+        state.imageLoading = false;
+        state.mentor = action.payload.data;
+        state.imageMessage = action.payload.message;
       });
   },
 });

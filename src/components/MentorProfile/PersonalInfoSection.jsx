@@ -2,16 +2,23 @@ import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useDispatch, useSelector } from "react-redux";
-import { updateMentorProfile, uploadImage } from "../../rtk/features/mentorSlice";
+import {
+  updateMentorProfile,
+  uploadImage,
+} from "../../rtk/features/mentorSlice";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getLoggedInUser } from "../../rtk/features/authSlice";
 
 const PersonalInfoSection = ({ mentorData, message }) => {
   const dispatch = useDispatch();
-  const { loading, imageLoading, imageMessage } = useSelector((state) => state.mentor);
+  const { loading, imageLoading, imageMessage } = useSelector(
+    (state) => state.mentor
+  );
+
   const [activeTab, setActiveTab] = useState("basic");
   console.log(mentorData);
+  console.log(imageMessage);
 
   const validationSchema = Yup.object({
     name: Yup.string()
@@ -67,15 +74,8 @@ const PersonalInfoSection = ({ mentorData, message }) => {
   };
 
   const submitHandler = (values) => {
-    dispatch(updateMentorProfile(values))
-      .then(() => {
-        toast.success("Profile updated successfully!");
-      })
-      .catch((error) => {
-        toast.error("Failed to update profile. Please try again.");
-      });
+    dispatch(updateMentorProfile(values));
   };
-
 
   const ImageUploadSchema = Yup.object().shape({
     image: Yup.mixed()
@@ -93,18 +93,19 @@ const PersonalInfoSection = ({ mentorData, message }) => {
       ),
   });
 
+  // Update the handleImageUpload function to avoid duplicate toast calls
   const handleImageUpload = async (values) => {
-    console.log("image", values)
-    dispatch(uploadImage(values))
-
+    console.log("image", values);
+    dispatch(uploadImage(values));
   };
 
   useEffect(() => {
-    dispatch(getLoggedInUser())
-  } , [imageLoading])
+    dispatch(getLoggedInUser());
+  }, [imageLoading, loading]);
 
   return (
     <div className="personal-info-container">
+      <ToastContainer position="bottom-right" autoClose={3000} />
       <div
         className="profile-header mb-4 p-3 bg-gradient rounded-1 "
         style={{
@@ -127,10 +128,7 @@ const PersonalInfoSection = ({ mentorData, message }) => {
               style={{ overflow: "hidden", width: "120px", height: "120px" }}
             >
               <img
-                src={
-                  // mentorData.profileImage || "https://via.placeholder.com/150"
-                  `http://localhost:3000/img/users/${mentorData?.image}`
-                }
+                src={`http://localhost:3000/img/users/${mentorData?.image}`}
                 alt="Profile"
                 className="rounded-circle profile-image shadow-lg"
                 style={{
@@ -152,22 +150,31 @@ const PersonalInfoSection = ({ mentorData, message }) => {
               >
                 {({ setFieldValue, values, errors, touched }) => (
                   <Form encType="multipart/form-data">
-                    <span
-                      className="position-absolute mt-2 border border-white shadow d-flex align-items-center justify-content-center"
+                    <div
+                      className="position-absolute d-flex align-items-center justify-content-center"
                       style={{
                         bottom: 0,
                         left: 0,
-                        width: "100%",
-                        backgroundColor: "#118577",
-                        maxHeight: "40px",
-                        overflow: "hidden",
+                        right: 0,
+                        backgroundColor: "rgba(17, 133, 119, 0.8)",
+                        height: "40px",
                         cursor: "pointer",
+                        transition: "all 0.3s ease",
                       }}
                       onClick={() =>
                         document.getElementById("profile-image-upload").click()
                       }
+                      onMouseOver={(e) =>
+                        (e.currentTarget.style.backgroundColor =
+                          "rgba(17, 133, 119, 0.9)")
+                      }
+                      onMouseOut={(e) =>
+                        (e.currentTarget.style.backgroundColor =
+                          "rgba(17, 133, 119, 0.8)")
+                      }
                     >
-                      <i className="bi bi-pencil-fill text-white"></i>
+                      <i className="bi bi-camera-fill text-white me-2"></i>
+                      <span className="text-white small">Change Photo</span>
                       <input
                         type="file"
                         id="profile-image-upload"
@@ -177,23 +184,91 @@ const PersonalInfoSection = ({ mentorData, message }) => {
                           const file = event.currentTarget.files[0];
                           if (file) {
                             setFieldValue("image", file);
+                            // Show preview
+                            const reader = new FileReader();
+                            reader.onload = (e) => {
+                              document.querySelector(".profile-image").src =
+                                e.target.result;
+                            };
+                            reader.readAsDataURL(file);
+
+                            // Auto-submit instead of showing the button
+                            setTimeout(() => {
+                              document
+                                .getElementById("upload-image-btn")
+                                .click();
+                            }, 500);
                           }
                         }}
                       />
-                    </span>
+                    </div>
+
+                    {/* Hidden submit button */}
+                    <button
+                      id="upload-image-btn"
+                      type="submit"
+                      style={{ display: "none" }}
+                    >
+                      Upload
+                    </button>
+
+                    {/* Loading indicator */}
+                    {imageLoading && (
+                      <div
+                        className="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+                        style={{ backgroundColor: "rgba(255,255,255,0.7)" }}
+                      >
+                        <div
+                          className="spinner-border"
+                          style={{ color: "#118577" }}
+                          role="status"
+                        >
+                          <span className="visually-hidden">Loading...</span>
+                        </div>
+                      </div>
+                    )}
 
                     {/* Submit Button - only visible if image is selected */}
                     {values.image && (
-                      <div className="mt-3 text-center">
-                        <button type="submit" className="btn btn-success">
-                          Upload Image
+                      <div
+                        className="position-absolute"
+                        style={{ bottom: "-50px", left: 0, right: 0 }}
+                      >
+                        <button
+                          type="submit"
+                          className="btn btn-sm btn-success shadow-sm"
+                          style={{ backgroundColor: "#118577" }}
+                        >
+                          {imageLoading ? (
+                            <>
+                              <span
+                                className="spinner-border spinner-border-sm me-1"
+                                role="status"
+                                aria-hidden="true"
+                              ></span>
+                              Uploading...
+                            </>
+                          ) : (
+                            <>
+                              <i className="bi bi-cloud-arrow-up-fill me-1"></i>
+                              Upload
+                            </>
+                          )}
                         </button>
+                      </div>
+                    )}
+
+                    {errors.image && touched.image && (
+                      <div
+                        className="position-absolute text-center"
+                        style={{ top: "-30px", left: 0, right: 0 }}
+                      >
+                        <div className="badge bg-danger">{errors.image}</div>
                       </div>
                     )}
                   </Form>
                 )}
               </Formik>
-
             </div>
           </div>
         </div>
@@ -204,10 +279,11 @@ const PersonalInfoSection = ({ mentorData, message }) => {
           <ul className="nav nav-pills nav-fill p-2">
             <li className="nav-item mx-1">
               <button
-                className={`nav-link px-1 py-2 ${activeTab === "basic"
+                className={`nav-link px-1 py-2 ${
+                  activeTab === "basic"
                     ? "active bg-second-color text-white"
                     : " text-black border border-secondary"
-                  }`}
+                }`}
                 style={{
                   backgroundColor:
                     activeTab === "basic" ? "#118577" : "#f8f9fa",
@@ -231,10 +307,11 @@ const PersonalInfoSection = ({ mentorData, message }) => {
             </li>
             <li className="nav-item mx-1">
               <button
-                className={`nav-link px-1 py-2 ${activeTab === "skills"
+                className={`nav-link px-1 py-2 ${
+                  activeTab === "skills"
                     ? "active  text-white"
                     : "text-dark border border-secondary"
-                  }`}
+                }`}
                 style={{
                   backgroundColor:
                     activeTab === "skills" ? "#118577" : "#f8f9fa",
@@ -258,10 +335,11 @@ const PersonalInfoSection = ({ mentorData, message }) => {
             </li>
             <li className="nav-item mx-1">
               <button
-                className={`nav-link px-1 py-2 ${activeTab === "contact"
+                className={`nav-link px-1 py-2 ${
+                  activeTab === "contact"
                     ? "active  text-white"
                     : "text-dark border border-secondary"
-                  }`}
+                }`}
                 style={{
                   backgroundColor:
                     activeTab === "contact" ? "#118577" : "#f8f9fa",
@@ -287,7 +365,7 @@ const PersonalInfoSection = ({ mentorData, message }) => {
         </div>
 
         <div className="card-body p-4">
-          <ToastContainer position="bottom-right" autoClose={3000} />
+          {/* Remove the ToastContainer from here */}
 
           <Formik
             initialValues={initialValues}
