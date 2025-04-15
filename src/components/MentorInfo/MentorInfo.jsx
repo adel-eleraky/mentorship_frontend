@@ -39,9 +39,9 @@ console.log(skills);
       setHasBooked(isBooked);
     }
   }, [user, mentor, sessions]);
-  const displayedSkills = skills ? skills.slice(0, 5) : [];
+  const displayedSkills = skills ? skills.slice(0, 4) : [];
   // Check if there are more skills than we're displaying
-  const hasMoreSkills = skills ? skills.length > 5 : false;
+  const hasMoreSkills = skills ? skills.length > 4 : false;
 
 
   const handleSendMessage = () => {

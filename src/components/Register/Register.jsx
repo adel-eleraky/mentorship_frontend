@@ -23,8 +23,15 @@ import { registerUser } from "../../rtk/features/authSlice";
 
 // Validation schema
 const validationSchema = Yup.object().shape({
-  name: Yup.string().min(3).max(30).required("Name is required"),
-  email: Yup.string().email().required("Email is required"),
+  name: Yup.string()
+  .required("Name is required")
+  .min(3, "Name must be at least 3 characters")
+  .max(30, "Name must be at most 30 characters")
+  .matches(/^[A-Za-z]{3}/, "Name must start with at least 3 letters"),
+  email: Yup.string().email().required("Email is required").matches(
+    /^[a-zA-Z0-9_.]+@[a-zA-Z]+.(com|org|net|io|edu)$/i,
+    "Email must be a valid format"
+  ),
   password: Yup.string()
     .required("Password is required")
     .min(8).max(29)
@@ -34,7 +41,7 @@ const validationSchema = Yup.object().shape({
     .oneOf([Yup.ref("password"), null], "Passwords must match")
     .required("Confirm password is required"),
   phone: Yup.string()
-    .matches(/^01[0-9]{9}$/, "Phone must be a valid Egyptian number")
+    .matches(/^01[0125][0-9]{8}$/, "Phone must be a valid Egyptian number")
     .required("Phone number is required"),
   role: Yup.string().required("Role is required").oneOf(["User", "Mentor"]),
 });
