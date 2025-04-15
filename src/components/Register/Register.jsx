@@ -2,9 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
-// MUI components
 import {
   TextField,
   Button,
@@ -16,76 +14,46 @@ import {
   IconButton,
   Checkbox,
   FormControlLabel,
-  CircularProgress,
-  Radio,
-  RadioGroup
+  CircularProgress
 } from "@mui/material";
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
-
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { useAuthentication } from "../../Context/AuthContext";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "../../rtk/features/authSlice";
 
-// Validation schema with Yup
+// Validation schema
 const validationSchema = Yup.object().shape({
-  name: Yup.string()
-    .min(3, "Name should be at least 3 characters long")
-    .max(30, "Name should be at most 30 characters long")
-    .required("Name is required"),
-  email: Yup.string()
-    .email("Invalid email address")
-    .required("Email is required"),
-
+  name: Yup.string().min(3).max(30).required("Name is required"),
+  email: Yup.string().email().required("Email is required"),
   password: Yup.string()
     .required("Password is required")
-    .min(8, "Password should be at least 8 characters long")
-    .max(29, "Password should be at most 29 characters long")
-    .matches(/[a-z]/, "Password must contain at least one lowercase letter")
-    .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .matches(/\d/, "Password must contain at least one number")
-    .matches(/[@$!%*?&]/, "Password must contain at least one special character"),
-
+    .min(8).max(29)
+    .matches(/[a-z]/).matches(/[A-Z]/)
+    .matches(/\d/).matches(/[@$!%*?&]/),
   confirmedPassword: Yup.string()
     .oneOf([Yup.ref("password"), null], "Passwords must match")
-    .min(8, "Password should be at least 8 characters long")
-    .max(29, "Password should be at most 29 characters long")
-    .matches(/[a-z]/, "Password must contain at least one lowercase letter")
-    .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .matches(/\d/, "Password must contain at least one number")
-    .matches(/[@$!%*?&]/, "Password must contain at least one special character")
     .required("Confirm password is required"),
   phone: Yup.string()
-    .matches(/^01[0-9]{9}$/, "Phone number must be a valid Egyptian number (01xxxxxxxxx)")
-    .required("Phone number is required"),
-
-  role: Yup.string()
-      .required("Please select a role")
-      .oneOf(["User", "Mentor"], "Role must be 'User' or 'Mentor'")
+    .matches(/^01[0-9]{9}$/, "Phone must be a valid Egyptian number")
+    .required("Phone number is required"),
+  role: Yup.string().required("Role is required").oneOf(["User", "Mentor"]),
 });
 
 export default function Register() {
-  // State for managing visibility of password
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const { loading, user, errors: serverErrors, registerStatus } = useSelector(state => state.auth)
-  const dispatch = useDispatch()
+  const [selectedRole, setSelectedRole] = useState("User");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { loading, errors: serverErrors, registerStatus } = useSelector(state => state.auth);
 
-  // if(registerStatus== "success") {
-  //   return navigate("/verify")
-  // }
-
-
-  // Getting authentication functions and loading state from context
-  // const { register: registerUser, authError, isLoading, setAuthError, setIsLoading } = useAuthentication();
-
-  // Using react-hook-form for form validation and handling
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm({
-    mode: "onChange", // Validate on each change so errors show while typing
+    mode: "onChange",
     resolver: yupResolver(validationSchema),
     defaultValues: {
       name: "",
@@ -93,56 +61,57 @@ export default function Register() {
       password: "",
       confirmedPassword: "",
       phone: "",
-      role: ""
+      role: "User"
     },
   });
 
-
-  const navigate = useNavigate(); // Use navigate from react-router-dom
-
-  // Registration function called on form submit
-  // const registerUserData = async (userData) => {
-  //   setIsLoading(true);
-  //   setAuthError(null);
-  //   try {
-  //     const response = await axios.post("http://localhost:3000/api/v1/auth/register", userData);
-  //     if (response.status === 200) {
-  //       console.log("Registration successful:", response.data);
-  //       navigate("/login");
-  //     } else {
-  //       setAuthError(`Unexpected response: ${response.status}`);
-  //       console.log("Unexpected response:", response);
-  //     }
-  //   } catch (error) {
-  //     console.error("Registration error:", error);
-  //     setAuthError(error.response?.data?.message || "Registration failed"); // Access the 'message' property
-
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
-  // Called when the user submits the form
   const onSubmit = async (data) => {
+    const payload = { ...data, role: selectedRole };
+    dispatch(registerUser(payload));
+  };
 
-    dispatch(registerUser(data))
+  const inputStyles = {
+    "& .MuiOutlinedInput-root": {
+      borderRadius: "8px",
+      backgroundColor: "#fff",
+      transition: "0.3s",
+      "& fieldset": {
+        borderColor: "#ccc",
+        transition: "0.3s",
+      },
+      "&:hover fieldset": {
+        borderColor: "#118577",
+      },
+      "&.Mui-focused fieldset": {
+        borderColor: "#172E59",
+        boxShadow: "0 0 0 2px rgba(23, 46, 89, 0.2)",
+      },
+    },
+    "& input": {
+      padding: "12px",
+      fontSize: "16px",
+    },
+  };
 
-    // await registerUserData(data);
+  const labelStyle = {
+    color: "#172E59",
+    fontSize: "16px",
+    fontWeight: "bold",
+    marginBottom: "5px",
   };
 
   return (
-    <Container maxWidth=""
-    sx={{
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      minHeight: "100vh", // 
-      background: "linear-gradient(#ffffff 0%, #8DD2D2 40%)",
-
-    }}>
-
-      {registerStatus != "success" ?
-
+    <Container
+      maxWidth=""
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        background: "linear-gradient(#ffffff 0%, #8DD2D2 40%)",
+      }}
+    >
+      {registerStatus !== "success" ? (
         <Box
           sx={{
             mt: 1,
@@ -151,212 +120,90 @@ export default function Register() {
             boxShadow: 2,
             borderRadius: 1,
             bgcolor: "background.paper",
-       
-            
           }}
-           maxWidth="sm"
-    
+          maxWidth="sm"
         >
-          <Typography variant="h3" align="left" 
-          gutterBottom
-          sx={{
-           
-            color: "#172E59",
-            bgcolor: "background.paper",
-          }}
-          >
-            Register :
-          </Typography>
-
           <form onSubmit={handleSubmit(onSubmit)}>
-            <Grid container spacing={2}>
-              {/* Full Name */}
+            {/* Role Toggle Tabs */}
+            <Grid item xs={12}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-evenly",
+                  borderBottom: "2px solid #ccc",
+                  mb: 2,
+                }}
+              >
+                {["User", "Mentor"].map((role) => (
+                  <Box
+                    key={role}
+                    onClick={() => {
+                      setSelectedRole(role);
+                      setValue("role", role);
+                    }}
+                    sx={{
+                      cursor: "pointer",
+                      padding: "10px 25px",
+                      fontWeight: "bold",
+                      borderBottom: selectedRole === role ? "3px solid #118577" : "3px solid transparent",
+                      color: selectedRole === role ? "#172E59" : "#aaa",
+                      fontSize: "16px",
+                      transition: "0.3s",
+                    }}
+                  >
+                    {role === "User" ? "I'm a User" : "I'm a Mentor"}
+                  </Box>
+                ))}
+              </Box>
+            </Grid>
+
+            <Grid container spacing={3}>
+              {/* Name */}
               <Grid item xs={12}>
+                <Typography sx={labelStyle}>Full Name</Typography>
                 <TextField
                   fullWidth
-                  label="Full Name"
                   {...register("name")}
                   error={Boolean(errors.name)}
                   helperText={errors.name?.message}
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": {
-                        borderColor: "#172E59",
-                        // border:"1px solid #172E59",
-                        boxShadow:"none !important",
-
-                      },
-                      "&:hover fieldset": {
-                        borderColor: "#172E59", 
-                        boxShadow:"none !important",
-
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "#172E59",
-                        boxShadow:"none !important",
-                        outline:"none !important",
-
-                        
-                      },
-                    },
-                    "& label": {
-                      color: "#172E59",
-                      fontSize:"16px",
-                      boxShadow:"none !important",
-
-
-                    },
-                    "& label.Mui-focused": {
-                      color: "#172E59",
-                      fontSize:"18px",
-                      fontWeight:"bold",
-                      boxShadow:"none !important",
-
-                    },
-                  }}
+                  sx={inputStyles}
                 />
               </Grid>
 
               {/* Email */}
               <Grid item xs={12}>
+                <Typography sx={labelStyle}>Email Address</Typography>
                 <TextField
                   fullWidth
-                  label="Email Address"
-                  type="email"
                   {...register("email")}
                   error={Boolean(errors.email) || Boolean(serverErrors?.email)}
                   helperText={errors.email?.message ?? serverErrors?.email}
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": {
-                        borderColor: "#172E59",
-                        // border:"1px solid #172E59",
-                        boxShadow:"none !important",
-
-                      },
-                      "&:hover fieldset": {
-                        borderColor: "#172E59", 
-                        boxShadow:"none !important",
-
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "#172E59",
-                        boxShadow:"none !important",
-                        outline:"none !important",
-
-                        
-                      },
-                    },
-                    "& label": {
-                      color: "#172E59",
-                      fontSize:"14px",
-                      boxShadow:"none !important",
-
-
-                    },
-                    "& label.Mui-focused": {
-                      color: "#172E59",
-                      fontSize:"16px",
-                      fontWeight:"bold",
-                      boxShadow:"none !important",
-
-                    },
-                  }}
+                  sx={inputStyles}
                 />
               </Grid>
 
               {/* Phone */}
               <Grid item xs={12}>
+                <Typography sx={labelStyle}>Phone Number</Typography>
                 <TextField
                   fullWidth
-                  label="Phone Number"
                   {...register("phone")}
-                  error={Boolean(errors.phone) || Boolean(serverErrors?.phone)}
-                  helperText={errors.phone?.message ?? serverErrors?.phone}
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": {
-                        borderColor: "#172E59",
-                        // border:"1px solid #172E59",
-                        boxShadow:"none !important",
-
-                      },
-                      "&:hover fieldset": {
-                        borderColor: "#172E59", 
-                        boxShadow:"none !important",
-
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "#172E59",
-                        boxShadow:"none !important",
-                        outline:"none !important",
-
-                        
-                      },
-                    },
-                    "& label": {
-                      color: "#172E59",
-                      fontSize:"16px",
-                      boxShadow:"none !important",
-
-
-                    },
-                    "& label.Mui-focused": {
-                      color: "#172E59",
-                      fontSize:"18px",
-                      fontWeight:"bold",
-                      boxShadow:"none !important",
-
-                    },
-                  }}
+                  error={Boolean(errors.phone)}
+                  helperText={errors.phone?.message}
+                  sx={inputStyles}
                 />
               </Grid>
 
               {/* Password */}
               <Grid item xs={12}>
+                <Typography sx={labelStyle}>Password</Typography>
                 <TextField
                   fullWidth
-                  label="Password"
                   type={showPassword ? "text" : "password"}
                   {...register("password")}
                   error={Boolean(errors.password)}
                   helperText={errors.password?.message}
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": {
-                        borderColor: "#172E59",
-                        // border:"1px solid #172E59",
-                        boxShadow:"none !important",
-
-                      },
-                      "&:hover fieldset": {
-                        borderColor: "#172E59", 
-                        boxShadow:"none !important",
-
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "#172E59",
-                        boxShadow:"none !important",
-                        outline:"none !important",
-
-                        
-                      },
-                    },
-                    "& label": {
-                      color: "#172E59",
-                      fontSize:"16px",
-                      boxShadow:"none !important",
-
-
-                    },
-                    "& label.Mui-focused": {
-                      color: "#172E59",
-                      fontSize:"18px",
-                      fontWeight:"bold",
-                      boxShadow:"none !important",
-
-                    },
-                  }}
+                  sx={inputStyles}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
@@ -374,49 +221,14 @@ export default function Register() {
 
               {/* Confirm Password */}
               <Grid item xs={12}>
+                <Typography sx={labelStyle}>Confirm Password</Typography>
                 <TextField
                   fullWidth
-                  label="Confirm Password"
                   type={showConfirmPassword ? "text" : "password"}
                   {...register("confirmedPassword")}
                   error={Boolean(errors.confirmedPassword)}
                   helperText={errors.confirmedPassword?.message}
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": {
-                        borderColor: "#172E59",
-                        // border:"1px solid #172E59",
-                        boxShadow:"none !important",
-
-                      },
-                      "&:hover fieldset": {
-                        borderColor: "#172E59", 
-                        boxShadow:"none !important",
-
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "#172E59",
-                        boxShadow:"none !important",
-                        outline:"none !important",
-
-                        
-                      },
-                    },
-                    "& label": {
-                      color: "#172E59",
-                      fontSize:"16px",
-                      boxShadow:"none !important",
-
-
-                    },
-                    "& label.Mui-focused": {
-                      color: "#172E59",
-                      fontSize:"18px",
-                      fontWeight:"bold",
-                      boxShadow:"none !important",
-
-                    },
-                  }}
+                  sx={inputStyles}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
@@ -433,98 +245,63 @@ export default function Register() {
                   }}
                 />
               </Grid>
-              {/* Login as User or Mentor */}
-              <Grid item xs={12}>
-                <RadioGroup>
-                  <FormControlLabel
-                    control={<Radio {...register("role")} value="User" />}
-                    label="User"
-                    sx={{
-                      fontSize: '14px',
-                      textTransform: 'none',
-                      color: '#172E59'}}
-                    
-                  />
-                  <FormControlLabel
-                    control={<Radio {...register("role")} value="Mentor" />}
-                    label="Mentor"
-                    sx={{
-                      fontSize: '14px',
-                      textTransform: 'none',
-                      color: '#172E59'}}
-                  />
-                </RadioGroup>
-              </Grid>
-              {/* Terms & Conditions */}
+
+              {/* Terms */}
               <Grid item xs={12}>
                 <FormControlLabel
                   control={<Checkbox required />}
                   label="I agree to the terms and conditions"
                   sx={{
-                    fontSize: '14px',
-                    textTransform: 'none',
-                    color: '#118577'}}
+                    fontSize: "14px",
+                    textTransform: "none",
+                    color: "#118577",
+                  }}
                 />
               </Grid>
 
-              {/* Error from Context */}
-              {/* {authError && (
-              <Grid item xs={12}>
-                <Typography color="error">{authError}</Typography>
-              </Grid>
-            )} */}
-
               {/* Submit Button */}
               <Grid item xs={12}>
-              <Button
-  type="submit"
-  fullWidth
-  variant="contained"
-  color="success"
-  disabled={loading}
-  sx={{
-    fontSize: '16px',
-    padding: '10px',
-    borderRadius: '3px',
-    boxShadow: 3,
-    transition: '0.3s',
-    textTransform: 'none',
-    backgroundColor: '#172E59',
-    '&:hover': {
-      backgroundColor: '#172E59',
-      boxShadow: 6,
-    },
-  }}
-  startIcon={!loading && <PersonAddIcon />}
->
-  {loading ? <CircularProgress size={24} color="inherit" /> : "Register"}
-</Button>
-
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  disabled={loading}
+                  sx={{
+                    fontSize: "16px",
+                    padding: "10px",
+                    borderRadius: "3px",
+                    boxShadow: 3,
+                    textTransform: "none",
+                    backgroundColor: "#172E59",
+                    "&:hover": {
+                      backgroundColor: "#172E59",
+                      boxShadow: 6,
+                    },
+                  }}
+                  startIcon={!loading && <PersonAddIcon />}
+                >
+                  {loading ? <CircularProgress size={24} color="inherit" /> : "Register"}
+                </Button>
               </Grid>
             </Grid>
           </form>
         </Box>
-        :
-        <>
-          <Box
-            sx={{
-              my: 5,
-              p: 4,
-              boxShadow: 2,
-              borderRadius: 1,
-              bgcolor: "background.default",
-              textAlign: "center",
-            }}
-          >
-            <Typography variant="body1" color="textSecondary">
-              We have sent Email for you, Check your Inbox
-              Please verify your email address to complete the registration process.
-            </Typography>
-          </Box>
-        </>
-      }
-
-
+      ) : (
+        <Box
+          sx={{
+            my: 5,
+            p: 4,
+            boxShadow: 2,
+            borderRadius: 1,
+            bgcolor: "background.default",
+            textAlign: "center",
+          }}
+        >
+          <Typography variant="body1" color="textSecondary">
+            We have sent an email to you. Check your inbox and verify your email address to complete the registration process.
+          </Typography>
+        </Box>
+      )}
     </Container>
   );
 }
