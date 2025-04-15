@@ -1,15 +1,125 @@
-.search_result {
-    width: 100%;
-    padding: 10px;
-    background-color: white;
-    border-radius: 0 0 5px 5px;
-    box-shadow: 0px 0px 6px -2px gray;
-    z-index: 1000;
+/* Add these styles to your NavBar.css file */
+@media (max-width: 991px) {
+  .navbar-collapse .navbar-nav {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    justify-content: flex-start;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .navbar-collapse .navbar-nav .nav-item {
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Adjust button sizing for mobile */
+  .navbar-collapse .navbar-nav .btn {
+    padding: 0.25rem 0.5rem !important;
+    font-size: 0.875rem;
+  }
+
+  /* Make sure dropdowns appear below their toggles */
+  .navbar-collapse .dropdown-menu {
+    position: absolute;
+    /* left: auto; */
+    right: -160px;
+    /* background-color: black; */
+  }
 }
 
-.search_result .title {
-    font-weight: 200;
+/* Fix notification dropdown on mobile */
+@media (max-width: 991px) {
+  .notification-dropdown {
+    position: static !important;
+    width: 100% !important;
+    max-width: none !important;
+  }
 }
-.search_result .name {
-    text-decoration: none;
+
+/* Ensure proper spacing for user info on mobile */
+@media (max-width: 991px) {
+  .nav-item.dropdown .d-flex.align-items-center {
+    width: 100%;
+    /* justify-content: space-between; */
+  }
+  .navbar form.d-lg-none {
+    margin-left: auto;
+  }
+}
+
+/* Fix for notification dropdown */
+.notification-dropdown {
+  position: fixed !important;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+/* Hover effect for search results */
+.hover-bg-light:hover {
+  background-color: #f8f9fa;
+}
+
+/* Add responsive brand name styling */
+@media (max-width: 375px) {
+  .responsive-brand {
+    font-size: 1rem !important;
+  }
+
+  .navbar-brand {
+    margin-right: 0.5rem;
+  }
+
+  /* Make search bar smaller on very small screens */
+  .navbar form.d-lg-none {
+    max-width: 120px;
+  }
+
+  /* Adjust padding for very small screens */
+  .navbar .container {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+}
+
+/* Adjust search bar positioning */
+@media (max-width: 991px) {
+  .navbar-brand {
+    flex-shrink: 0;
+    margin-right: 0.3rem !important; /* Reduce space after brand */
+  }
+
+  .navbar form.d-lg-none {
+    margin-left: 0; /* Remove left margin */
+    margin-right: 1rem;
+    flex: 1; /* Take up available space */
+  }
+}
+
+@media (max-width: 576px) {
+  .navbar form.d-lg-none {
+    max-width: none; /* Remove max-width to allow it to take more space */
+    flex: 1;
+  }
+
+  /* Ensure the navbar toggler has proper spacing */
+  .navbar-toggler {
+    margin-left: 0.5rem;
+  }
+}
+
+/* Add responsive brand name styling */
+@media (max-width: 375px) {
+  .responsive-brand {
+    font-size: 1rem !important;
+  }
+
+  .navbar-brand {
+    margin-right: 0.3rem !important; /* Consistent small margin */
+  }
+
+  /* Make search bar take available space on very small screens */
+  .navbar form.d-lg-none {
+    flex: 1;
+  }
 }

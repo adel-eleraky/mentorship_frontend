@@ -11,9 +11,43 @@ import {
 } from "react-router-dom";
 import { logout } from "../../rtk/features/authSlice";
 import { markNotificationRead } from "../../rtk/features/notificationSlice";
+// Material UI imports
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  InputBase,
+  Badge,
+  Avatar,
+  Button,
+  IconButton,
+  Menu,
+  MenuItem,
+  Divider,
+  Box,
+  Container,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Paper,
+  Drawer,
+  Checkbox,
+} from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import GroupIcon from "@mui/icons-material/Group";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import ChatIcon from "@mui/icons-material/Chat";
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import MenuIcon from "@mui/icons-material/Menu";
+import CommentIcon from "@mui/icons-material/Comment";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import EventIcon from "@mui/icons-material/Event";
+import EmailIcon from "@mui/icons-material/Email";
 
 function NavBar() {
-  // const { token, logout } = useAuthentication();
   const location = useLocation();
   const { user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
@@ -22,16 +56,35 @@ function NavBar() {
   const dispatch = useDispatch();
   const { notifications } = useSelector((state) => state.notification);
 
+  // New state for Material UI components
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [notificationAnchorEl, setNotificationAnchorEl] = useState(null);
+  const [profileAnchorEl, setProfileAnchorEl] = useState(null);
+
   const unreadNotifications = notifications?.reduce((count, notify) => {
     return notify.isRead === false ? count + 1 : count;
   }, 0);
 
-  // const handleKeyPress = (e) => {
-  //   console.log("search" , e.key)
-  //   // if (e.key === 'Enter') {
-  //   //   navigate('/mentors');
-  //   // }
-  // };
+  // Handle menu openings
+  const handleNotificationMenuOpen = (event) => {
+    setNotificationAnchorEl(event.currentTarget);
+  };
+
+  const handleNotificationMenuClose = () => {
+    setNotificationAnchorEl(null);
+  };
+
+  const handleProfileMenuOpen = (event) => {
+    setProfileAnchorEl(event.currentTarget);
+  };
+
+  const handleProfileMenuClose = () => {
+    setProfileAnchorEl(null);
+  };
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
 
   const fetchSearch = async (value) => {
     const res = await axios.post(
@@ -40,6 +93,7 @@ function NavBar() {
     );
     return res.data;
   };
+
   const handleSearch = async (e) => {
     setSearch(e.target.value);
     const mentors = await fetchSearch(e.target.value);
@@ -48,262 +102,516 @@ function NavBar() {
   };
 
   async function handleLogout() {
-    // await axios.get("http://localhost:3000/api/v1/auth/logout", { withCredentials: true })
     dispatch(logout());
-    // return navigate("/login")
-    // <Navigate to={"/login" }/>
+    handleProfileMenuClose();
   }
 
   return (
-    <>
-      <nav className="navbar navbar-expand-lg">
-        <div className="container mt-2 border-bottom border-light-subtle">
-          <NavLink className="navbar-brand fs-4 bold mb-2" to={"/"}>
-            {/* <span className="fw-bold">Mentor</span>Ship */}
-            <span className="fw-bold second-color">Mentor</span>
-            <span className="fw-medium frist-color">Ship</span>
-          </NavLink>
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
+    <AppBar
+      position="sticky"
+      color="default"
+      elevation={1}
+      sx={{ backgroundColor: "white" }}
+    >
+      <Container maxWidth="xl">
+        <Toolbar disableGutters sx={{ py: 1 }}>
+          {/* Logo */}
+          <Typography
+            variant="h5"
+            component={NavLink}
+            to="/"
+            sx={{
+              textDecoration: "none",
+              display: "flex",
+              alignItems: "center",
+              fontWeight: "bold",
+              mr: 2,
+            }}
           >
-            <span className="navbar-toggler-icon"></span>
-          </button>
+            <Box component="span" sx={{ color: "#118577", fontWeight: "bold" }}>
+              Mentor
+            </Box>
+            <Box
+              component="span"
+              sx={{ color: "#FF5722", fontWeight: "medium" }}
+            >
+              Ship
+            </Box>
+          </Typography>
 
-          <div className="collapse navbar-collapse" id="navbarSupportedContent">
-            {
-              <form className="d-flex mb-2 mb-lg-0 ms-auto" role="search">
-                <div style={{ position: "relative", width: "350px" }}>
-                  <input
-                    className="form-control w-100 border border-light-subtle"
-                    type="text"
-                    placeholder="Search"
-                    aria-label="Search"
-                    style={{ paddingLeft: "40px" }}
-                    // onKeyPress={handleKeyPress}
-                    onChange={handleSearch}
-                  />
-                  <i
-                    className="fas fa-search"
-                    style={{
-                      position: "absolute",
-                      left: "10px",
-                      top: "50%",
-                      transform: "translateY(-50%)",
-                      color: "#cbcbcb",
-                      pointerEvents: "none",
+          {/* Mobile menu button */}
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{ mr: 2, display: { lg: "none" } }}
+          >
+            <MenuIcon />
+          </IconButton>
+
+          {/* Mobile search */}
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: { xs: "flex", lg: "none" },
+              position: "relative",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                width: "100%",
+                border: "1px solid #ddd",
+                borderRadius: 1,
+              }}
+            >
+              <IconButton sx={{ p: 1 }}>
+                <SearchIcon />
+              </IconButton>
+              <InputBase
+                placeholder="Search..."
+                onChange={handleSearch}
+                sx={{ ml: 1, flex: 1 }}
+              />
+            </Box>
+
+            {searchResult.length > 0 && (
+              <Paper
+                sx={{
+                  position: "absolute",
+                  top: "100%",
+                  left: 0,
+                  right: 0,
+                  zIndex: 1000,
+                  mt: 1,
+                  p: 2,
+                }}
+              >
+                {searchResult.map((mentor) => (
+                  <Box
+                    key={mentor._id}
+                    component={Link}
+                    to={`mentorprofile/${mentor._id}`}
+                    onClick={() => setSearchResult([])}
+                    sx={{
+                      textDecoration: "none",
+                      display: "flex",
+                      alignItems: "center",
+                      p: 1,
+                      borderRadius: 1,
+                      "&:hover": { bgcolor: "#f5f5f5" },
+                      mb: 1,
                     }}
-                  ></i>
-                  {searchResult.length != 0 && (
-                    <div className="position-absolute search_result">
-                      {searchResult.map((mentor) => {
-                        return (
-                          <Link
-                            to={`mentorprofile/${mentor._id}`}
-                            onClick={() => setSearchResult([])}
-                          >
-                            <div className="mb-3 d-flex ">
-                              <img
-                                src={`http://localhost:3000/img/users/${mentor.image}`}
-                                style={{ width: "40px", height: "40px" }}
-                                className="img-fluid me-3"
-                                alt=""
-                              />
-                              <h5 className="name">
-                                {" "}
-                                {mentor.name} <br />{" "}
-                                <p className="title"> {mentor.title} </p>{" "}
-                              </h5>
-                            </div>
-                          </Link>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              </form>
-            }
+                  >
+                    <Avatar
+                      src={`http://localhost:3000/img/users/${mentor.image}`}
+                      alt={mentor.name}
+                      sx={{ mr: 2, width: 40, height: 40 }}
+                    />
+                    <Box>
+                      <Typography variant="subtitle2" color="textPrimary">
+                        {mentor.name}
+                      </Typography>
+                      <Typography variant="body2" color="textSecondary">
+                        {mentor.title}
+                      </Typography>
+                    </Box>
+                  </Box>
+                ))}
+              </Paper>
+            )}
+          </Box>
 
-            <ul className="navbar-nav mb-2 mb-lg-0 ms-auto align-items-center">
-              <li className="nav-item mx-4">
-                {/* <NavLink className="btn btn-success" to={'/mentors'}>Browse all mentors</NavLink> */}
-                <NavLink
-                  className="btn btn-success "
-                  style={{ background: "#118577" }}
-                  to={"/mentors"}
+          {/* Desktop search */}
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: { xs: "none", lg: "flex" },
+              justifyContent: "center",
+              position: "relative",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                width: "400px",
+                border: "1px solid #ddd",
+                borderRadius: 1,
+              }}
+            >
+              <IconButton sx={{ p: 1 }}>
+                <SearchIcon />
+              </IconButton>
+              <InputBase
+                placeholder="Search for mentors..."
+                onChange={handleSearch}
+                sx={{ ml: 1, flex: 1 }}
+              />
+            </Box>
+
+            {searchResult.length > 0 && (
+              <Paper
+                sx={{
+                  position: "absolute",
+                  top: "100%",
+                  width: "400px",
+                  zIndex: 1000,
+                  mt: 1,
+                  p: 2,
+                }}
+              >
+                {searchResult.map((mentor) => (
+                  <Box
+                    key={mentor._id}
+                    component={Link}
+                    to={`mentorprofile/${mentor._id}`}
+                    onClick={() => setSearchResult([])}
+                    sx={{
+                      textDecoration: "none",
+                      display: "flex",
+                      alignItems: "center",
+                      p: 1,
+                      borderRadius: 1,
+                      "&:hover": { bgcolor: "#f5f5f5" },
+                      mb: 1,
+                    }}
+                  >
+                    <Avatar
+                      src={`http://localhost:3000/img/users/${mentor.image}`}
+                      alt={mentor.name}
+                      sx={{ mr: 2, width: 40, height: 40 }}
+                    />
+                    <Box>
+                      <Typography variant="subtitle2" color="textPrimary">
+                        {mentor.name}
+                      </Typography>
+                      <Typography variant="body2" color="textSecondary">
+                        {mentor.title}
+                      </Typography>
+                    </Box>
+                  </Box>
+                ))}
+              </Paper>
+            )}
+          </Box>
+
+          {/* Navigation items */}
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <Button
+              component={NavLink}
+              to="/mentors"
+              variant="contained"
+              startIcon={<GroupIcon />}
+              sx={{
+                mr: 2,
+                bgcolor: "#118577",
+                "&:hover": { bgcolor: "#0d6e63" },
+                display: { xs: "none", md: "flex" },
+              }}
+            >
+              Browse all mentors
+            </Button>
+
+            {user ? (
+              <>
+                {/* Notifications */}
+                <IconButton
+                  color="inherit"
+                  onClick={handleNotificationMenuOpen}
+                  sx={{ mr: 1 }}
                 >
-                  Browse all mentors
-                </NavLink>
-              </li>
-              {user ? (
-                <>
-                  <li className="nav-item dropdown me-2">
-                    <a
-                      className="nav-link dropdown-toggle position-relative notification-badge"
-                      href="#"
-                      role="button"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
-                      <i className="fas fa-bell fa-lg fs-4 text-dark"></i>
-                      {/* Optional badge */}
-                      <span className="position-absolute  top-0 start-25 translate-middle badge rounded-pill bg-danger">
-                        {unreadNotifications}
-                        <span className="visually-hidden">
-                          unread notifications
-                        </span>
-                      </span>
-                    </a>
-                    <ul
-                      className="dropdown-menu dropdown-menu-end"
-                      style={{ width: "300px" }}
-                    >
-                      <li className="dropdown-item text-muted">
-                        You have {unreadNotifications} notifications
-                      </li>
-                      <li>
-                        <hr className="dropdown-divider" />
-                      </li>
-                      <div
-                        style={{
-                          maxHeight: "500px", // adjust as needed
-                          overflowY: "auto",
-                          paddingRight: "8px", // optional: to prevent content being hidden under scrollbar
+                  <Badge badgeContent={unreadNotifications} color="error">
+                    <NotificationsIcon />
+                  </Badge>
+                </IconButton>
+                <Menu
+                  anchorEl={notificationAnchorEl}
+                  open={Boolean(notificationAnchorEl)}
+                  onClose={handleNotificationMenuClose}
+                  PaperProps={{
+                    sx: { width: 320, maxHeight: 500 },
+                  }}
+                >
+                  <Box
+                    sx={{
+                      p: 2,
+                      bgcolor: "#f5f5f5",
+                      borderBottom: "1px solid #ddd",
+                    }}
+                  >
+                    <Typography variant="subtitle1">Notifications</Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      You have {unreadNotifications} unread notifications
+                    </Typography>
+                  </Box>
+
+                  <Box sx={{ maxHeight: 350, overflow: "auto" }}>
+                    {notifications.length === 0 ? (
+                      <Typography
+                        sx={{
+                          textAlign: "center",
+                          py: 3,
+                          color: "text.secondary",
                         }}
                       >
-                        {notifications.length !== 0 &&
-                          [...notifications]?.reverse().map((notify) => {
-                            return (
-                              <React.Fragment key={notify._id}>
-                                <li
-                                  className="dropdown-item"
-                                  style={{ whiteSpace: "normal" }}
+                        No notifications
+                      </Typography>
+                    ) : (
+                      [...notifications]?.reverse().map((notify) => (
+                        <React.Fragment key={notify._id}>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              p: 2,
+                              bgcolor: !notify.isRead
+                                ? "#f5f5f5"
+                                : "transparent",
+                            }}
+                          >
+                            <Checkbox
+                              checked={notify.isRead}
+                              onChange={() =>
+                                dispatch(markNotificationRead(notify?._id))
+                              }
+                              sx={{ mr: 1, alignSelf: "flex-start", mt: 0.5 }}
+                            />
+                            <Box>
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  mb: 0.5,
+                                }}
+                              >
+                                {notify?.type === "comment" && (
+                                  <CommentIcon color="success" sx={{ mr: 1 }} />
+                                )}
+                                {notify?.type === "like" && (
+                                  <ThumbUpIcon color="primary" sx={{ mr: 1 }} />
+                                )}
+                                {notify?.type === "booking" && (
+                                  <EventIcon color="warning" sx={{ mr: 1 }} />
+                                )}
+                                {notify?.type === "message" && (
+                                  <EmailIcon color="error" sx={{ mr: 1 }} />
+                                )}
+                                <Typography
+                                  variant="caption"
+                                  color="textSecondary"
+                                  sx={{ ml: "auto" }}
                                 >
-                                  <input
-                                    type="checkbox"
-                                    className="form-check-input me-2"
-                                    checked={notify.isRead}
-                                    onChange={() => {
-                                      dispatch(
-                                        markNotificationRead(notify?._id)
-                                      );
-                                    }}
-                                  />
-                                  {notify?.type === "comment" && (
-                                    <i
-                                      className="fas fa-comment-alt"
-                                      style={{
-                                        color: "#4CAF50",
-                                        marginRight: "8px",
-                                      }}
-                                    ></i>
-                                  )}
-                                  {notify?.type === "like" && (
-                                    <i
-                                      className="fas fa-thumbs-up"
-                                      style={{
-                                        color: "#2196F3",
-                                        marginRight: "8px",
-                                      }}
-                                    ></i>
-                                  )}
-                                  {notify?.type === "booking" && (
-                                    <i
-                                      className="fas fa-calendar-check"
-                                      style={{
-                                        color: "#FF9800",
-                                        marginRight: "8px",
-                                      }}
-                                    ></i>
-                                  )}
-                                  {notify?.type === "message" && (
-                                    <i
-                                      className="fas fa-envelope"
-                                      style={{
-                                        color: "#FF5722",
-                                        marginRight: "8px",
-                                      }}
-                                    ></i>
-                                  )}
-                                  {notify?.message}
-                                </li>
-                                <hr />
-                              </React.Fragment>
-                            );
-                          })}
-                      </div>
+                                  {new Date(
+                                    notify.createdAt
+                                  ).toLocaleDateString()}
+                                </Typography>
+                              </Box>
+                              <Typography
+                                variant="body2"
+                                sx={{
+                                  lineHeight: 1.4,
+                                  maxWidth: 230,
+                                  wordWrap: "break-word",
+                                  whiteSpace: "normal",
+                                }}
+                              >
+                                {notify?.message}
+                              </Typography>
+                            </Box>
+                          </Box>
+                          <Divider />
+                        </React.Fragment>
+                      ))
+                    )}
+                  </Box>
+                </Menu>
 
-                      {/* <li>
-                          <NavLink className="dropdown-item text-primary text-center" to="/notifications">
-                            View all
-                          </NavLink>
-                        </li>  */}
-                    </ul>
-                  </li>
-                  <li className="nav-item dropdown">
-                    <img
-                      className="nav-link rounded-circle dropdown-toggle img-fluid p-0"
-                      style={{ width: "40px" }}
+                {/* User profile */}
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <Box sx={{ mr: 1, display: { xs: "none", md: "block" } }}>
+                    <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                      {user?.name}
+                    </Typography>
+                    <Typography variant="caption" color="textSecondary">
+                      {user?.role}
+                    </Typography>
+                  </Box>
+                  <IconButton onClick={handleProfileMenuOpen} sx={{ p: 0 }}>
+                    <Avatar
                       src={`http://localhost:3000/img/users/${user.image}`}
-                      role="button"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
+                      alt={user?.name}
+                      sx={{ width: 40, height: 40 }}
                     />
-                    <ul className="dropdown-menu  end-50 start-50 ">
-                      <li>
-                        <NavLink className="dropdown-item" to={`/${user.role}`}>
-                          Dashbord
-                        </NavLink>
-                      </li>
-                      <li>
-                        <NavLink className="dropdown-item" to={`/community`}>
-                          Community
-                        </NavLink>
-                      </li>
-                      <li>
-                        <NavLink
-                          className="dropdown-item"
-                          to={`/community/user/${user?._id}/${user?.role}`}
-                        >
-                          Community Profile
-                        </NavLink>
-                      </li>
-                      <li>
-                        <NavLink className="dropdown-item" to="/chat">
-                          Chat
-                        </NavLink>
-                      </li>
-                      <li>
-                        <button
-                          className="dropdown-item"
-                          onClick={() => handleLogout()}
-                        >
-                          Logout
-                        </button>
-                      </li>
-                    </ul>
-                  </li>
-                  <button className="btn fw-bold second-color">
-                    {user?.name}
-                  </button>
-                </>
-              ) : (
-                <li className="nav-item ms-4">
-                  <NavLink className="nav-link" to={"/login"}>
-                    Login
-                  </NavLink>
-                </li>
-              )}
-            </ul>
-          </div>
-        </div>
-      </nav>
-    </>
+                  </IconButton>
+                </Box>
+                <Menu
+                  anchorEl={profileAnchorEl}
+                  open={Boolean(profileAnchorEl)}
+                  onClose={handleProfileMenuClose}
+                >
+                  <MenuItem
+                    component={NavLink}
+                    to={`/${user.role}`}
+                    onClick={handleProfileMenuClose}
+                  >
+                    <ListItemIcon>
+                      <DashboardIcon fontSize="small" color="primary" />
+                    </ListItemIcon>
+                    <ListItemText>Dashboard</ListItemText>
+                  </MenuItem>
+                  <MenuItem
+                    component={NavLink}
+                    to="/community"
+                    onClick={handleProfileMenuClose}
+                  >
+                    <ListItemIcon>
+                      <GroupIcon fontSize="small" color="success" />
+                    </ListItemIcon>
+                    <ListItemText>Community</ListItemText>
+                  </MenuItem>
+                  <MenuItem
+                    component={NavLink}
+                    to={`/community/user/${user?._id}/${user?.role}`}
+                    onClick={handleProfileMenuClose}
+                  >
+                    <ListItemIcon>
+                      <AccountCircleIcon fontSize="small" color="info" />
+                    </ListItemIcon>
+                    <ListItemText>Community Profile</ListItemText>
+                  </MenuItem>
+                  <MenuItem
+                    component={NavLink}
+                    to="/chat"
+                    onClick={handleProfileMenuClose}
+                  >
+                    <ListItemIcon>
+                      <ChatIcon fontSize="small" color="warning" />
+                    </ListItemIcon>
+                    <ListItemText>Chat</ListItemText>
+                  </MenuItem>
+                  <Divider />
+                  <MenuItem onClick={handleLogout}>
+                    <ListItemIcon>
+                      <ExitToAppIcon fontSize="small" color="error" />
+                    </ListItemIcon>
+                    <ListItemText sx={{ color: "error.main" }}>
+                      Logout
+                    </ListItemText>
+                  </MenuItem>
+                </Menu>
+              </>
+            ) : (
+              <Button
+                component={NavLink}
+                to="/login"
+                variant="outlined"
+                color="primary"
+                startIcon={<ExitToAppIcon />}
+              >
+                Login
+              </Button>
+            )}
+          </Box>
+        </Toolbar>
+      </Container>
+
+      {/* Mobile drawer */}
+      <Drawer
+        variant="temporary"
+        open={mobileOpen}
+        onClose={handleDrawerToggle}
+        ModalProps={{ keepMounted: true }}
+        sx={{
+          display: { xs: "block", lg: "none" },
+          "& .MuiDrawer-paper": { boxSizing: "border-box", width: 240 },
+        }}
+      >
+        <Box sx={{ p: 2 }}>
+          <Typography
+            variant="h5"
+            component={NavLink}
+            to="/"
+            sx={{
+              textDecoration: "none",
+              display: "flex",
+              alignItems: "center",
+              fontWeight: "bold",
+              mr: 2,
+              // Use MUI's built-in breakpoint system
+              fontSize: { xs: "1rem", sm: "1.5rem" },
+              fontWeight: { xs: "500", sm: "bold" },
+            }}
+          >
+            <Box component="span" sx={{ color: "#118577", fontWeight: "bold" }}>
+              Mentor
+            </Box>
+            <Box
+              component="span"
+              sx={{ color: "#FF5722", fontWeight: "medium" }}
+            >
+              Ship
+            </Box>
+          </Typography>
+
+          <Divider sx={{ mb: 2 }} />
+          <Button
+            component={NavLink}
+            to="/mentors"
+            variant="contained"
+            fullWidth
+            startIcon={<GroupIcon />}
+            sx={{
+              mb: 2,
+              bgcolor: "#118577",
+              "&:hover": { bgcolor: "#0d6e63" },
+            }}
+          >
+            Browse all mentors
+          </Button>
+          {user && (
+            <List>
+              <ListItem button component={NavLink} to={`/${user.role}`}>
+                <ListItemIcon>
+                  <DashboardIcon color="primary" />
+                </ListItemIcon>
+                <ListItemText primary="Dashboard" />
+              </ListItem>
+              <ListItem button component={NavLink} to="/community">
+                <ListItemIcon>
+                  <GroupIcon color="success" />
+                </ListItemIcon>
+                <ListItemText primary="Community" />
+              </ListItem>
+              <ListItem
+                button
+                component={NavLink}
+                to={`/community/user/${user?._id}/${user?.role}`}
+              >
+                <ListItemIcon>
+                  <AccountCircleIcon color="info" />
+                </ListItemIcon>
+                <ListItemText primary="Community Profile" />
+              </ListItem>
+              <ListItem button component={NavLink} to="/chat">
+                <ListItemIcon>
+                  <ChatIcon color="warning" />
+                </ListItemIcon>
+                <ListItemText primary="Chat" />
+              </ListItem>
+              <Divider sx={{ my: 1 }} />
+              <ListItem button onClick={handleLogout}>
+                <ListItemIcon>
+                  <ExitToAppIcon color="error" />
+                </ListItemIcon>
+                <ListItemText primary="Logout" sx={{ color: "error.main" }} />
+              </ListItem>
+            </List>
+          )}
+        </Box>
+      </Drawer>
+    </AppBar>
   );
 }
 
