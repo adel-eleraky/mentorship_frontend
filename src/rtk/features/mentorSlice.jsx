@@ -56,18 +56,20 @@ export const getMentorSessions = createAsyncThunk(
   }
 );
 
-
-export const getMentor = createAsyncThunk("mentor/getMentor", async (id, { rejectWithValue }) => {
-  try {
-    const { data } = await axios.get(`http://localhost:3000/api/v1/mentors/${id}`, { withCredentials: true });
-    return data
-  } catch (error) {
-    return rejectWithValue(error?.response?.data)
+export const getMentor = createAsyncThunk(
+  "mentor/getMentor",
+  async (id, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.get(
+        `http://localhost:3000/api/v1/mentors/${id}`,
+        { withCredentials: true }
+      );
+      return data;
+    } catch (error) {
+      return rejectWithValue(error?.response?.data);
+    }
   }
-
-})
-
-
+);
 
 export const uploadImage = createAsyncThunk("mentor/uploadImage", async (values, { rejectWithValue }) => {
   try {
@@ -89,15 +91,22 @@ export const uploadImage = createAsyncThunk("mentor/uploadImage", async (values,
 })
 
 
-export const setMentorAvailability = createAsyncThunk("mentor/Availability ", async (availability, { rejectWithValue }) => {
-  try {
-    const { data } = await axios.post(`http://localhost:3000/api/v1/mentors/availability `, { availability }, { withCredentials: true });
-    return data
-  } catch (error) {
-    return rejectWithValue(error?.response?.data)
+export const setMentorAvailability = createAsyncThunk(
+  "mentor/Availability ",
+  async (availability, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.post(
+        `http://localhost:3000/api/v1/mentors/availability `,
+        { availability },
+        { withCredentials: true }
+      );
+      console.log(data);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error?.response?.data);
+    }
   }
-
-})
+);
 
 const initialState = {
   loading: false,
@@ -110,7 +119,7 @@ const initialState = {
   Availability: {},
   imageLoading: false,
   imageMessage: ""
-
+,
 };
 
 const mentorSlice = createSlice({
@@ -173,10 +182,9 @@ const mentorSlice = createSlice({
         state.errors = action.payload;
       })
       .addCase(getMentor.fulfilled, (state, action) => {
-        state.mentor = action.payload.data
+        state.mentor = action.payload.data;
       })
       .addCase(setMentorAvailability.fulfilled, (state, action) => {
-        console.log("set availabil", action.payload.data)
         state.Availability = action.payload.data.availability
       })
       .addCase(uploadImage.pending, (state, action) => {
