@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ResponsiveDialog from "../../utils/ResponsiveDialog.jsx";
+import { loadStripe } from "@stripe/stripe-js";
+
 // import "../MentorProfile/OnToOne.css";
 
 const OneToOne = () => {
@@ -17,6 +19,24 @@ const OneToOne = () => {
   useEffect(() => {
     fetchRequests();
   }, []);
+
+  const makePayment = async (sessionId) => {
+    console.log("session id" , sessionId)
+    const stripe = await loadStripe(
+      "pk_test_51MQiTdHdpPhRIKKWKS8bzAP7QcJHnbcqNmCzH9SK64ifDGAZFzIGTZIxEOmIoXIOs5MiUrhlFZqtpA6YGK2PqNrL00HGYrQEpd"
+    );
+
+    const res = await axios.get(
+      `http://localhost:3000/api/v1/bookings/checkout-session/one-to-one/${sessionId}`,
+      { withCredentials: true }
+    );
+    const { data: session } = await res.data;
+
+    // console.log("session ", session);
+    const result = stripe.redirectToCheckout({
+      sessionId: session.id,
+    });
+  };
 
   const fetchRequests = async () => {
     setLoading(true);
@@ -86,10 +106,8 @@ const OneToOne = () => {
       setAgreeText("");
       setDisagreeText("Close");
       setContent(
-        `This session is scheduled for ${
-          meeting.requested_time?.day || "N/A"
-        } at ${
-          meeting.requested_time?.time || "N/A"
+        `This session is scheduled for ${meeting.requested_time?.day || "N/A"
+        } at ${meeting.requested_time?.time || "N/A"
         }.\n\n${timeRemaining}\n\nYou can join the meeting 15 minutes before the scheduled time.`
       );
     }
@@ -161,9 +179,8 @@ const OneToOne = () => {
                   <button
                     key={status}
                     type="button"
-                    className={`filter-btn ${
-                      statusFilter === status ? "active" : ""
-                    }`}
+                    className={`filter-btn ${statusFilter === status ? "active" : ""
+                      }`}
                     onClick={() => setStatusFilter(status)}
                   >
                     {status.charAt(0).toUpperCase() + status.slice(1)}
@@ -265,7 +282,18 @@ const OneToOne = () => {
                     </div>
 
                     <div className="card-footer bg-transparent border-top-0">
-                      {request.status === "accepted" && (
+                      {request.status === "accepted" && request.paymentStatus == "pending" && (
+                        <div className="d-flex justify-content-center">
+                          <button
+                            className="btn bg-success fw-bold text-white"
+                            onClick={() => makePayment(request._id)}
+                          >
+                            {/* <i className="bi bi-camera-video-fill me-1"></i>{" "} */}
+                            Pay Now
+                          </button>
+                        </div>
+                      )}
+                      {request.status === "accepted" && request.paymentStatus == "paid" && (
                         <div className="d-flex justify-content-center">
                           <button
                             className="btn bg-second-color"

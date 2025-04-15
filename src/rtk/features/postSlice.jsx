@@ -42,6 +42,17 @@ export const createPost = createAsyncThunk("post/createPost", async (post, { rej
   }
 })
 
+
+export const editPost = createAsyncThunk("posts/editPost", async ({ postId, updatedData }, thunkAPI) => {
+  try {
+    const response = await axios.put(`http://localhost:3000/api/v1/posts/edit/${postId}`, updatedData , { withCredentials: true});
+    return response.data;
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err.response?.data?.message || "Edit failed");
+  }
+});
+
+
 export const likePost = createAsyncThunk("post/likePost", async (postId, { rejectWithValue }) => {
   try {
     const { data } = await axios.post(
@@ -126,7 +137,8 @@ const postSlice = createSlice({
     deleteStatus: "",
     deleteMessage: "",
     deleteError: "",
-    userProfile: null
+    userProfile: null,
+    updateLoading: false
   },
   extraReducers: (builder) => {
     builder.addCase(getAllPosts.fulfilled, (state, action) => {
@@ -242,6 +254,14 @@ const postSlice = createSlice({
         state.status = action.payload.status
         state.userProfile = action.payload.data
         state.loading = false
+      })
+      .addCase(editPost.pending , (state, action) => {
+        state.updateLoading = true
+      })
+      .addCase(editPost.fulfilled , (state, action) => {
+        state.updateLoading = false
+        state.status = action.payload.status
+        state.message = action.payload.message
       })
   }
 })
