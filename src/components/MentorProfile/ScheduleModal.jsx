@@ -17,6 +17,10 @@ const ScheduleModal = ({
     title: Yup.string()
       .min(3, "Title must be at least 3 characters long")
       .max(100, "Title cannot exceed 100 characters")
+      .matches(
+        /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z0-9\s]+$/,
+        "Title must contain both letters and numbers"
+      )
       .required("Title is required"),
     price: Yup.number()
       .min(0, "Price cannot be negative")
@@ -24,11 +28,17 @@ const ScheduleModal = ({
     description: Yup.string()
       .min(20, "Description must be at least 20 characters long")
       .max(500, "Description cannot exceed 500 characters")
+      .matches(
+        /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z0-9\s]+$/,
+        "Description must contain both letters and numbers"
+      )
       .required("Description is required"),
     duration: Yup.number()
       .min(30, "Duration must be at least 30 minute")
       .required("Duration is required"),
-    schedule_time: Yup.date().required("Schedule time is required"),
+    schedule_time: Yup.date()
+      .min(new Date(), "Schedule time must be in the future")
+      .required("Schedule time is required"),
     has_room: Yup.boolean().required("Has room is required"),
   });
 
