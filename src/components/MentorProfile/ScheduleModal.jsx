@@ -18,8 +18,8 @@ const ScheduleModal = ({
       .min(3, "Title must be at least 3 characters long")
       .max(100, "Title cannot exceed 100 characters")
       .matches(
-        /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z0-9\s]+$/,
-        "Title must contain both letters and numbers"
+        /^(?=.*[A-Za-z])[A-Za-z0-9\s]+$/,
+        "Description must contain letters (numbers are optional)"
       )
       .required("Title is required"),
     price: Yup.number()
@@ -29,8 +29,8 @@ const ScheduleModal = ({
       .min(20, "Description must be at least 20 characters long")
       .max(500, "Description cannot exceed 500 characters")
       .matches(
-        /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z0-9\s]+$/,
-        "Description must contain both letters and numbers"
+        /^(?=.*[A-Za-z])[A-Za-z0-9\s]+$/,
+        "Description must contain letters (numbers are optional)"
       )
       .required("Description is required"),
     duration: Yup.number()
