@@ -69,9 +69,29 @@ export const getMentor = createAsyncThunk("mentor/getMentor", async (id, { rejec
 
 
 
+export const uploadImage = createAsyncThunk("mentor/uploadImage", async (values, { rejectWithValue }) => {
+  try {
+    const formData = new FormData();
+    formData.append("image", values.image);
+
+    const { data } = await axios.put(`http://localhost:3000/api/v1/mentors/upload`, formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      });
+    return data
+  } catch (error) {
+    return rejectWithValue(error?.response?.data)
+  }
+
+})
+
+
 export const setMentorAvailability = createAsyncThunk("mentor/Availability ", async (availability, { rejectWithValue }) => {
   try {
-    const { data } = await axios.post(`http://localhost:3000/api/v1/mentors/availability `, {availability} ,  { withCredentials: true });
+    const { data } = await axios.post(`http://localhost:3000/api/v1/mentors/availability `, { availability }, { withCredentials: true });
     return data
   } catch (error) {
     return rejectWithValue(error?.response?.data)
@@ -87,7 +107,10 @@ const initialState = {
   mentors: [],
   sessions: [],
   errors: null,
-  Availability: {}
+  Availability: {},
+  imageLoading: false,
+  imageMessage: ""
+
 };
 
 const mentorSlice = createSlice({
@@ -153,8 +176,16 @@ const mentorSlice = createSlice({
         state.mentor = action.payload.data
       })
       .addCase(setMentorAvailability.fulfilled, (state, action) => {
-        console.log("set availabil" , action.payload.data)
+        console.log("set availabil", action.payload.data)
         state.Availability = action.payload.data.availability
+      })
+      .addCase(uploadImage.pending, (state, action) => {
+        state.imageLoading = true
+      })
+      .addCase(uploadImage.fulfilled, (state, action) => {
+        state.imageLoading = false
+        state.mentor = action.payload.data
+        state.imageMessage = action.payload.message
       });
   },
 });

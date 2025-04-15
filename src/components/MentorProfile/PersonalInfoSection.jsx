@@ -1,14 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useDispatch, useSelector } from "react-redux";
-import { updateMentorProfile } from "../../rtk/features/mentorSlice";
+import { updateMentorProfile, uploadImage } from "../../rtk/features/mentorSlice";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { getLoggedInUser } from "../../rtk/features/authSlice";
 
 const PersonalInfoSection = ({ mentorData, message }) => {
   const dispatch = useDispatch();
-  const { loading } = useSelector((state) => state.mentor);
+  const { loading, imageLoading, imageMessage } = useSelector((state) => state.mentor);
   const [activeTab, setActiveTab] = useState("basic");
   console.log(mentorData);
 
@@ -75,6 +76,33 @@ const PersonalInfoSection = ({ mentorData, message }) => {
       });
   };
 
+
+  const ImageUploadSchema = Yup.object().shape({
+    image: Yup.mixed()
+      .required("An image is required")
+      .test(
+        "fileFormat",
+        "Unsupported format",
+        (value) =>
+          value && ["image/jpeg", "image/png", "image/jpg"].includes(value.type)
+      )
+      .test(
+        "fileSize",
+        "File too large",
+        (value) => value && value.size <= 5 * 1024 * 1024
+      ),
+  });
+
+  const handleImageUpload = async (values) => {
+    console.log("image", values)
+    dispatch(uploadImage(values))
+
+  };
+
+  useEffect(() => {
+    dispatch(getLoggedInUser())
+  } , [imageLoading])
+
   return (
     <div className="personal-info-container">
       <div
@@ -101,7 +129,7 @@ const PersonalInfoSection = ({ mentorData, message }) => {
               <img
                 src={
                   // mentorData.profileImage || "https://via.placeholder.com/150"
-                  "https://picsum.photos/150/150"
+                  `http://localhost:3000/img/users/${mentorData?.image}`
                 }
                 alt="Profile"
                 className="rounded-circle profile-image shadow-lg"
@@ -118,11 +146,11 @@ const PersonalInfoSection = ({ mentorData, message }) => {
               />
 
               <Formik
-              // initialValues={{ image: null }}
-              // validationSchema={ImageUploadSchema}
-              // onSubmit={handleImageUpload}
+                initialValues={{ image: null }}
+                validationSchema={ImageUploadSchema}
+                onSubmit={handleImageUpload}
               >
-                {({ setFieldValue, errors, touched }) => (
+                {({ setFieldValue, values, errors, touched }) => (
                   <Form encType="multipart/form-data">
                     <span
                       className="position-absolute mt-2 border border-white shadow d-flex align-items-center justify-content-center"
@@ -145,11 +173,27 @@ const PersonalInfoSection = ({ mentorData, message }) => {
                         id="profile-image-upload"
                         accept="image/*"
                         style={{ display: "none" }}
+                        onChange={(event) => {
+                          const file = event.currentTarget.files[0];
+                          if (file) {
+                            setFieldValue("image", file);
+                          }
+                        }}
                       />
                     </span>
+
+                    {/* Submit Button - only visible if image is selected */}
+                    {values.image && (
+                      <div className="mt-3 text-center">
+                        <button type="submit" className="btn btn-success">
+                          Upload Image
+                        </button>
+                      </div>
+                    )}
                   </Form>
                 )}
               </Formik>
+
             </div>
           </div>
         </div>
@@ -160,11 +204,10 @@ const PersonalInfoSection = ({ mentorData, message }) => {
           <ul className="nav nav-pills nav-fill p-2">
             <li className="nav-item mx-1">
               <button
-                className={`nav-link px-1 py-2 ${
-                  activeTab === "basic"
+                className={`nav-link px-1 py-2 ${activeTab === "basic"
                     ? "active bg-second-color text-white"
                     : " text-black border border-secondary"
-                }`}
+                  }`}
                 style={{
                   backgroundColor:
                     activeTab === "basic" ? "#118577" : "#f8f9fa",
@@ -188,11 +231,10 @@ const PersonalInfoSection = ({ mentorData, message }) => {
             </li>
             <li className="nav-item mx-1">
               <button
-                className={`nav-link px-1 py-2 ${
-                  activeTab === "skills"
+                className={`nav-link px-1 py-2 ${activeTab === "skills"
                     ? "active  text-white"
                     : "text-dark border border-secondary"
-                }`}
+                  }`}
                 style={{
                   backgroundColor:
                     activeTab === "skills" ? "#118577" : "#f8f9fa",
@@ -216,11 +258,10 @@ const PersonalInfoSection = ({ mentorData, message }) => {
             </li>
             <li className="nav-item mx-1">
               <button
-                className={`nav-link px-1 py-2 ${
-                  activeTab === "contact"
+                className={`nav-link px-1 py-2 ${activeTab === "contact"
                     ? "active  text-white"
                     : "text-dark border border-secondary"
-                }`}
+                  }`}
                 style={{
                   backgroundColor:
                     activeTab === "contact" ? "#118577" : "#f8f9fa",

@@ -117,17 +117,17 @@ const authSlice = createSlice({
                 state.message = action.payload.message
             })
             .addCase(getLoggedInUser.pending, (state, action) => {
-                state.loading = true
+                // state.loading = true
                 state.errors = null
             })
             .addCase(getLoggedInUser.fulfilled, (state, action) => {
-                state.loading = false
+                // state.loading = false
                 state.status = action.payload.status
                 state.user = action.payload.data
                 state.token = action.payload.token
             })
             .addCase(getLoggedInUser.rejected, (state, action) => {
-                state.loading = false
+                // state.loading = false
                 state.status = action.payload.status
                 state.errors = action.payload.errors
                 state.message = action.payload.message
