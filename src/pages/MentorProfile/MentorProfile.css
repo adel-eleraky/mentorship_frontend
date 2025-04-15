@@ -268,7 +268,15 @@
 }
 
 /* =================== */
-.form-check-input[type=checkbox]:checked {
+.availability .form-check-input[type=checkbox]:checked {
   border: none;
   display: none;
 }
+.availability .form-check-input[type=checkbox]{
+  border: none;
+  display: none;
+}
+
+
+
+

@@ -1,6 +1,6 @@
 import axios from "axios";
 import "./NavBar.css";
-import React, { useState } from "react";
+import React, { useState,useEffect ,useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Link,
@@ -105,12 +105,30 @@ function NavBar() {
     dispatch(logout());
     handleProfileMenuClose();
   }
+  const searchResultRef = useRef();
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        searchResultRef.current &&
+        !searchResultRef.current.contains(event.target)
+      ) {
+        setSearchResult([]);
+      }
+    };
+  
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+  
 
   return (
     <AppBar
-      position="sticky"
+      position="static"
       color="default"
-      elevation={1}
+      elevation={0}
       sx={{ backgroundColor: "white" }}
     >
       <Container maxWidth="xl">
@@ -133,7 +151,7 @@ function NavBar() {
             </Box>
             <Box
               component="span"
-              sx={{ color: "#FF5722", fontWeight: "medium" }}
+              sx={{ color: "#172E59", fontWeight: "medium" }}
             >
               Ship
             </Box>
@@ -145,7 +163,7 @@ function NavBar() {
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { lg: "none" } }}
+            sx={{ mr: 2, display: { lg: "none" }, color: "#172E59" }}
           >
             <MenuIcon />
           </IconButton>
@@ -179,6 +197,7 @@ function NavBar() {
 
             {searchResult.length > 0 && (
               <Paper
+              ref={searchResultRef}
                 sx={{
                   position: "absolute",
                   top: "100%",
@@ -187,6 +206,8 @@ function NavBar() {
                   zIndex: 1000,
                   mt: 1,
                   p: 2,
+                  maxHeight: 500,
+                  overflowY: "auto",
                 }}
               >
                 {searchResult.map((mentor) => (
@@ -254,13 +275,17 @@ function NavBar() {
 
             {searchResult.length > 0 && (
               <Paper
+              ref={searchResultRef}
                 sx={{
+                  
                   position: "absolute",
                   top: "100%",
                   width: "400px",
                   zIndex: 1000,
                   mt: 1,
                   p: 2,
+                  maxHeight: 500,
+                  overflowY: "auto",
                 }}
               >
                 {searchResult.map((mentor) => (
@@ -308,6 +333,7 @@ function NavBar() {
               sx={{
                 mr: 2,
                 bgcolor: "#118577",
+                
                 "&:hover": { bgcolor: "#0d6e63" },
                 display: { xs: "none", md: "flex" },
               }}
@@ -324,7 +350,7 @@ function NavBar() {
                   sx={{ mr: 1 }}
                 >
                   <Badge badgeContent={unreadNotifications} color="error">
-                    <NotificationsIcon />
+                    <NotificationsIcon sx={{ color: "#172E59" }} />
                   </Badge>
                 </IconButton>
                 <Menu
@@ -431,11 +457,11 @@ function NavBar() {
                 {/* User profile */}
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   <Box sx={{ mr: 1, display: { xs: "none", md: "block" } }}>
-                    <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                    <Typography variant="body1" sx={{ fontWeight: 500 ,color:"#172E59"}}>
                       {user?.name}
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
-                      {user?.role}
+                      {/* {user?.role} */}
                     </Typography>
                   </Box>
                   <IconButton onClick={handleProfileMenuOpen} sx={{ p: 0 }}>
@@ -450,24 +476,44 @@ function NavBar() {
                   anchorEl={profileAnchorEl}
                   open={Boolean(profileAnchorEl)}
                   onClose={handleProfileMenuClose}
+                  PaperProps={{
+                    sx: {     backgroundColor:" white" ,color:"#172E59"},
+                  }}
+              
                 >
                   <MenuItem
                     component={NavLink}
                     to={`/${user.role}`}
                     onClick={handleProfileMenuClose}
+                    sx={{
+                      '&:hover': {
+                        backgroundColor: '#118577',
+                        '& .MuiListItemIcon-root, & .MuiListItemText-primary': {
+                          color: '#fff',
+                        },
+                      },
+                    }}
                   >
                     <ListItemIcon>
-                      <DashboardIcon fontSize="small" color="primary" />
+                      <DashboardIcon fontSize="small" color="inherit" sx={{ color: "#172E59" }}/>
                     </ListItemIcon>
-                    <ListItemText>Dashboard</ListItemText>
+                    <ListItemText  primary="Dashboard" ></ListItemText>
                   </MenuItem>
                   <MenuItem
                     component={NavLink}
                     to="/community"
                     onClick={handleProfileMenuClose}
+                    sx={{
+                      '&:hover': {
+                        backgroundColor: '#118577',
+                        '& .MuiListItemIcon-root, & .MuiListItemText-primary': {
+                          color: '#fff',
+                        },
+                      },
+                    }}
                   >
                     <ListItemIcon>
-                      <GroupIcon fontSize="small" color="success" />
+                      <GroupIcon fontSize="small" color="success" sx={{ color: "#172E59" }} />
                     </ListItemIcon>
                     <ListItemText>Community</ListItemText>
                   </MenuItem>
@@ -475,9 +521,17 @@ function NavBar() {
                     component={NavLink}
                     to={`/community/user/${user?._id}/${user?.role}`}
                     onClick={handleProfileMenuClose}
+                    sx={{
+                      '&:hover': {
+                        backgroundColor: '#118577',
+                        '& .MuiListItemIcon-root, & .MuiListItemText-primary': {
+                          color: '#fff',
+                        },
+                      },
+                    }}
                   >
                     <ListItemIcon>
-                      <AccountCircleIcon fontSize="small" color="info" />
+                      <AccountCircleIcon fontSize="small" color="info" sx={{ color: "#172E59" }}/>
                     </ListItemIcon>
                     <ListItemText>Community Profile</ListItemText>
                   </MenuItem>
@@ -485,16 +539,33 @@ function NavBar() {
                     component={NavLink}
                     to="/chat"
                     onClick={handleProfileMenuClose}
+                    sx={{
+                      '&:hover': {
+                        backgroundColor: '#118577',
+                        '& .MuiListItemIcon-root, & .MuiListItemText-primary': {
+                          color: '#fff',
+                        },
+                      },
+                    }}
                   >
                     <ListItemIcon>
-                      <ChatIcon fontSize="small" color="warning" />
+                      <ChatIcon fontSize="small" color="warning"sx={{ color: "#172E59" }} />
                     </ListItemIcon>
                     <ListItemText>Chat</ListItemText>
                   </MenuItem>
                   <Divider />
-                  <MenuItem onClick={handleLogout}>
+                  <MenuItem onClick={handleLogout}
+                  sx={{
+                    '&:hover': {
+                      backgroundColor: '#118577',
+                      '& .MuiListItemIcon-root, & .MuiListItemText-primary': {
+                        color: '#fff',
+                      },
+                    },
+                  }}
+                  >
                     <ListItemIcon>
-                      <ExitToAppIcon fontSize="small" color="error" />
+                      <ExitToAppIcon fontSize="small" color="error" sx={{ color: "#172E59" }}/>
                     </ListItemIcon>
                     <ListItemText sx={{ color: "error.main" }}>
                       Logout
@@ -549,7 +620,7 @@ function NavBar() {
             </Box>
             <Box
               component="span"
-              sx={{ color: "#FF5722", fontWeight: "medium" }}
+              sx={{ color: "#172E59", fontWeight: "medium" }}
             >
               Ship
             </Box>
