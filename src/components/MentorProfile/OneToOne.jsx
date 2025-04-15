@@ -19,6 +19,38 @@ const OneToOne = () => {
     fetchRequests();
   }, []);
 
+  // Add a new effect to check and update session statuses
+  useEffect(() => {
+    const checkAndUpdateSessionStatuses = () => {
+      const currentTime = new Date();
+
+      requests.forEach((request) => {
+        if (request.status === "pending" || request.status === "accepted") {
+          const scheduleTime = new Date(request.schedule_time);
+          // Check if more than 1 hour has passed since the scheduled time
+          const hoursPassed = (currentTime - scheduleTime) / (1000 * 60 * 60);
+
+          if (hoursPassed > 1) {
+            handleStatusUpdate(request._id, "completed");
+          }
+        }
+      });
+    };
+
+    // Run the check when requests change
+    if (requests.length > 0) {
+      checkAndUpdateSessionStatuses();
+    }
+
+    // Also set up an interval to check periodically (every 5 minutes)
+    const intervalId = setInterval(
+      checkAndUpdateSessionStatuses,
+      5 * 60 * 1000
+    );
+
+    return () => clearInterval(intervalId);
+  }, [requests]);
+
   const fetchRequests = async () => {
     setLoading(true);
     try {
@@ -119,9 +151,7 @@ const OneToOne = () => {
   };
 
   const handleJoinMeeting = (meeting) => {
-    const meetingTime = new Date(
-      meeting.requested_time?.date || meeting.createdAt
-    );
+    const meetingTime = new Date(meeting.schedule_time || meeting.createdAt);
     const currentTime = new Date();
 
     // Check if meeting time is within 15 minutes of scheduled time (either before or after)
@@ -139,11 +169,16 @@ const OneToOne = () => {
       setAgreeText("");
       setDisagreeText("Close");
       setContent(
-        `This session is scheduled for ${
-          meeting.requested_time?.day || "N/A"
-        } at ${
-          meeting.requested_time?.time || "N/A"
-        }.\n\n${timeRemaining}\n\nYou can join the meeting 15 minutes before the scheduled time.`
+        `This session is scheduled for ${new Date(
+          meeting.schedule_time
+        ).toLocaleDateString("en-US", {
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+        })} at ${new Date(meeting.schedule_time).toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+        })}.\n\n${timeRemaining}\n\nYou can join the meeting 15 minutes before the scheduled time.`
       );
     }
   };
@@ -265,7 +300,16 @@ const OneToOne = () => {
                       <div className="d-flex align-items-center mb-2">
                         <i className="bi bi-calendar-date frist-color me-2"></i>
                         <span>
-                          Requested: {request.requested_time?.day || "N/A"}
+                          Requested:{" "}
+                          {request.schedule_time
+                            ? new Date(
+                                request.schedule_time
+                              ).toLocaleDateString("en-US", {
+                                weekday: "short",
+                                year: "numeric",
+                                month: "long",
+                              })
+                            : "N/A"}
                         </span>
                       </div>
 
