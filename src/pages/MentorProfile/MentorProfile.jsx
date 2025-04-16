@@ -7,6 +7,7 @@ import ReviewMentor from "../../components/ReviewMentor/ReviewMentor";
 import MentorInfo from "../../components/MentorInfo/MentorInfo";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserSessions } from "../../rtk/features/userSlice";
+import { formatDate } from "../../utils/dateUtils";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
@@ -27,11 +28,11 @@ function MentorProfile() {
 
   // console.log("request time" , requestTime)
 
-  const formatDate = (isoString) => {
-    if (!isoString) return "";
-    const date = new Date(isoString);
-    return date.toISOString().split("T")[0];
-  };
+  // const formatDate = (isoString) => {
+  //   if (!isoString) return "";
+  //   const date = new Date(isoString);
+  //   return date.toISOString().split("T")[0];
+  // };
   const formatTime = (isoString) => {
     if (!isoString) return "";
     const date = new Date(isoString);
@@ -150,7 +151,7 @@ function MentorProfile() {
       description: values.description,
       requested_time: { day: requestTime.day, time: requestTime.time.time },
     };
-
+    // formatDate
     try {
       let { data } = await axios.post(
         `http://localhost:3000/api/v1/oneTo1sessions/request`,
