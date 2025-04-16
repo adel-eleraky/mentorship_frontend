@@ -22,9 +22,9 @@ export default function Home() {
             <div className="row  my-5">
                 <MentorsSection/>
             </div>
-            <div className="row  my-5">
+            {/* <div className="row  my-5">
                 <CommunitySection/>
-            </div>
+            </div> */}
         </div>
     )
 }
