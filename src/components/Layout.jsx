@@ -58,6 +58,27 @@ function Layout() {
         };
     }, [user, socket])
 
+    useEffect(() => {
+
+        socket.on("notification", data => {
+            dispatch(getUserNotifications())
+            toast.info(`${data.message}`, {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        })
+
+        return () => {
+            socket.off("notification");
+        };
+    }, [socket])
+
     return (
         <>
           {loading?<Loader/>: 
