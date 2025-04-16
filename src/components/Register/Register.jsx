@@ -171,7 +171,7 @@ export default function Register() {
                 <TextField
                   fullWidth
                   {...register("name")}
-                  error={Boolean(errors.name)}
+                  error={Boolean(errors.name) || Boolean(serverErrors?.name)}
                   helperText={errors.name?.message}
                   sx={inputStyles}
                 />
@@ -195,7 +195,7 @@ export default function Register() {
                 <TextField
                   fullWidth
                   {...register("phone")}
-                  error={Boolean(errors.phone)}
+                  error={Boolean(errors.phone) || Boolean(serverErrors?.phone)}
                   helperText={errors.phone?.message}
                   sx={inputStyles}
                 />

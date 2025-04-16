@@ -33,7 +33,7 @@ function ReviewMentor({ mentor }) {
       const isBooked = sessions.some(
         (session) =>
 
-          session.session.mentor == mentor &&
+          session.session?.mentor == mentor &&
           session.user?._id === user._id
       );
       setHasBooked(isBooked);
