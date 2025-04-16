@@ -154,7 +154,7 @@ export default function FilterSidebar({
                 </ul>
                 {filteredSkills.length > 6 && ( 
                     <button
-                        className="btn btn-link p-0 text-success"
+                        className="btn btn-link p-0 frist-color"
                         onClick={() => setShowAllSkills(!showAllSkills)}
                     >
                         {showAllSkills ? "See Less" : "See More"}
@@ -180,7 +180,7 @@ export default function FilterSidebar({
                 ))}
                 {filteredJobTitles.length > 6 && ( 
                     <button
-                        className="btn btn-link p-0 text-success"
+                        className="btn btn-link p-0 frist-color"
                         onClick={() => setShowAllJobTitles(!showAllJobTitles)}
                     >
                         {showAllJobTitles ? "See Less" : "See More"}

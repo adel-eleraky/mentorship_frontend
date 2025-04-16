@@ -13,7 +13,7 @@ export default function BrowseMentors() {
     const [selectedExperience, setSelectedExperience] = useState(25);
     const [priceRange, setPriceRange] = useState(250);
     const [currentPage, setCurrentPage] = useState(1);
-    const mentorsPerPage = 10;
+    const mentorsPerPage = 5;
 
     useEffect(() => {
         dispatch(fetchMentors());
