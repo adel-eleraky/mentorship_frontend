@@ -214,15 +214,6 @@ const MeetingsManagement = ({
               {sortedMeetings.map((meeting) => (
                 <div className="col" key={meeting._id}>
                   <div className="card h-100 shadow-sm border-0 hover-shadow">
-                    {/* <div className="card-header bg-transparent d-flex justify-content-between align-items-center">
-                      <span
-                        className={`badge ${getStatusBadgeClass(
-                          meeting.status
-                        )}`}
-                      >
-                        {meeting.status}
-                      </span>
-                    </div> */}
                     <div className="card-body">
                       <h5 className="card-title mb-3 second-color">
                         {meeting.title}

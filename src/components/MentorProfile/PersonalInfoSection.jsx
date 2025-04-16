@@ -29,37 +29,60 @@ const PersonalInfoSection = ({ mentorData, message }) => {
         "Full Name can only contain letters, numbers, and underscores"
       )
       .required("Full Name is required"),
-
     email: Yup.string()
-      .email("Please enter a valid email address (e.g., user@example.com)")
-      .required("Email is required"),
+      .required("Email is required")
+      .matches(
+        /^(?![0-9]+$)[a-zA-Z0-9_.]+@[a-zA-Z]+\.(com|org|net|io|edu)$/i,
+        "Email must have letters, numbers, or dots before @, only letters after @, and end with .com, .org, .net, .io, or .edu"
+      ),
 
     phone: Yup.string()
+      .matches(
+        /^(010|011|012|015)[0-9]{8}$/,
+        "Phone number must start with 010, 011, 012, or 015 and be 11 digits long"
+      )
       .length(11, "Phone number must be 11 characters long")
       .required("Phone number is required"),
 
     title: Yup.string()
-      .min(3, "Professional Title must be at least 3 characters long")
-      .max(30, "Professional Title cannot exceed 30 characters")
+      .min(3, "Title must be at least 3 characters long")
+      .max(30, "Title cannot exceed 30 characters")
+      .matches(
+        /^[A-Za-z][A-Za-z0-9 ]*$/,
+        "Title must start with a letter and can only contain letters, numbers, and spaces"
+      )
       .required("Professional Title is required"),
+
+    experience: Yup.string()
+      .min(20, "About must be at least 20 characters long")
+      .max(500, "About must be at most 500 characters")
+      .matches(
+        /^[a-zA-Z0-9_ ]+$/,
+        "Experience can only contain letters, numbers, and underscores"
+      )
+      .required("Experience is required"),
+
+    skills: Yup.array()
+      .of(
+        Yup.string()
+          .matches(
+            /^[A-Za-z][A-Za-z0-9+#. ]*$/,
+            "Skills must start with a letter and only contain letters, numbers, spaces, and specific symbols (+, #, .)"
+          )
+          .required()
+      )
+      .min(1, "At least one skill is required")
+      .required("Skills are required"),
 
     bio: Yup.string()
       .min(20, "Bio must be at least 20 characters long")
       .max(500, "Bio cannot exceed 500 characters")
-      .required("Bio is required"),
-
-    experience: Yup.string()
-      .min(20, "Experience must be at least 20 characters long")
-      .max(500, "Experience cannot exceed 500 characters"),
+      .required("Bio is required")
+      .matches(/^[A-Za-z]{5}/, "About must start with at least 5 letters"),
 
     hour_price: Yup.number()
       .min(5, "Hourly rate cannot be less than $5")
       .required("Hourly rate is required"),
-
-    skills: Yup.array()
-      .of(Yup.string().trim().required("skills cannot be empty"))
-      .min(1, "At least one skills is required")
-      .required("skills is required"),
   });
 
   const initialValues = {
