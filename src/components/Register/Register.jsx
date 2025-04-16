@@ -24,10 +24,10 @@ import { registerUser } from "../../rtk/features/authSlice";
 // Validation schema
 const validationSchema = Yup.object().shape({
   name: Yup.string()
-  .required("Name is required")
-  .min(3, "Name must be at least 3 characters")
-  .max(30, "Name must be at most 30 characters")
-  .matches(/^[A-Za-z]{3}/, "Name must start with at least 3 letters"),
+    .required("Name is required")
+    .min(3, "Name must be at least 3 characters")
+    .max(30, "Name must be at most 30 characters")
+    .matches(/^[A-Za-z]{3}/, "Name must start with at least 3 letters"),
   email: Yup.string().email().required("Email is required").matches(
     /^[a-zA-Z0-9_.]+@[a-zA-Z]+.(com|org|net|io|edu)$/i,
     "Email must be a valid format"
@@ -35,13 +35,13 @@ const validationSchema = Yup.object().shape({
   password: Yup.string()
     .required("Password is required")
     .min(8).max(29)
-    .matches(/[a-z]/).matches(/[A-Z]/)
-    .matches(/\d/).matches(/[@$!%*?&]/),
+    .matches(/[a-z]/, "Password must contains at least 1 small letter").matches(/[A-Z]/, "Password must contains at least 1 capital letter")
+    .matches(/\d/, "Password must contains at least 1 digit").matches(/[@$!%*?&]/, "Password must contains at least 1 special character"),
   confirmedPassword: Yup.string()
     .oneOf([Yup.ref("password"), null], "Passwords must match")
     .required("Confirm password is required"),
   phone: Yup.string()
-    .matches(/^01[0125][0-9]{8}$/, "Phone must be a valid Egyptian number")
+    .matches(/^01[0125][0-9]{8}$/, "Phone must be a valid Egyptian number 11 digit starts with 010, 012, 015, 011")
     .required("Phone number is required"),
   role: Yup.string().required("Role is required").oneOf(["User", "Mentor"]),
 });
