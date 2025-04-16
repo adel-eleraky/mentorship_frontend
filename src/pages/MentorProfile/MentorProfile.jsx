@@ -149,6 +149,7 @@ function MentorProfile() {
       user: user._id,
       title: values.title,
       description: values.description,
+      price: mentor?.hour_price,
       requested_time: { day: requestTime.day, time: requestTime.time.time },
     };
     // formatDate

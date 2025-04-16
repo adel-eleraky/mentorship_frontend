@@ -23,6 +23,7 @@ const MeetingsManagement = ({
   const [agreeText, setAgreeText] = useState("");
   const [disagreeText, setDisagreeText] = useState("");
 
+  console.log("session" , scheduledMeetings)
   // Process meetings to handle nested structure
   const processedMeetings =
     scheduledMeetings && scheduledMeetings.length > 0
@@ -218,7 +219,7 @@ const MeetingsManagement = ({
                         {meeting.title}
                       </h5>
 
-                      <div className="d-flex align-items-center mb-2">
+                      {/* <div className="d-flex align-items-center mb-2">
                         <i className="bi bi-person-badge frist-color me-2"></i>
                         <span>
                           Mentor:{" "}
@@ -226,7 +227,7 @@ const MeetingsManagement = ({
                             ? meeting.mentor.name
                             : "Mentor"}
                         </span>
-                      </div>
+                      </div> */}
 
                       <div className="d-flex align-items-center mb-2">
                         <i className="bi bi-calendar-date frist-color me-2"></i>

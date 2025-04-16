@@ -332,7 +332,7 @@ function Chat() {
                       {privateMessages.map((msg, index) => (
                         <div
                           key={index}
-                          className={`d-flex mb-3 ${msg.sender_role === "Mentor" || msg.sender_role == "Admin" ? 'flex-row-reverse' : 'flex-row'}`}
+                          className={`d-flex mb-3 ${msg?.sender?._id == user?._id ? "flex-row" : "flex-row-reverse"} `}
                         >
                           <img
                             src={msg.sender.image
@@ -348,14 +348,14 @@ function Chat() {
                               height: "50px",
                               objectFit: 'cover',
                               borderRadius: '50%',
-                              marginLeft: msg.sender_role === "Mentor" || msg.sender_role === "Admin" ? '10px' : '0',
-                              marginRight: msg.sender_role !== "Mentor" ? '10px' : '0'
+                              marginLeft: msg.sender?._id === user?._id ? '0px' : '10px',
+                              marginRight: msg.sender?._id != user?._id ? '0px' : '10px'
                             }}
                             className='img-fluid sender_img'
                             alt={`${msg.sender.name}'s avatar`}
                           />
                           <div
-                            className={`message ${msg.sender_role === "Mentor" || msg.sender_role === "Admin" ? 'outgoing' : 'incoming'}`}
+                            className={`message ${msg?.sender?._id == user?._id ? "incoming" : "outgoing" }`}
                           >
                             <div className="message-header d-flex justify-content-between gap-5">
                               <strong>{msg.sender.name}</strong>

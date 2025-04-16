@@ -217,6 +217,7 @@
   cursor: pointer;
   transform-origin: right bottom;
   transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+  overflow: hidden;
 }
 
 .session-card .session-main-content {
@@ -234,6 +235,8 @@
   font-size: 20px;
   margin: 24px 0 16px;
   font-weight: 600;
+  word-wrap: break-word;
+  overflow: hidden;
 }
 
 .session-card .session-categories {
