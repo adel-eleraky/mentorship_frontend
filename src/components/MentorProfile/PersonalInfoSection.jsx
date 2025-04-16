@@ -55,10 +55,10 @@ const PersonalInfoSection = ({ mentorData, message }) => {
 
     experience: Yup.string()
       .min(20, "About must be at least 20 characters long")
-      .max(500, "About must be at most 500 characters")
+      .max(60, "About must be at most 60 characters")
       .matches(
-        /^[a-zA-Z0-9_ ]+$/,
-        "Experience can only contain letters, numbers, and underscores"
+        /^(?=.*[a-zA-Z]{5,})[a-zA-Z0-9_ ]+$/,
+        "Experience must contain at least 5 letters and can only include letters, numbers, spaces, and underscores"
       )
       .required("Experience is required"),
 
@@ -66,7 +66,7 @@ const PersonalInfoSection = ({ mentorData, message }) => {
       .of(
         Yup.string()
           .matches(
-            /^[A-Za-z][A-Za-z0-9+#. ]*$/,
+            /^[A-Za-z][A-Za-z0-9 _\-()!+]*$/,
             "Skills must start with a letter and only contain letters, numbers, spaces, and specific symbols (+, #, .)"
           )
           .required()
