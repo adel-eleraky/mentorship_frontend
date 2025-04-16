@@ -213,7 +213,7 @@ const MeetingsManagement = ({
               {sortedMeetings.map((meeting) => (
                 <div className="col" key={meeting._id}>
                   <div className="card h-100 shadow-sm border-0 hover-shadow">
-                    <div className="card-header bg-transparent d-flex justify-content-between align-items-center">
+                    {/* <div className="card-header bg-transparent d-flex justify-content-between align-items-center">
                       <span
                         className={`badge ${getStatusBadgeClass(
                           meeting.status
@@ -221,7 +221,7 @@ const MeetingsManagement = ({
                       >
                         {meeting.status}
                       </span>
-                    </div>
+                    </div> */}
                     <div className="card-body">
                       <h5 className="card-title mb-3 second-color">
                         {meeting.title}
@@ -271,15 +271,12 @@ const MeetingsManagement = ({
 
                     <div className="card-footer bg-transparent border-top-0">
                       <div className="d-flex justify-content-between">
-                        {!isPast && (
-                          <button
-                            className="btn bg-second-color"
-                            onClick={() => handleJoinMeeting(meeting)}
-                          >
-                            <i className="bi bi-camera-video-fill me-1"></i>{" "}
-                            Join
-                          </button>
-                        )}
+                        <button
+                          className="btn bg-second-color"
+                          onClick={() => handleJoinMeeting(meeting)}
+                        >
+                          <i className="bi bi-camera-video-fill me-1"></i> Join
+                        </button>
 
                         {/* Show dropdown for multiple recordings */}
                         {meeting.recordings &&
